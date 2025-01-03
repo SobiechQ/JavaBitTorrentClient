@@ -9,7 +9,6 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)

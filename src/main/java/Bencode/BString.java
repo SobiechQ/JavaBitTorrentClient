@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple2;
-
-import java.util.Optional;
 import java.util.function.Function;
+
 @Getter
 public final class BString extends BencodeValue {
 

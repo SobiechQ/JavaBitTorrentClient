@@ -1,12 +1,9 @@
 package Bencode;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple2;
-
-import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)

@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple2;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -38,7 +36,7 @@ public final class BList extends BencodeValue {
             remaining.setLength(0);
             remaining.append(decodedAndRemaining.v2);
 
-        };
+        }
         remaining.deleteCharAt(0);
 
         return new Tuple2<>(decoded, remaining.toString())
