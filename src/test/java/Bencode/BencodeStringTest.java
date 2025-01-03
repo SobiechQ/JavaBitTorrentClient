@@ -21,17 +21,16 @@ class BencodeStringTest {
 
     void helper_bencodeStringConstructor_whenGivenEncoded_decodesCorrectly(String encoded, String decoded, String remaining) {
         try {
-            final var tuple = Bencode.decodeString(encoded);
+            final var tuple = Bencode.decode(encoded);
+            Assertions.assertEquals(remaining, tuple.v2);
 
-            Assertions.assertTrue(tuple.isPresent());
-
-            Assertions.assertEquals(decoded, tuple.get().v1);
-            Assertions.assertEquals(remaining, tuple.get().v2);
+            Assertions.assertTrue(tuple.v1.asString().isPresent());
 
             final var bencode = new Bencode(encoded);
 
             Assertions.assertTrue(bencode.asString().isPresent());
             Assertions.assertEquals(decoded, bencode.asString().get());
+
 
         } catch (DecodingError e) {
             throw new RuntimeException(e);
@@ -47,7 +46,7 @@ class BencodeStringTest {
     }
 
     void helper_bencodeStringConstructor_whenGivenFaulty_throwsDecodingException(String encoded) {
-        Assertions.assertThrows(DecodingError.class, () -> Bencode.decodeString(encoded));
+        Assertions.assertThrows(DecodingError.class, () -> Bencode.decode(encoded));
     }
 
 

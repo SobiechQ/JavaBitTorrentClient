@@ -9,66 +9,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 class BencodeTest {
-    @Test
-    void bencodeDecodeString_whenGivenEncoded_decodesCorrectly() {
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("6:pjwstk", "pjwstk", "");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("7:abcdefg", "abcdefg", "");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("1:a", "a", "");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("2:abcd", "ab", "cd");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("3:ab:cd", "ab:", "cd");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("4::::::::::", "::::", ":::::");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("0:", "", "");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("0:::", "", "::");
-        helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly("0:abcd", "", "abcd");
-    }
-
-    @Test
-    void bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly() {
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i0e", 0, "");
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i10ei10e", 10, "i10e");
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i123456ee", 123456, "e");
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i-10ei", -10, "i");
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i-42e4242", -42, "4242");
-        helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly("i-0e", 0, "");
-    }
-
-    void helper_bencodeDecodeString_whenGivenEncoded_decodesCorrectly(String encoded, String decoded, String remaining) {
-        try {
-            final var bencode = Bencode.decode(encoded);
-
-            Assertions.assertTrue(bencode.isPresent());
-            Assertions.assertTrue(bencode.get().v1.asString().isPresent());
-
-            Assertions.assertEquals(decoded, bencode.get().v1.asString().get());
-            Assertions.assertEquals(remaining, bencode.get().v2);
-
-            Assertions.assertFalse(bencode.get().v1.asInteger().isPresent());
-            Assertions.assertFalse(bencode.get().v1.asList().isPresent());
-            Assertions.assertFalse(bencode.get().v1.asDictionary().isPresent());
-
-        } catch (DecodingError e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    void helper_bencodeDecodeInteger_whenGivenEncoded_decodesCorrectly(String encoded, long decoded, String remaining) {
-        try {
-            final var bencode = Bencode.decode(encoded);
-
-            Assertions.assertTrue(bencode.isPresent());
-            Assertions.assertTrue(bencode.get().v1.asInteger().isPresent());
-
-            Assertions.assertEquals(decoded, bencode.get().v1.asInteger().get());
-            Assertions.assertEquals(remaining, bencode.get().v2);
-
-            Assertions.assertFalse(bencode.get().v1.asString().isPresent());
-            Assertions.assertFalse(bencode.get().v1.asList().isPresent());
-            Assertions.assertFalse(bencode.get().v1.asDictionary().isPresent());
-
-        } catch (DecodingError e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Test
     void bencodeDecodeComplex_whenGivenEncoded_decodesCorrectly() {

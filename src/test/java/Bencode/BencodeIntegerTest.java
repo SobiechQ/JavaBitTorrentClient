@@ -17,12 +17,10 @@ class BencodeIntegerTest {
 
     void helper_bencodeIntegerConstructor_whenGivenEncoded_decodesCorrectly(String encoded, long decoded, String remaining) {
         try {
-            final var tuple = Bencode.decodeInteger(encoded);
+            final var tuple = Bencode.decode(encoded);
+            Assertions.assertEquals(remaining, tuple.v2);
 
-            Assertions.assertTrue(tuple.isPresent());
-
-            Assertions.assertEquals(decoded, tuple.get().v1);
-            Assertions.assertEquals(remaining, tuple.get().v2);
+            Assertions.assertTrue(tuple.v1.asInteger().isPresent());
 
             final var bencode = new Bencode(encoded);
 
@@ -44,7 +42,7 @@ class BencodeIntegerTest {
     }
 
     void helper_bencodeIntegerConstructor_whenGivenFaulty_throwsDecodingException(String encoded) {
-        Assertions.assertThrows(DecodingError.class, () -> Bencode.decodeInteger(encoded));
+        Assertions.assertThrows(DecodingError.class, () -> Bencode.decode(encoded));
     }
 
 }

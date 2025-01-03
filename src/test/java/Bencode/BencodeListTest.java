@@ -31,13 +31,10 @@ class BencodeListTest {
 
     void helper_bencodeDecodeList_whenGivenEncoded_decodesCorrectly(String encoded, List<Bencode> decoded, String remaining) {
         try {
-            final var tuple = Bencode.decodeList(encoded);
+            final var tuple = Bencode.decode(encoded);
+            Assertions.assertEquals(remaining, tuple.v2);
 
-            Assertions.assertTrue(tuple.isPresent());
-
-
-            Assertions.assertEquals(decoded, tuple.get().v1);
-            Assertions.assertEquals(remaining, tuple.get().v2);
+            Assertions.assertTrue(tuple.v1.asList().isPresent());
 
             final var bencode = new Bencode(encoded);
 

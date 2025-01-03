@@ -38,18 +38,15 @@ class BencodeDictionaryTest {
 
     void helper_bencodeDecodeDictionary_whenGivenEncoded_decodesCorrectly(String encoded, Map<String, Bencode> decoded, String remaining) {
         try {
-            final var tuple = Bencode.decodeDictionary(encoded);
+            final var tuple = Bencode.decode(encoded);
 
-            Assertions.assertTrue(tuple.isPresent());
-
-            Assertions.assertEquals(decoded, tuple.get().v1);
-            Assertions.assertEquals(remaining, tuple.get().v2);
+            Assertions.assertEquals(remaining, tuple.v2);
+            Assertions.assertTrue(tuple.v1.asDictionary().isPresent());
 
             final var bencode = new Bencode(encoded);
 
             Assertions.assertTrue(bencode.asDictionary().isPresent());
             Assertions.assertEquals(decoded, bencode.asDictionary().get());
-
 
         } catch (DecodingError e) {
             throw new RuntimeException(e);
