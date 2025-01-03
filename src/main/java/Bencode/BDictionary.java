@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public final class BDictionary extends BencodeValue {
+final class BDictionary extends BencodeValue {
 
     final Map<String, Bencode> dictionaryValue;
 

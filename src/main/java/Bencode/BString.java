@@ -7,7 +7,7 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.function.Function;
 
 @Getter
-public final class BString extends BencodeValue {
+final class BString extends BencodeValue {
 
     final String stringValue;
 

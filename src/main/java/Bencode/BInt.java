@@ -7,7 +7,7 @@ import org.jooq.lambda.tuple.Tuple2;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public final class BInt extends BencodeValue {
+final class BInt extends BencodeValue {
 
     final long intValue;
 

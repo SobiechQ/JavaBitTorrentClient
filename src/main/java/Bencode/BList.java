@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public final class BList extends BencodeValue {
+final class BList extends BencodeValue {
     final List<Bencode> listValue;
 
     public BList(@NonNull String encoded) {
