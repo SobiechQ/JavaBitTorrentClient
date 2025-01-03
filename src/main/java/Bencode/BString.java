@@ -21,7 +21,7 @@ public final class BString extends BencodeValue {
     }
 
     public static Tuple2<BString, String> decode(@NonNull final String encoded) throws DecodingError {
-        if (encoded.isEmpty() || encoded.charAt(0) < '0' || encoded.charAt(0) > '9') //todo character is number
+        if (encoded.length() < 2 || !Character.isDigit(encoded.charAt(0)))
             throw new DecodingError("encoded value does not represent string");
 
         final var lengthRead =

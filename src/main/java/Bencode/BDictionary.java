@@ -25,7 +25,7 @@ public final class BDictionary extends BencodeValue {
     }
 
     public static Tuple2<BDictionary, String> decode(@NonNull final String encoded) throws DecodingError {
-        if (encoded.isEmpty() || encoded.charAt(0) != 'd')
+        if (encoded.length() < 2 || encoded.charAt(0) != 'd')
             throw new DecodingError("Encoded value does not represent dictionary");
 
         final var remaining = Seq.ofType(encoded.chars().boxed(), Integer.class)
