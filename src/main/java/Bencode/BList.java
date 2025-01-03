@@ -7,16 +7,14 @@ import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple2;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
 final class BList extends BencodeValue {
     final List<Bencode> listValue;
 
-    public BList(@NonNull String encoded) {
-        this.listValue = BList.decode(encoded).v1.getListValue();
-    }
-    public BList(@NonNull List<Bencode> listValue){
+    private BList(@NonNull List<Bencode> listValue){
         this.listValue = listValue;
     }
 
@@ -41,5 +39,17 @@ final class BList extends BencodeValue {
 
         return new Tuple2<>(decoded, remaining.toString())
                 .map1(l->new BList(l));
+    }
+
+
+    @Override
+    public String encode() {
+        final var inner = this.listValue.stream()
+                .map(Bencode::getBencodeValue)
+                .map(BencodeValue::encode)
+                .sorted()
+                .collect(Collectors.joining());
+
+        return String.format("l%se", inner);
     }
 }

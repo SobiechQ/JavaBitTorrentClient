@@ -62,6 +62,22 @@ class BencodeStringTest {
         Assertions.assertThrows(DecodingError.class, () -> BString.decode(encoded));
     }
 
+    static Stream<Arguments> sourceTestEncodeString() {
+        return Stream.of(
+                Arguments.of("6:pjwstk"),
+                Arguments.of("7:abcdefg"),
+                Arguments.of("1:a"),
+                Arguments.of("0:")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("sourceTestEncodeString")
+    void testEncodeString(String encoded) {
+        final var bencode = new Bencode(encoded);
+        Assertions.assertEquals(encoded, bencode.encode());
+    }
+
 
 
 

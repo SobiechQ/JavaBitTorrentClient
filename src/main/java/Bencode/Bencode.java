@@ -8,22 +8,10 @@ import java.util.*;
 
 @EqualsAndHashCode
 public class Bencode {
-
     private final BencodeValue bencodeValue;
 
     public Bencode(@NonNull final String encoded) throws DecodingError {
-        if (encoded.isEmpty())
-            throw new DecodingError("Passed encoded value cant be empty");
-        this.bencodeValue = switch (encoded.charAt(0)){
-            case 'i' -> new BInt(encoded);
-            case 'l' -> new BList(encoded);
-            case 'd' -> new BDictionary(encoded);
-            default -> {
-                if (Character.isDigit(encoded.charAt(0)))
-                    yield new BString(encoded);
-                throw new DecodingError("unable to determine type of encoded value");
-            }
-        };
+        this(Bencode.decode(encoded).v1.bencodeValue);
     }
     private Bencode(@NonNull final BencodeValue bencodeValue) {
         this.bencodeValue = bencodeValue;
@@ -72,5 +60,15 @@ public class Bencode {
             default -> Optional.empty();
         };
     }
+
+    public String encode() {
+        return this.getBencodeValue().encode();
+    }
+
+    BencodeValue getBencodeValue() {
+        return this.bencodeValue;
+    }
+
+
 
 }

@@ -1,7 +1,6 @@
 package Bencode;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,6 +51,21 @@ class BencodeDictionaryTest {
         Assertions.assertFalse(bencode.asInteger().isPresent());
         Assertions.assertFalse(bencode.asString().isPresent());
         Assertions.assertEquals(decoded, bencode.asDictionary().get());
+    }
+
+    static Stream<Arguments> sourceTestEncodeList() {
+        return Stream.of(
+                Arguments.of("de"),
+                Arguments.of("d2:aai0ee"),
+                Arguments.of("d2:aa2:zz1:b1:ae")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("sourceTestEncodeList")
+    void testEncodeList(String encoded) {
+        final var bencode = new Bencode(encoded);
+        Assertions.assertEquals(encoded, bencode.encode());
     }
 
 }

@@ -59,4 +59,20 @@ class BencodeIntegerTest {
         Assertions.assertThrows(DecodingError.class, () -> BList.decode(encoded));
     }
 
+    static Stream<Arguments> sourceTestEncodeInteger() {
+        return Stream.of(
+                Arguments.of("i0e"),
+                Arguments.of("i12345e"),
+                Arguments.of("i-20e"),
+                Arguments.of("i-987654321e")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("sourceTestEncodeInteger")
+    void testEncodeInteger(String encoded) {
+        final var bencode = new Bencode(encoded);
+        Assertions.assertEquals(encoded, bencode.encode());
+    }
+
 }

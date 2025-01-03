@@ -8,12 +8,7 @@ import org.jooq.lambda.tuple.Tuple2;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 final class BInt extends BencodeValue {
-
     final long intValue;
-
-    public BInt(@NonNull String encoded) {
-        this.intValue = BInt.decode(encoded).v1.getIntValue();
-    }
 
     private BInt(long intValue) {
         this.intValue = intValue;
@@ -46,5 +41,10 @@ final class BInt extends BencodeValue {
         } catch (NumberFormatException e) {
             throw new DecodingError(e);
         }
+    }
+
+    @Override
+    public String encode() {
+        return String.format("i%se", this.intValue);
     }
 }

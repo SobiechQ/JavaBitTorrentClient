@@ -1,7 +1,6 @@
 package Bencode;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,8 +9,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 class BencodeListTest {
-    //todo list of dictionary
-    //todo unsecessfull lists
 
     static Stream<Arguments> sourceTestDecodeList() throws DecodingError {
         return Stream.of(
@@ -49,6 +46,22 @@ class BencodeListTest {
         Assertions.assertFalse(bencode.asInteger().isPresent());
         Assertions.assertFalse(bencode.asDictionary().isPresent());
         Assertions.assertEquals(decoded, bencode.asList().get());
+    }
+
+    static Stream<Arguments> sourceTestEncodeList() {
+        return Stream.of(
+                Arguments.of("le"),
+                Arguments.of("li0ee"),
+                Arguments.of("l1:a2:bb3:ccci0ee"),
+                Arguments.of("l1:a2:bb3:ccci-10ei0ei20ee")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("sourceTestEncodeList")
+    void testEncodeList(String encoded) {
+        final var bencode = new Bencode(encoded);
+        Assertions.assertEquals(encoded, bencode.encode());
     }
 
 }

@@ -8,14 +8,9 @@ import java.util.function.Function;
 
 @Getter
 final class BString extends BencodeValue {
-
     final String stringValue;
 
-    public BString(@NonNull String encoded) {
-        this.stringValue = BString.decode(encoded).v1.getStringValue();
-    }
-
-    private BString(@NonNull String stringValue, boolean ignored){
+    private BString(@NonNull String stringValue){
         this.stringValue = stringValue;
     }
 
@@ -50,6 +45,11 @@ final class BString extends BencodeValue {
         if (split.v1.length() < length)
             throw new DecodingError("String was shorter then its declared length");
 
-        return split.map1(s -> new BString(s, false));
+        return split.map1(s -> new BString(s));
+    }
+
+    @Override
+    public String encode() {
+        return String.format("%s:%s", this.stringValue.length(), this.stringValue);
     }
 }

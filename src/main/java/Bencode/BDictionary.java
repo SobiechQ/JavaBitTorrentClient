@@ -9,16 +9,13 @@ import org.jooq.lambda.tuple.Tuple2;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
 final class BDictionary extends BencodeValue {
-
     final Map<String, Bencode> dictionaryValue;
 
-    public BDictionary(@NonNull String encoded) {
-        this.dictionaryValue = BDictionary.decode(encoded).v1.getDictionaryValue();
-    }
     private BDictionary(Map<String, Bencode> dictionaryValue) {
         this.dictionaryValue = dictionaryValue;
     }
@@ -49,5 +46,16 @@ final class BDictionary extends BencodeValue {
 
         return new Tuple2<>(Collections.unmodifiableMap(decoded), remaining.toString())
                 .map1(map -> new BDictionary(map));
+    }
+
+    @Override
+    public String encode() {
+        final var inner = this.dictionaryValue.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> String.format("%s:%s%s", e.getKey().length(), e.getKey(), e.getValue().encode()))
+                .collect(Collectors.joining());
+
+        return String.format("d%se", inner);
     }
 }
