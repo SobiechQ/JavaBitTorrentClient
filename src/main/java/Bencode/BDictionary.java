@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 final class BDictionary extends BencodeValue {
     final Map<String, Bencode> dictionaryValue;
 
-    private BDictionary(Map<String, Bencode> dictionaryValue) {
+    private BDictionary(@NonNull final Map<String, Bencode> dictionaryValue) {
         this.dictionaryValue = dictionaryValue;
     }
 
@@ -77,7 +77,7 @@ final class BDictionary extends BencodeValue {
                 .collect(Collectors.joining("\n", "{\n", "\n}"));
 
     }
-    private String toStringShort(BencodeValue bencodeValue) {
+    private String toStringShort(@NonNull final BencodeValue bencodeValue) {
         if (bencodeValue instanceof BDictionary){
             return "{...}";
         }

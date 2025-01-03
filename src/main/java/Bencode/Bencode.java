@@ -20,7 +20,7 @@ public class Bencode {
         this.bencodeValue = bencodeValue;
     }
 
-    public static Optional<Bencode> fromFile(File file) {
+    public static Optional<Bencode> fromFile(@NonNull final File file) {
         try (final var bis = new BufferedInputStream(new FileInputStream(file))) {
             final var bencode = new Bencode(StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(bis.readAllBytes())).toString());
             return Optional.of(bencode);
@@ -72,6 +72,11 @@ public class Bencode {
             case BDictionary bDictionary -> Optional.of(bDictionary.dictionaryValue);
             default -> Optional.empty();
         };
+    }
+
+    public Optional<Bencode> asDictionary(String key){
+        return this.asDictionary()
+                .flatMap(map -> Optional.ofNullable(map.get(key)));
     }
 
     public String encode() {

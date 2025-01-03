@@ -43,19 +43,16 @@ class BencodeTest {
         }
          */
 
-        final var age = bencode.asDictionary()
-                .flatMap(map -> Optional.ofNullable(map.get("user")))
-                .flatMap(b -> b.asDictionary())
-                .flatMap(map -> Optional.ofNullable(map.get("age")))
+        final var age = bencode.asDictionary("user")
+                .flatMap(b -> b.asDictionary("age"))
                 .flatMap(b -> b.asInteger())
                 .orElseThrow(() -> new DecodingError(""));
 
         Assertions.assertEquals(52, age);
 
-        final var inceptionMap = bencode.asDictionary()
-                .flatMap(map -> Optional.ofNullable(map.get("user")))
-                .flatMap(b -> b.asDictionary())
-                .flatMap(map -> Optional.ofNullable(map.get("movies")))
+        final var inceptionMap = bencode
+                .asDictionary("user")
+                .flatMap(b -> b.asDictionary("movies"))
                 .flatMap(b -> b.asList())
                 .map(Collection::stream)
                 .stream()
