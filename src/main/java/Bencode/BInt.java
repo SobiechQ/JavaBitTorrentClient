@@ -47,4 +47,9 @@ final class BInt extends BencodeValue {
     public String encode() {
         return String.format("i%se", this.intValue);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.intValue);
+    }
 }

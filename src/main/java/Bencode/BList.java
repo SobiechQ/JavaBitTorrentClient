@@ -52,4 +52,9 @@ final class BList extends BencodeValue {
 
         return String.format("l%se", inner);
     }
+
+    @Override
+    public String toString() {
+        return this.listValue.toString();
+    }
 }

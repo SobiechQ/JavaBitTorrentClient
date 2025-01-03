@@ -29,7 +29,16 @@ final class BDictionary extends BencodeValue {
                 .map(c -> (char) c.intValue())
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
 
-        final Map<String, Bencode> decoded = new HashMap<>();
+        final Map<String, Bencode> decoded = new HashMap<>(){
+            @Override
+            public String toString() {
+                return this.entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .map(e -> String.format("%s: {...}", e.getKey()))
+                        .collect(Collectors.joining("\n", "{\n", "\n}"));
+            }
+        };
         while (!remaining.isEmpty() && remaining.charAt(0) != 'e'){
 
 
@@ -57,5 +66,21 @@ final class BDictionary extends BencodeValue {
                 .collect(Collectors.joining());
 
         return String.format("d%se", inner);
+    }
+
+    @Override
+    public String toString() {
+        return this.dictionaryValue.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> String.format("%s: %s", e.getKey(), this.toStringShort(e.getValue().getBencodeValue())))
+                .collect(Collectors.joining("\n", "{\n", "\n}"));
+
+    }
+    private String toStringShort(BencodeValue bencodeValue) {
+        if (bencodeValue instanceof BDictionary){
+            return "{...}";
+        }
+        return bencodeValue.toString();
     }
 }

@@ -52,4 +52,9 @@ final class BString extends BencodeValue {
     public String encode() {
         return String.format("%s:%s", this.stringValue.length(), this.stringValue);
     }
+
+    @Override
+    public String toString() {
+        return String.format("\"%s\"", this.stringValue);
+    }
 }
