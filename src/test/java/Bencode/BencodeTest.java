@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -67,13 +68,27 @@ class BencodeTest {
                 .findAny()
                 .orElseThrow(() -> new DecodingError(""));
 
+
         final var inceptionReleaseDate =
                 Optional.ofNullable(inceptionMap.get("released"))
                         .flatMap(b -> b.asInteger())
                         .orElseThrow(() -> new DecodingError(""));
 
-
         Assertions.assertEquals(2010, inceptionReleaseDate);
+
+        final List<Long> releaseYearsExpected = List.of(2010L, 2014L, 2017L);
+
+        final var releaseYearsActual = bencode.asDictionary("user")
+                .flatMap(b->b.asDictionary("movies"))
+                .stream()
+                .flatMap(Bencode::stream)
+                .flatMap(b->b.asDictionary("released").stream())
+                .flatMap(b->b.asInteger().stream())
+                .toList();
+
+        Assertions.assertEquals(releaseYearsExpected, releaseYearsActual);
+
+
     }
 
     static Stream<Arguments> sourceTestDecodeThrows() {

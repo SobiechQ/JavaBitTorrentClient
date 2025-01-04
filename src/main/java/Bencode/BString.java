@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 @Getter
 final class BString extends BencodeValue {
-    final String stringValue;
+    private final String stringValue;
 
     private BString(@NonNull String stringValue){
         this.stringValue = stringValue;

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 final class BDictionary extends BencodeValue {
-    final Map<String, Bencode> dictionaryValue;
+    private final Map<String, Bencode> dictionaryValue;
 
     private BDictionary(@NonNull final Map<String, Bencode> dictionaryValue) {
         this.dictionaryValue = dictionaryValue;

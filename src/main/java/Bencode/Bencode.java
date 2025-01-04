@@ -1,13 +1,16 @@
 package Bencode;
 
+import io.vavr.control.Try;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode
 public class Bencode {
@@ -21,14 +24,14 @@ public class Bencode {
     }
 
     public static Optional<Bencode> fromFile(@NonNull final File file) {
-        try (final var bis = new BufferedInputStream(new FileInputStream(file))) {
-            final var bencode = new Bencode(StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(bis.readAllBytes())).toString());
-            return Optional.of(bencode);
-        } catch (IOException | DecodingError e) {
-            return Optional.empty();
-        }
+        return Try.of(() -> new BufferedInputStream(new FileInputStream(file)))
+                .mapTry(InputStream::readAllBytes)
+                .map(ByteBuffer::wrap)
+                .map(StandardCharsets.US_ASCII::decode)
+                .map(CharBuffer::toString)
+                .mapTry(Bencode::new)
+                .toJavaOptional();
     }
-
 
     public static Tuple2<Bencode, String> decode(@NonNull final String encoded) throws DecodingError {
         if (encoded.isEmpty())
@@ -48,28 +51,28 @@ public class Bencode {
 
     public Optional<String> asString() {
         return switch (this.bencodeValue){
-            case BString bString -> Optional.of(bString.stringValue);
+            case BString bString -> Optional.of(bString.getStringValue());
             default -> Optional.empty();
         };
     }
 
     public Optional<Long> asInteger() {
         return switch (this.bencodeValue){
-            case BInt bInt -> Optional.of(bInt.intValue);
+            case BInt bInt -> Optional.of(bInt.getIntValue());
             default -> Optional.empty();
         };
     }
 
     public Optional<List<Bencode>> asList() {
         return switch (this.bencodeValue){
-            case BList bList -> Optional.of(bList.listValue);
+            case BList bList -> Optional.of(bList.getListValue());
             default -> Optional.empty();
         };
     }
 
     public Optional<Map<String, Bencode>> asDictionary() {
         return switch (this.bencodeValue){
-            case BDictionary bDictionary -> Optional.of(bDictionary.dictionaryValue);
+            case BDictionary bDictionary -> Optional.of(bDictionary.getDictionaryValue());
             default -> Optional.empty();
         };
     }
@@ -77,6 +80,14 @@ public class Bencode {
     public Optional<Bencode> asDictionary(String key){
         return this.asDictionary()
                 .flatMap(map -> Optional.ofNullable(map.get(key)));
+    }
+
+    public Stream<Bencode> stream(){
+        return switch (this.bencodeValue){
+            case BString _, BInt _ -> Stream.of(this);
+            case BList bList -> bList.getListValue().stream();
+            case BDictionary bDictionary -> bDictionary.getDictionaryValue().values().stream();
+        };
     }
 
     public String encode() {

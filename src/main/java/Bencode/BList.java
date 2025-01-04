@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter
 @EqualsAndHashCode(callSuper = false)
 final class BList extends BencodeValue {
-    final List<Bencode> listValue;
+    private final List<Bencode> listValue;
 
     private BList(@NonNull List<Bencode> listValue){
         this.listValue = listValue;
