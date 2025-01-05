@@ -18,11 +18,13 @@ final class BInt extends BencodeValue {
         if (encoded.length() < 2 || encoded.charAt(0) != 'i')
             throw new DecodingError("Encoded value does not represent integer");
 
-        if (!Seq.ofType(encoded.chars().boxed(), Integer.class)
+        final var containsEndCharacter = Seq.ofType(encoded.chars().boxed(), Integer.class)
                 .map(c -> (char) c.intValue())
                 .skip(1)
-                .containsAny('e')
-        ) throw new DecodingError("Encoded integers must contain end character");
+                .containsAny('e');
+
+        if (!containsEndCharacter)
+            throw new DecodingError("Encoded integers must contain end character");
 
         final var decodedRead = Seq.ofType(encoded.chars().boxed(), Integer.class)
                 .map(c -> (char) c.intValue())
