@@ -40,8 +40,6 @@ final class BDictionary extends BencodeValue {
             }
         };
         while (!remaining.isEmpty() && remaining.charAt(0) != 'e'){
-
-
             final var keyAndRemaining = BString.decode(remaining.toString());
             final var valueAndRemaining = Bencode.decode(keyAndRemaining.v2);
 

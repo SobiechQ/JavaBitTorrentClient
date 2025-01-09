@@ -6,10 +6,8 @@ import lombok.NonNull;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode
@@ -23,14 +21,18 @@ public class Bencode {
         this.bencodeValue = bencodeValue;
     }
 
-    public static Optional<Bencode> fromFile(@NonNull final File file) {
-        return Try.of(() -> new BufferedInputStream(new FileInputStream(file)))
+    public static Optional<Bencode> fromFile(@NonNull final File file) { //todo unsafe!!
+        final var bytes = Try.of(() -> new BufferedInputStream(new FileInputStream(file)))
                 .mapTry(InputStream::readAllBytes)
-                .map(ByteBuffer::wrap)
-                .map(StandardCharsets.US_ASCII::decode)
-                .map(CharBuffer::toString)
-                .mapTry(Bencode::new)
-                .toJavaOptional();
+                .toJavaStream();
+
+        final var arr = bytes.flatMapToInt(b ->
+                        IntStream.range(0, b.length).map(i -> b[i] & 0xFF))
+                .toArray();
+
+        final var str = new String(arr, 0, arr.length);
+
+        return Optional.of(new Bencode(str));
     }
 
     public static Tuple2<Bencode, String> decode(@NonNull final String encoded) throws DecodingError {
@@ -47,7 +49,6 @@ public class Bencode {
             }
         };
     }
-
 
     public Optional<String> asString() {
         return switch (this.bencodeValue){
