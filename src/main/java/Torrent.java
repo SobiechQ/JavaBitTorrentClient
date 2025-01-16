@@ -1,10 +1,7 @@
 import Bencode.Bencode;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import lombok.Getter;
@@ -46,14 +43,33 @@ public class Torrent { //todo abstractify? wszystkie klasy bedace reprezentacją
     public Optional<String> getAnnounce() {
         return this.getTorrentFile()
                 .asDictionary("announce")
-                .flatMap(b->b.asString());
+                .flatMap(Bencode::asString);
     }
 
     public Optional<Long> getLength() {
         return this.getTorrentFile()
                 .asDictionary("info")
                 .flatMap(b->b.asDictionary("length"))
-                .flatMap(b->b.asInteger());
+                .flatMap(Bencode::asInteger);
+    }
+
+    public Optional<String> getComment() {
+        return this.getTorrentFile()
+                .asDictionary("comment")
+                .flatMap(Bencode::asString);
+    }
+
+    public Optional<String> getCreatedBy() {
+        return this.getTorrentFile()
+                .asDictionary("created by")
+                .flatMap(Bencode::asString);
+    }
+
+    public Optional<Date> getCreationDate() {
+        return this.getTorrentFile()
+                .asDictionary("creation date")
+                .flatMap(Bencode::asInteger)
+                .map(Date::new);
     }
 
     public static String byteArrayToHex(Byte[] bytes) {

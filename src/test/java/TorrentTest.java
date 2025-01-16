@@ -5,6 +5,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Stream;
 import Bencode.DecodingError;
 
@@ -118,6 +120,45 @@ class TorrentTest {
                 Arguments.of(21, "91468AA06C55CADA73124FDD6929365FCF582809"),
                 Arguments.of(22, "6A0FDD77E13A28B9041EDEB89A4D5844F5581851")
         );
+    }
+    @Test
+    void testGetComment() {
+        final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
+        final var torrent = Torrent.fromFile(new File(location));
+
+        final var comment = torrent
+                .flatMap(Torrent::getComment)
+                .orElseThrow(() -> new DecodingError(""));
+
+        Assertions.assertEquals("\"Debian CD from cdimage.debian.org\"", comment);
+
+    }
+    @Test
+    void testGetCreatedBy() {
+        final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
+        final var torrent = Torrent.fromFile(new File(location));
+
+        final var comment = torrent
+                .flatMap(Torrent::getCreatedBy)
+                .orElseThrow(() -> new DecodingError(""));
+
+        Assertions.assertEquals("mktorrent 1.1", comment);
+
+    }
+    @Test
+    void testGetCreationDate() {
+        final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
+        final var torrent = Torrent.fromFile(new File(location));
+
+        final var comment = torrent
+                .flatMap(Torrent::getCreationDate)
+                .orElseThrow(() -> new DecodingError(""));
+
+        final var calendar = Calendar.getInstance();
+        calendar.set(2025, Calendar.JANUARY, 16, 8, 50, 48);
+
+        Assertions.assertEquals(calendar.getTime(), comment);
+
     }
 
     @ParameterizedTest
