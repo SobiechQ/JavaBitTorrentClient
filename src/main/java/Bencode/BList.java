@@ -55,6 +55,6 @@ final class BList extends BencodeValue {
 
     @Override
     public String toString() {
-        return this.listValue.toString();
+        return this.encode();
     }
 }

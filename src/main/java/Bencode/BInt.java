@@ -52,6 +52,6 @@ final class BInt extends BencodeValue {
 
     @Override
     public String toString() {
-        return String.valueOf(this.intValue);
+        return this.encode();
     }
 }

@@ -68,17 +68,6 @@ final class BDictionary extends BencodeValue {
 
     @Override
     public String toString() {
-        return this.dictionaryValue.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> String.format("%s: %s", e.getKey(), this.toStringShort(e.getValue().getBencodeValue())))
-                .collect(Collectors.joining("\n", "{\n", "\n}"));
-
-    }
-    private String toStringShort(@NonNull final BencodeValue bencodeValue) {
-        if (bencodeValue instanceof BDictionary){
-            return "{...}";
-        }
-        return bencodeValue.toString();
+        return this.encode();
     }
 }
