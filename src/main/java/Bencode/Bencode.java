@@ -1,5 +1,6 @@
 package Bencode;
 
+import com.google.common.base.Charsets;
 import io.vavr.control.Try;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -9,10 +10,15 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @EqualsAndHashCode
 public class Bencode {
     private final BencodeValue bencodeValue;
+
+    public Bencode(final byte @NonNull [] bytes) {
+        this.bencodeValue = new Bencode(Bencode.byteArrayToString(bytes)).bencodeValue;
+    }
 
     public Bencode(@NonNull final String encoded) throws DecodingError {
         this(Bencode.decode(encoded).v1.bencodeValue);
@@ -33,6 +39,10 @@ public class Bencode {
         final var str = new String(arr, 0, arr.length);
 
         return Optional.of(new Bencode(str));
+    }
+
+    public static String byteArrayToString(final byte @NonNull [] bytes) {
+       return new String(bytes, Charsets.ISO_8859_1);
     }
 
     public static Tuple2<Bencode, String> decode(@NonNull final String encoded) throws DecodingError {

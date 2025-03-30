@@ -19,7 +19,7 @@ final class BList extends BencodeValue {
     }
 
     public static Tuple2<BList, String> decode(@NonNull final String encoded) throws DecodingError {
-        if (encoded.length() < 2 || encoded.charAt(0) != 'l') //If it's not a list, return empty
+        if (encoded.length() < 2 || encoded.charAt(0) != 'l')
             throw new DecodingError("Encoded value does not represent list");
 
         final var remaining = Seq.ofType(encoded.chars().boxed(), Integer.class)

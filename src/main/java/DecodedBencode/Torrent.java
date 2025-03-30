@@ -1,3 +1,5 @@
+package DecodedBencode;
+
 import Bencode.Bencode;
 
 import java.io.File;
@@ -11,12 +13,10 @@ import com.google.common.hash.Hashing;
 import lombok.Getter;
 
 @Getter
-public class Torrent { //todo abstractify? wszystkie klasy bedace reprezentacją jakiegoś bencoda
-
-    private final Bencode torrentFile;
+public class Torrent extends DecodedBencode {
 
     public Torrent(Bencode bencode) {
-        this.torrentFile = bencode;
+        super(bencode);
     }
 
     public static Optional<Torrent> fromFile(File file) {
@@ -25,14 +25,14 @@ public class Torrent { //todo abstractify? wszystkie klasy bedace reprezentacją
     }
 
     public String getAnnounce() {
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("announce")
                 .flatMap(Bencode::asString)
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
     public Long getLength() {
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("info")
                 .flatMap(b->b.asDictionary("length"))
                 .flatMap(Bencode::asInteger)
@@ -40,21 +40,21 @@ public class Torrent { //todo abstractify? wszystkie klasy bedace reprezentacją
     }
 
     public String getComment() {
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("comment")
                 .flatMap(Bencode::asString)
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
     public String getCreatedBy() {
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("created by")
                 .flatMap(Bencode::asString)
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
     public Date getCreationDate() {
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("creation date")
                 .flatMap(Bencode::asInteger)
                 .map(Date::new)
@@ -65,7 +65,7 @@ public class Torrent { //todo abstractify? wszystkie klasy bedace reprezentacją
         final var charset = Charsets.ISO_8859_1;
 
         //noinspection UnstableApiUsage
-        return this.getTorrentFile()
+        return this.getBencode()
                 .asDictionary("info")
                 .map(Bencode::toString)
                 .map(s -> Hashing.sha1().hashString(s, charset))

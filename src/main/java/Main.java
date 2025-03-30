@@ -1,3 +1,7 @@
+import Bencode.Bencode;
+import DecodedBencode.Announce;
+import DecodedBencode.Torrent;
+import com.google.common.base.Charsets;
 import com.squareup.okhttp.*;
 
 import java.io.*;
@@ -10,7 +14,7 @@ public class Main {
 
          var announce = torrent.getAnnounce();
 
-        System.out.println(torrent.getInfoHash());
+//        System.out.println(torrent.getInfoHash());
 
         var left = "0";
 
@@ -29,12 +33,15 @@ public class Main {
                 .build();
         try {
             OkHttpClient client = new OkHttpClient();
-            System.out.println(request);
+//            System.out.println(request);
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();
             final var read = new BufferedInputStream(body.byteStream()).readAllBytes();
-            System.out.println(new String(read));
 
+            final var an = new Announce(new Bencode(read));
+
+            System.out.println(an.getInterval());
+            System.out.println(an.getPeers());
 
 
         } catch (IOException e) {
