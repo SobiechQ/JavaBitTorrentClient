@@ -7,14 +7,15 @@ import lombok.NonNull;
 import org.jooq.lambda.tuple.Tuple2;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @EqualsAndHashCode
 public class Bencode {
     private final BencodeValue bencodeValue;
+    public final static Charset CHARSET = Charsets.ISO_8859_1;
 
     public Bencode(final byte @NonNull [] bytes) {
         this.bencodeValue = new Bencode(Bencode.byteArrayToString(bytes)).bencodeValue;
@@ -42,7 +43,7 @@ public class Bencode {
     }
 
     public static String byteArrayToString(final byte @NonNull [] bytes) {
-       return new String(bytes, Charsets.ISO_8859_1);
+       return new String(bytes, Bencode.CHARSET);
     }
 
     public static Tuple2<Bencode, String> decode(@NonNull final String encoded) throws DecodingError {

@@ -61,16 +61,20 @@ public class Torrent extends DecodedBencode {
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
-    public String getInfoHash() {
-        final var charset = Charsets.ISO_8859_1;
+    public String getInfoHashUrl() {
+        final var infoHash = this.getInfoHash();
+
+        return URLEncoder.encode(new String(infoHash, Bencode.CHARSET), Bencode.CHARSET);
+    }
+    public byte[] getInfoHash() {
 
         //noinspection UnstableApiUsage
         return this.getBencode()
                 .asDictionary("info")
                 .map(Bencode::toString)
-                .map(s -> Hashing.sha1().hashString(s, charset))
+                .map(s -> Hashing.sha1().hashString(s, Bencode.CHARSET))
                 .map(HashCode::asBytes)
-                .map(b -> URLEncoder.encode(new String(b, charset), charset))
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
+
 }

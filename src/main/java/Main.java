@@ -1,10 +1,11 @@
 import Bencode.Bencode;
 import DecodedBencode.Announce;
 import DecodedBencode.Torrent;
-import com.google.common.base.Charsets;
 import com.squareup.okhttp.*;
+import lombok.NonNull;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
 public class Main {
@@ -22,7 +23,7 @@ public class Main {
                 .get()
                 .url(HttpUrl.parse(announce)
                         .newBuilder()
-                        .addEncodedQueryParameter("info_hash", torrent.getInfoHash())
+                        .addEncodedQueryParameter("info_hash", torrent.getInfoHashUrl())
                         .addQueryParameter("peer_id", "00112233445566778899")
                         .addQueryParameter("port", "6881")
                         .addQueryParameter("uploaded", "0")
@@ -41,7 +42,34 @@ public class Main {
             final var an = new Announce(new Bencode(read));
 
             System.out.println(an.getInterval());
-            System.out.println(an.getPeers());
+            System.out.println();
+            System.out.println(new Bencode(read));
+
+            final var p =an.getPeers().findFirst().get();
+            System.out.println(p);
+            an.getPeers().forEach(System.out::println);
+
+            try (final var socket = new Socket(p.address(), p.port())) {
+                byte[] handshake = Handshake.apply(torrent.getInfoHash(), "00112233445566778899".getBytes());
+                System.out.println(Arrays.toString(handshake));
+
+
+                socket.getOutputStream().write(handshake);
+                var in = new InputStreamReader(socket.getInputStream());
+                char[] buf = new char[8192];
+                in.read(buf);
+                in.close();
+                System.out.println(Arrays.toString(buf));
+
+
+//                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream())) {
+//                    byte[] resp =  bufferedInputStream.readAllBytes();
+//                    System.out.println(new String(resp));
+//                }
+            }
+
+
+
 
 
         } catch (IOException e) {

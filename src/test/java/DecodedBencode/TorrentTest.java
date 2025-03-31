@@ -73,12 +73,12 @@ class TorrentTest {
     }
 
     @Test
-    void testGetInfoHash() {
+    void testGetInfoHashUrl() {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
         final var infoHash = torrent
-                .map(Torrent::getInfoHash)
+                .map(Torrent::getInfoHashUrl)
                 .orElseThrow(() -> new DecodingError(""));
 
         Assertions.assertEquals(infoHash, "Z-n%A2Ko%9B%BA%3D%E0%1B%D2%84h%E8%60%BD%DAZ%ED");
