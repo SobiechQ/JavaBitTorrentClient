@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HandshakeTest {
 
     @Test
-    void apply() {
+    void of() {
         Assertions.assertEquals(true, false);
     }
 }

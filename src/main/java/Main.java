@@ -2,10 +2,12 @@ import Bencode.Bencode;
 import DecodedBencode.Announce;
 import DecodedBencode.Torrent;
 import com.squareup.okhttp.*;
-import lombok.NonNull;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class Main {
@@ -41,25 +43,27 @@ public class Main {
 
             final var an = new Announce(new Bencode(read));
 
-            System.out.println(an.getInterval());
-            System.out.println();
-            System.out.println(new Bencode(read));
+
 
             final var p =an.getPeers().findFirst().get();
             System.out.println(p);
-            an.getPeers().forEach(System.out::println);
+//            an.getPeers().forEach(System.out::println);
 
             try (final var socket = new Socket(p.address(), p.port())) {
-                byte[] handshake = Handshake.apply(torrent.getInfoHash(), "00112233445566778899".getBytes());
-                System.out.println(Arrays.toString(handshake));
+                final var hand = new Handshake(torrent.getInfoHash(), "00112233445566778899".getBytes());
+                System.out.println(hand.get(socket));
 
+                int cut = 0;
+                while (true) {
+                    final var in = socket.getInputStream();
+                    final var ar = in.readNBytes(68);
+                    System.out.println(Arrays.toString(ar));
+                    System.out.println(new String(ar));
 
-                socket.getOutputStream().write(handshake);
-                var in = new InputStreamReader(socket.getInputStream());
-                char[] buf = new char[8192];
-                in.read(buf);
-                in.close();
-                System.out.println(Arrays.toString(buf));
+                    if(cut++ > 300)
+                        break;
+
+                }
 
 
 //                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream())) {
@@ -85,6 +89,14 @@ public class Main {
             encoded.append('%').append(String.format("%02X", b & 0xFF));
         }
         return encoded.toString();
+    }
+    public static byte[] toBytes(char[] chars) {
+        CharBuffer charBuffer = CharBuffer.wrap(chars);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
+                byteBuffer.position(), byteBuffer.limit());
+        Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
+        return bytes;
     }
 
 }
