@@ -1,3 +1,7 @@
+package TCP;
+
+import lombok.NonNull;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
@@ -9,7 +13,9 @@ public class Handshake {
     private final byte[] infoHash;
     private final byte[] peerId;
 
-    public Handshake(byte[] infoHash, byte[] peerId) {
+    public Handshake(byte @NonNull [] infoHash, byte @NonNull [] peerId) {
+        if (infoHash.length != 20 || peerId.length != 20)
+            throw new IllegalArgumentException("Passed arrays have to be 20 bytes long.");
         this.infoHash = infoHash;
         this.peerId = peerId;
     }
@@ -21,11 +27,11 @@ public class Handshake {
      * @return true - if handshake is successful and received handshake matches infoHash, false otherwise.
      * @throws IOException if socket connection malfunctions
      */
-    public boolean get(Socket socket) throws IOException {
+    public boolean get(@NonNull Socket socket) throws IOException {
         socket.getOutputStream().write(Handshake.of(infoHash, peerId));
         final var received = socket.getInputStream().readNBytes(68);
 
-        if (received[0] != 19)
+        if (received == null || received.length != 68 || received[0] != 19)
             return false;
 
         final var receivedProtocolName = new byte[19];
@@ -37,10 +43,7 @@ public class Handshake {
         final var receivedInfoHash = new byte[20];
         System.arraycopy(received, 28, receivedInfoHash, 0, 20);
 
-        if (!Arrays.equals(receivedInfoHash, this.infoHash))
-            return false;
-
-        return true;
+        return Arrays.equals(receivedInfoHash, this.infoHash);
     }
 
     private static byte[] of(byte[] infoHash, byte[] peerId) {

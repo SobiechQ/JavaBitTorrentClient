@@ -1,8 +1,8 @@
+package TCP;
+
 import lombok.Getter;
-import lombok.SneakyThrows;
 
 import java.util.Arrays;
-import java.util.function.Supplier;
 
 @Getter
 public enum MessageType {

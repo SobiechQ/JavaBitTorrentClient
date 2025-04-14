@@ -1,6 +1,9 @@
 import Bencode.Bencode;
 import DecodedBencode.Announce;
 import DecodedBencode.Torrent;
+import TCP.Handshake;
+import TCP.MessageType;
+import TCP.PeerMessage;
 import com.squareup.okhttp.*;
 
 import java.io.*;
@@ -15,7 +18,7 @@ public class Main {
         final var torrent = Torrent.fromFile(new File("src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent")).get();
 
 
-         var announce = torrent.getAnnounce();
+        var announce = torrent.getAnnounce();
 
 //        System.out.println(torrent.getInfoHash());
 
@@ -44,26 +47,33 @@ public class Main {
             final var an = new Announce(new Bencode(read));
 
 
-
-            final var p =an.getPeers().findFirst().get();
+            final var p = an.getPeers().findFirst().get();
             System.out.println(p);
 //            an.getPeers().forEach(System.out::println);
 
             try (final var socket = new Socket(p.address(), p.port())) {
+                System.out.println("Socket open");
                 final var hand = new Handshake(torrent.getInfoHash(), "00112233445566778899".getBytes());
                 System.out.println(hand.get(socket));
 
-                int cut = 0;
-                while (true) {
-                    final var in = socket.getInputStream();
-                    final var ar = in.readNBytes(68);
-                    System.out.println(Arrays.toString(ar));
-                    System.out.println(new String(ar));
+                final var in = socket.getInputStream();
+                var msg = PeerMessage.get(in);
 
-                    if(cut++ > 300)
-                        break;
+                System.out.println(msg);
 
-                }
+                System.out.println("Sending...");
+                final var resp = new PeerMessage(MessageType.INTERESTED);
+                resp.send(socket.getOutputStream());
+                System.out.printf("Sent: %s", resp);
+
+                msg = PeerMessage.get(in);
+                System.out.println(msg);
+
+
+
+                msg = PeerMessage.get(in);
+                System.out.println(msg);
+
 
 
 //                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream())) {
@@ -73,16 +83,13 @@ public class Main {
             }
 
 
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
 
-
     }
+
     private static String encodeInfoHash(List<Byte> infoHashBytes) {
         StringBuilder encoded = new StringBuilder();
         for (byte b : infoHashBytes) {
@@ -90,6 +97,7 @@ public class Main {
         }
         return encoded.toString();
     }
+
     public static byte[] toBytes(char[] chars) {
         CharBuffer charBuffer = CharBuffer.wrap(chars);
         ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
