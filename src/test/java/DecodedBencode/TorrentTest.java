@@ -33,6 +33,17 @@ class TorrentTest {
     }
 
     @Test
+    void testGetPieceLength() {
+        final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
+        final var torrent = Torrent.fromFile(new File(location));
+
+        final var length = torrent.map(Torrent::getPieceLength);
+
+        Assertions.assertTrue(length.isPresent());
+        Assertions.assertEquals(262144, length.get());
+    }
+
+    @Test
     void testGetComment() {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));

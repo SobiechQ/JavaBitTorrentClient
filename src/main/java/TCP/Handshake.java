@@ -1,6 +1,8 @@
 package TCP;
 
 import lombok.NonNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,6 +12,7 @@ import java.util.Arrays;
  * <a href="https://www.bittorrent.org/beps/bep_0003.html#peer-protocol">Bep 003 impl</a>
  */
 public class Handshake {
+    private final static Logger logger = LogManager.getLogger();
     private final byte[] infoHash;
     private final byte[] peerId;
 
@@ -28,22 +31,35 @@ public class Handshake {
      * @throws IOException if socket connection malfunctions
      */
     public boolean get(@NonNull Socket socket) throws IOException {
+        logger.info("Sending handshake to... {}", socket.getInetAddress());
         socket.getOutputStream().write(Handshake.of(infoHash, peerId));
         final var received = socket.getInputStream().readNBytes(68);
 
-        if (received == null || received.length != 68 || received[0] != 19)
+        if (received == null || received.length != 68 || received[0] != 19){
+            logger.error("Handshake integrity check failed {}", received);
             return false;
+        }
 
         final var receivedProtocolName = new byte[19];
         System.arraycopy(received, 1, receivedProtocolName, 0, 19);
 
-        if (!Arrays.equals(receivedProtocolName, "BitTorrent protocol".getBytes()))
+        if (!Arrays.equals(receivedProtocolName, "BitTorrent protocol".getBytes())) {
+            logger.error("Handshake integrity check failed, received protocol name does not match {}", receivedProtocolName);
             return false;
+        }
 
         final var receivedInfoHash = new byte[20];
         System.arraycopy(received, 28, receivedInfoHash, 0, 20);
 
-        return Arrays.equals(receivedInfoHash, this.infoHash);
+        final var handshakeCheck = Arrays.equals(receivedInfoHash, this.infoHash);
+
+        if (!handshakeCheck) {
+            logger.error("Handshake integrity check failed, received info hash: [{}], doest not match this.infoHash: [{}]", receivedInfoHash, this.infoHash);
+            return false;
+        }
+
+        logger.info("Handshake properly established");
+        return true;
     }
 
     private static byte[] of(byte[] infoHash, byte[] peerId) {

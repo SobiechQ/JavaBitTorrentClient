@@ -31,11 +31,20 @@ public class Torrent extends DecodedBencode {
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
-    public Long getLength() {
+    public long getLength() {
         return this.getBencode()
                 .asDictionary("info")
                 .flatMap(b->b.asDictionary("length"))
                 .flatMap(Bencode::asInteger)
+                .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
+    }
+
+    public int getPieceLength() {
+        return this.getBencode()
+                .asDictionary("info")
+                .flatMap( b->b.asDictionary("piece length"))
+                .flatMap(Bencode::asInteger)
+                .map(Math::toIntExact)
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
