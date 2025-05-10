@@ -44,6 +44,25 @@ class TorrentTest {
     }
 
     @Test
+    void testGetLengthCalculated() {
+        final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
+        final var torrent = Torrent.fromFile(new File(location));
+
+        final var pieceLength = torrent.map(Torrent::getPieceLength);
+        final var pieceCount = torrent.stream()
+                .flatMap(Torrent::getPieceHash)
+                .count();
+        final var totalLength = torrent.map(Torrent::getLength);
+
+
+        Assertions.assertTrue(pieceLength.isPresent());
+        Assertions.assertTrue(totalLength.isPresent());
+
+        Assertions.assertEquals(totalLength.get(), pieceLength.get() * pieceCount);
+
+    }
+
+    @Test
     void testGetComment() {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
@@ -55,6 +74,7 @@ class TorrentTest {
         Assertions.assertEquals("\"Debian CD from cdimage.debian.org\"", comment);
 
     }
+
     @Test
     void testGetCreatedBy() {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
@@ -67,6 +87,7 @@ class TorrentTest {
         Assertions.assertEquals("mktorrent 1.1", comment);
 
     }
+
     @Test
     void testGetCreationDate() {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
@@ -94,8 +115,6 @@ class TorrentTest {
 
         Assertions.assertEquals(infoHash, "Z-n%A2Ko%9B%BA%3D%E0%1B%D2%84h%E8%60%BD%DAZ%ED");
     }
-
-
 
 
 }

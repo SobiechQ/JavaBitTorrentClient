@@ -1,15 +1,16 @@
 import Bencode.Bencode;
 import DecodedBencode.Announce;
+import DecodedBencode.Peer;
 import DecodedBencode.Torrent;
+import TCP.*;
 import TCP.Handshake;
-import TCP.MessageType;
-import TCP.PeerMessage;
 import com.squareup.okhttp.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -19,11 +20,22 @@ import java.util.*;
 public class Main {
     private final static Logger logger = LogManager.getLogger();
     public static void main(String[] args) {
-        final var torrent = Torrent.fromFile(new File("src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent")).get();
+        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent")).get();
+        torrent.getBencode()
+                .asDictionary("announce-list")
+                .stream()
+                .flatMap(Bencode::stream)
+                .skip(4)
+                .findFirst()
+                .flatMap(Bencode::asList)
+                .stream()
+                .flatMap(Collection::stream)
+                .findFirst()
+                .flatMap(Bencode::asString)
+//                .forEach(System.out::println);
+                .ifPresent(System.out::println);
 
         var announce = torrent.getAnnounce();
-
-
         var left = "0";
 
         final var request = new Request.Builder()
@@ -41,52 +53,32 @@ public class Main {
                 .build();
         try {
             OkHttpClient client = new OkHttpClient();
-//            System.out.println(request);
+            System.out.println(request);
             Response response = client.newCall(request).execute();
             ResponseBody body = response.body();
             final var read = new BufferedInputStream(body.byteStream()).readAllBytes();
 
+            System.out.println(new String(read, Bencode.CHARSET));
             final var an = new Announce(new Bencode(read));
             final var p = an.getPeers().findFirst().get();
 
-//            an.getPeers().forEach(System.out::println);
-            logger.info("Connecting... {}:{}", p.address(), p.port());
-            try (final var socket = new Socket(p.address(), p.port())) {
-                logger.info("Socket connection opened to {}", socket.getInetAddress());
-                final var hand = new Handshake(torrent.getInfoHash(), "00112233445566778899".getBytes());
+            an.getPeers().forEach(System.out::println);
 
-                hand.get(socket);
-
-
-                final var in = socket.getInputStream();
-                var msg = PeerMessage.get(in);
-
-//                System.out.println(msg);
-
-                final var resp = new PeerMessage(MessageType.INTERESTED);
-                resp.send(socket.getOutputStream());
-
-                msg = PeerMessage.get(in);
-//                System.out.println(msg);
-
-                final var peerRequest = new PeerMessage(MessageType.REQUEST, 0, 0, (int) Math.pow(2, 14));
-                peerRequest.send(socket.getOutputStream());
-
-
-                for (int i = 0; i < 150; i++) {
-                    msg = PeerMessage.get(in);
-
-                }
-
-
-
-
-
-//                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream())) {
-//                    byte[] resp =  bufferedInputStream.readAllBytes();
-//                    System.out.println(new String(resp));
-//                }
-            }
+            PeerController peerController = new PeerController(torrent);
+            peerController.open(p);
+//            try (final var socket = new Socket(p.address(), p.port())) {
+//                logger.info("Socket connection opened to {}", socket.getInetAddress());
+//
+//
+//
+//
+//
+//
+////                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream())) {
+////                    byte[] resp =  bufferedInputStream.readAllBytes();
+////                    System.out.println(new String(resp));
+////                }
+//            }
 
 
         } catch (IOException e) {
