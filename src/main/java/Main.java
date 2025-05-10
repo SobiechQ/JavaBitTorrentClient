@@ -19,8 +19,8 @@ import java.util.*;
 
 public class Main {
     private final static Logger logger = LogManager.getLogger();
-    public static void main(String[] args) {
-        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent")).get();
+    public static void main(String[] args) throws Exception{
+        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent"));
         torrent.getBencode()
                 .asDictionary("announce-list")
                 .stream()

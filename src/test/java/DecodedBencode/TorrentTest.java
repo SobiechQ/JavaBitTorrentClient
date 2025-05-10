@@ -1,9 +1,11 @@
 package DecodedBencode;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 import Bencode.DecodingError;
@@ -11,91 +13,81 @@ import Bencode.DecodingError;
 class TorrentTest {
 
     @Test
-    void testGetAnnounce() {
+    void testGetAnnounce() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
-        final var announce = torrent.map(Torrent::getAnnounce);
+        final var announce = torrent.getAnnounce();
 
-        Assertions.assertTrue(announce.isPresent());
-        Assertions.assertEquals(announce.get(), "http://bttracker.debian.org:6969/announce");
+        Assertions.assertEquals(announce, "http://bttracker.debian.org:6969/announce");
     }
 
     @Test
-    void testGetLength() {
+    void testGetLength() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
-        final var length = torrent.map(Torrent::getLength);
+        final var length = torrent.getLength();
 
-        Assertions.assertTrue(length.isPresent());
-        Assertions.assertEquals(661651456, length.get());
+        Assertions.assertEquals(661651456, length);
     }
 
     @Test
-    void testGetPieceLength() {
+    void testGetPieceLength() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
-        final var length = torrent.map(Torrent::getPieceLength);
+        final var length = torrent.getPieceLength();
 
-        Assertions.assertTrue(length.isPresent());
-        Assertions.assertEquals(262144, length.get());
+        Assertions.assertEquals(262144, length);
     }
 
     @Test
-    void testGetLengthCalculated() {
+    void testGetLengthCalculated() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
-        final var pieceLength = torrent.map(Torrent::getPieceLength);
-        final var pieceCount = torrent.stream()
-                .flatMap(Torrent::getPieceHash)
+        final var pieceLength = torrent.getPieceLength();
+        final var pieceCount = torrent
+                .getPieceHash()
                 .count();
-        final var totalLength = torrent.map(Torrent::getLength);
+        final var totalLength = torrent.getLength();
 
-
-        Assertions.assertTrue(pieceLength.isPresent());
-        Assertions.assertTrue(totalLength.isPresent());
-
-        Assertions.assertEquals(totalLength.get(), pieceLength.get() * pieceCount);
+        Assertions.assertEquals(totalLength, pieceLength * pieceCount);
 
     }
 
     @Test
-    void testGetComment() {
+    void testGetComment() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
         final var comment = torrent
-                .map(Torrent::getComment)
-                .orElseThrow(() -> new DecodingError(""));
+                .getComment();
 
         Assertions.assertEquals("\"Debian CD from cdimage.debian.org\"", comment);
 
     }
 
     @Test
-    void testGetCreatedBy() {
+    void testGetCreatedBy() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
         final var comment = torrent
-                .map(Torrent::getCreatedBy)
-                .orElseThrow(() -> new DecodingError(""));
+                .getCreatedBy();
 
         Assertions.assertEquals("mktorrent 1.1", comment);
 
     }
 
     @Test
-    void testGetCreationDate() {
+    void testGetCreationDate() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
         final var comment = torrent
-                .map(Torrent::getCreationDate)
-                .orElseThrow(() -> new DecodingError(""));
+                .getCreationDate();
 
         final var calendar = Calendar.getInstance();
         calendar.set(2025, Calendar.JANUARY, 16, 8, 50, 48);
@@ -105,13 +97,12 @@ class TorrentTest {
     }
 
     @Test
-    void testGetInfoHashUrl() {
+    void testGetInfoHashUrl() throws IOException {
         final var location = "src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent";
         final var torrent = Torrent.fromFile(new File(location));
 
         final var infoHash = torrent
-                .map(Torrent::getInfoHashUrl)
-                .orElseThrow(() -> new DecodingError(""));
+                .getInfoHashUrl();
 
         Assertions.assertEquals(infoHash, "Z-n%A2Ko%9B%BA%3D%E0%1B%D2%84h%E8%60%BD%DAZ%ED");
     }

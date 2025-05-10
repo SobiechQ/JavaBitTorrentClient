@@ -3,6 +3,7 @@ package DecodedBencode;
 import Bencode.Bencode;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
@@ -20,9 +21,8 @@ public class Torrent extends DecodedBencode {
         super(bencode);
     }
 
-    public static Optional<Torrent> fromFile(File file) {
-        return Bencode.fromFile(file)
-                .map(Torrent::new);
+    public static Torrent fromFile(File file) throws IOException, DecodingError {
+        return new Torrent(Bencode.fromFile(file));
     }
 
     public String getAnnounce() {
