@@ -32,6 +32,16 @@ public class Torrent extends DecodedBencode {
                 .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
+    public Stream<List<String>> getAnnounceList() {
+        return this.getBencode()
+                .asDictionary("announce-list")
+                .flatMap(Bencode::asList)
+                .stream()
+                .flatMap(Collection::stream)
+                .flatMap(b -> b.asList().stream())
+                .flatMap(b -> b.stream().map(c -> c.asString().stream().toList()));
+    }
+
     public long getLength() {
         return this.getBencode()
                 .asDictionary("info")

@@ -1,17 +1,12 @@
 import Bencode.Bencode;
 import DecodedBencode.Announce;
-import DecodedBencode.Peer;
 import DecodedBencode.Torrent;
 import TCP.*;
-import TCP.Handshake;
 import com.squareup.okhttp.*;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -19,23 +14,16 @@ import java.util.*;
 
 public class Main {
     private final static Logger logger = LogManager.getLogger();
-    public static void main(String[] args) throws Exception{
-        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent"));
-        torrent.getBencode()
-                .asDictionary("announce-list")
-                .stream()
-                .flatMap(Bencode::stream)
-                .skip(4)
-                .findFirst()
-                .flatMap(Bencode::asList)
-                .stream()
-                .flatMap(Collection::stream)
-                .findFirst()
-                .flatMap(Bencode::asString)
-//                .forEach(System.out::println);
-                .ifPresent(System.out::println);
 
-        var announce = torrent.getAnnounce();
+    public static void main(String[] args) throws Exception {
+        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent"));
+        final var multi = new MultitrackerController(torrent);
+
+
+
+
+
+        var announce = "http://explodie.org:6969/announce";
         var left = "0";
 
         final var request = new Request.Builder()
