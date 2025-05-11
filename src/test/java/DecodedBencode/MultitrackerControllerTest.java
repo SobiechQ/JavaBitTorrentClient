@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,11 +21,11 @@ public class MultitrackerControllerTest {
         final var controller = new MultitrackerController(torrent);
 
         Assertions.assertDoesNotThrow(() ->{
-            for (Stream<String> _ : controller) {
+            for (Stream<URI> _ : controller) {
 
             }
         });
-        final Stream.Builder<List<String>> builder = Stream.builder();
+        final Stream.Builder<List<URI>> builder = Stream.builder();
         builder.add(List.of(torrent.getAnnounce()));
         torrent.getAnnounceList().forEach(builder::add);
 

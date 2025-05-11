@@ -4,6 +4,7 @@ import Bencode.Bencode;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
@@ -25,21 +26,24 @@ public class Torrent extends DecodedBencode {
         return new Torrent(Bencode.fromFile(file));
     }
 
-    public String getAnnounce() {
+    public URI getAnnounce() {
         return this.getBencode()
                 .asDictionary("announce")
                 .flatMap(Bencode::asString)
+                .map(URI::create)
                 .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
-    public Stream<List<String>> getAnnounceList() {
+    public Stream<List<URI>> getAnnounceList() {
         return this.getBencode()
                 .asDictionary("announce-list")
                 .flatMap(Bencode::asList)
                 .stream()
                 .flatMap(Collection::stream)
                 .flatMap(b -> b.asList().stream())
-                .flatMap(b -> b.stream().map(c -> c.asString().stream().toList()));
+                .flatMap(b -> b.stream().map(c -> c.asString().stream().toList()))
+                .map(l -> l.stream().map(URI::create).toList());
+
     }
 
     public long getLength() {

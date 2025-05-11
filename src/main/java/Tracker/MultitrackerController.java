@@ -4,6 +4,7 @@ import DecodedBencode.Torrent;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -14,20 +15,20 @@ import java.util.stream.StreamSupport;
 /**
  * https://www.bittorrent.org/beps/bep_0012.html
  */
-public class MultitrackerController implements Iterable<Stream<String>> {
+public class MultitrackerController implements Iterable<Stream<URI>> {
     private final Torrent torrent;
 
     public MultitrackerController(@NonNull Torrent torrent) {
         this.torrent = torrent;
     }
 
-    public Stream<Stream<String>> stream() {
+    public Stream<Stream<URI>> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.ORDERED), false);
     }
 
     @NotNull
     @Override
-    public Iterator<Stream<String>> iterator() {
+    public Iterator<Stream<URI>> iterator() {
         return new Iterator<>() {
             private int tier = 0;
 
@@ -38,7 +39,7 @@ public class MultitrackerController implements Iterable<Stream<String>> {
             }
 
             @Override
-            public Stream<String> next() {
+            public Stream<URI> next() {
                 this.tier++;
 
                 if (this.tier - 1 == 0)

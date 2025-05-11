@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -18,7 +19,7 @@ public class Main {
     private final static Logger logger = LogManager.getLogger();
 
     public static void main(String[] args) throws Exception {
-        final var torrent = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\34F2A1FA5CD593C394C6E5B5B83B92A7165EA9A9.torrent"));
+        final var torrent = Torrent.fromFile(new File("src/test/java/resources/mock_torrent.torrent"));
         final var multi = new MultitrackerController(torrent);
         final var iter = multi.iterator();
 
@@ -27,6 +28,8 @@ public class Main {
         iter.next();
         iter.next();
         iter.next();
+        final var uri = new URI("udp://open.stealth.si:80/announce");
+        System.out.println(uri.getScheme());
 
         var announce = iter.next().findFirst().get();
 
@@ -36,7 +39,7 @@ public class Main {
 
         final var request = new Request.Builder()
                 .get()
-                .url(HttpUrl.parse(announce)
+                .url(HttpUrl.parse(announce.toString())
                         .newBuilder()
                         .addEncodedQueryParameter("info_hash", torrent.getInfoHashUrl())
                         .addQueryParameter("peer_id", "00112233445566778899")

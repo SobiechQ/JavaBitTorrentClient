@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Calendar;
 
 import Bencode.DecodingError;
@@ -19,7 +20,7 @@ class TorrentTest {
 
         final var announce = torrent.getAnnounce();
 
-        Assertions.assertEquals(announce, "http://bttracker.debian.org:6969/announce");
+        Assertions.assertEquals(announce, URI.create("http://bttracker.debian.org:6969/announce"));
     }
 
     @Test
