@@ -1,12 +1,11 @@
 package DecodedBencode;
 
-import TCP.MultitrackerController;
+import Tracker.MultitrackerController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 

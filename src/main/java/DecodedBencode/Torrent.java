@@ -59,8 +59,6 @@ public class Torrent extends DecodedBencode {
                 .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
-
-
     public String getComment() {
         return this.getBencode()
                 .asDictionary("comment")
@@ -88,7 +86,6 @@ public class Torrent extends DecodedBencode {
 
         return URLEncoder.encode(new String(infoHash, Bencode.CHARSET), Bencode.CHARSET);
     }
-
 
     public Stream<List<Byte>> getPieceHash() {
         return this.getBencode().asDictionary("info")
