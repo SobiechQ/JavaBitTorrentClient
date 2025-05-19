@@ -15,20 +15,20 @@ import java.util.stream.StreamSupport;
 /**
  * https://www.bittorrent.org/beps/bep_0012.html
  */
-public class MultitrackerController implements Iterable<Stream<URI>> {
+public class MultitrackerController implements Iterable<Stream<Tracker>> {
     private final Torrent torrent;
 
     public MultitrackerController(@NonNull Torrent torrent) {
         this.torrent = torrent;
     }
 
-    public Stream<Stream<URI>> stream() {
+    public Stream<Stream<Tracker>> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.ORDERED), false);
     }
 
     @NotNull
     @Override
-    public Iterator<Stream<URI>> iterator() {
+    public Iterator<Stream<Tracker>> iterator() {
         return new Iterator<>() {
             private int tier = 0;
 
@@ -39,18 +39,28 @@ public class MultitrackerController implements Iterable<Stream<URI>> {
             }
 
             @Override
-            public Stream<URI> next() {
+            public Stream<Tracker> next() {
                 this.tier++;
 
                 if (this.tier - 1 == 0)
-                    return Stream.of(torrent.getAnnounce());
+                    return Stream.of(torrent.getAnnounce())
+                            .map(MultitrackerController.this::toTracker);
 
                 return torrent.getAnnounceList()
                         .skip(tier - 2)
                         .findFirst()
                         .orElseThrow(NoSuchElementException::new)
-                        .stream();
+                        .stream()
+                        .map(MultitrackerController.this::toTracker);
             }
+        };
+    }
+
+    private Tracker toTracker(URI uri){
+        return switch (uri.getScheme()){
+            case "http" -> new HttpTracker(uri, this.torrent);
+            case "udp" -> throw new UnsupportedOperationException("Not yet implemented");
+            default -> throw new IllegalStateException("Unexpected value: " + uri.getScheme());
         };
     }
 }

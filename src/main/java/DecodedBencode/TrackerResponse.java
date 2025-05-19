@@ -7,13 +7,13 @@ import org.jooq.lambda.Seq;
 
 import java.util.stream.Stream;
 
-public class Announce extends DecodedBencode {
+public class TrackerResponse extends DecodedBencode {
 
-    public Announce(Bencode bencode) {
+    public TrackerResponse(Bencode bencode) {
         super(bencode);
     }
 
-    public Announce(String string) {
+    public TrackerResponse(String string) {
         super(string);
     }
 
