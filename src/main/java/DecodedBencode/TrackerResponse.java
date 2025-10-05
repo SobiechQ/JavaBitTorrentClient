@@ -35,7 +35,7 @@ public class TrackerResponse extends DecodedBencode {
         return Seq.seq(this.getPeersString().chars().boxed())
                 .sliding(6)
                 .map(Collectable::toUnmodifiableList)
-                .map(l -> new Peer(l))
+                .map(Peer::new)
                 .stream();
     }
 

@@ -1,14 +1,10 @@
-import Bencode.Bencode;
-import DecodedBencode.TrackerResponse;
 import DecodedBencode.Torrent;
 import TCP.*;
 import Tracker.MultitrackerController;
-import com.squareup.okhttp.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;

@@ -21,7 +21,7 @@ public class MultitrackerControllerTest {
         final var controller = new MultitrackerController(torrent);
 
         Assertions.assertDoesNotThrow(() ->{
-            for (Stream<URI> _ : controller) {
+            for (var _ : controller) {
 
             }
         });
