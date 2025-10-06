@@ -1,11 +1,9 @@
-package Tracker;
+package Tracker.Model;
 
-import DecodedBencode.Torrent;
-import DecodedBencode.TrackerResponse;
+import Model.DecodedBencode.Torrent;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.io.IOException;
 import java.net.URI;
 
 @Data
@@ -18,6 +16,5 @@ public abstract class Tracker {
         this.torrent = torrent;
     }
 
-    public abstract TrackerResponse connect() throws IOException;
 
 }

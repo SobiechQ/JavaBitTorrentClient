@@ -2,13 +2,16 @@ package Utils;
 
 import TCP.PeerMessage;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ByteUtils {
+public final class ByteUtils {
     public static int bytesToInt(byte[] bytes) {
         int result = 0;
         for (byte aByte : bytes) {
@@ -57,5 +60,14 @@ public class ByteUtils {
             arr[i] = bytes[i];
         }
         return arr;
+    }
+
+    public static byte[] toBytes(char[] chars) {
+        CharBuffer charBuffer = CharBuffer.wrap(chars);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
+                byteBuffer.position(), byteBuffer.limit());
+        Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
+        return bytes;
     }
 }

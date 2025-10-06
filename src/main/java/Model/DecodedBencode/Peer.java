@@ -1,6 +1,6 @@
-package DecodedBencode;
+package Model.DecodedBencode;
 
-import Bencode.DecodingError;
+import Model.Bencode.DecodingError;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

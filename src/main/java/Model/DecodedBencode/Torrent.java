@@ -1,6 +1,6 @@
-package DecodedBencode;
+package Model.DecodedBencode;
 
-import Bencode.Bencode;
+import Model.Bencode.Bencode;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
 
-import Bencode.DecodingError;
+import Model.Bencode.DecodingError;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -43,7 +43,12 @@ public class Torrent extends DecodedBencode {
                 .flatMap(b -> b.asList().stream())
                 .flatMap(b -> b.stream().map(c -> c.asString().stream().toList()))
                 .map(l -> l.stream().map(URI::create).toList());
+    }
 
+    public boolean isAnnounceListAvailable() {
+        return this.getBencode()
+                .asDictionary("announce-list")
+                .isPresent();
     }
 
     public long getLength() {

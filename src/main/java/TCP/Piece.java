@@ -1,14 +1,11 @@
 package TCP;
 
-import DecodedBencode.Torrent;
+import Model.DecodedBencode.Torrent;
 import Utils.ByteUtils;
 import com.google.common.hash.Hashing;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Stream;
 

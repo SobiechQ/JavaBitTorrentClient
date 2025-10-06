@@ -1,6 +1,6 @@
-package DecodedBencode;
+package Model.DecodedBencode;
 
-import lombok.SneakyThrows;
+import Model.DecodedBencode.Torrent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Calendar;
-
-import Bencode.DecodingError;
 
 class TorrentTest {
 

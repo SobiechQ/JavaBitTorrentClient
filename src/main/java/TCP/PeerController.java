@@ -1,7 +1,7 @@
 package TCP;
 
-import DecodedBencode.Peer;
-import DecodedBencode.Torrent;
+import Model.DecodedBencode.Peer;
+import Model.DecodedBencode.Torrent;
 import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

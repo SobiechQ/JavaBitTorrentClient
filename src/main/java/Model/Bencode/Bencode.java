@@ -1,7 +1,6 @@
-package Bencode;
+package Model.Bencode;
 
 import com.google.common.base.Charsets;
-import io.vavr.control.Try;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.jooq.lambda.tuple.Tuple2;
@@ -79,12 +78,12 @@ public class Bencode {
         if (encoded.isEmpty())
             throw new DecodingError("Passed encoded value cant be empty");
         return switch (encoded.charAt(0)){
-            case 'i' -> BInt.decode(encoded).map1(bInt -> new Bencode(bInt));
-            case 'l' -> BList.decode(encoded).map1(bList -> new Bencode(bList));
-            case 'd' -> BDictionary.decode(encoded).map1(bDictionary -> new Bencode(bDictionary));
+            case 'i' -> BInt.decode(encoded).map1(Bencode::new);
+            case 'l' -> BList.decode(encoded).map1(Bencode::new);
+            case 'd' -> BDictionary.decode(encoded).map1(Bencode::new);
             default -> {
                 if (Character.isDigit(encoded.charAt(0)))
-                    yield BString.decode(encoded).map1(bString -> new Bencode(bString));
+                    yield BString.decode(encoded).map1(Bencode::new);
                 throw new DecodingError("unable to determine type of encoded value");
             }
         };

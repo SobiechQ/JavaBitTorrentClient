@@ -1,6 +1,6 @@
-package DecodedBencode;
+package Model.DecodedBencode;
 
-import Bencode.Bencode;
+import Model.Bencode.Bencode;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

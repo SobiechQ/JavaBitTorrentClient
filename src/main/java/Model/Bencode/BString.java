@@ -1,4 +1,4 @@
-package Bencode;
+package Model.Bencode;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package Bencode;
+package Model.Bencode;
 
 public class DecodingError extends Error {
     public DecodingError(String message) {

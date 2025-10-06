@@ -1,7 +1,9 @@
-package DecodedBencode;
+package Tracker.Model.Messages;
 
-import Bencode.Bencode;
-import Bencode.DecodingError;
+import Model.Bencode.Bencode;
+import Model.Bencode.DecodingError;
+import Model.DecodedBencode.DecodedBencode;
+import Model.DecodedBencode.Peer;
 import org.jooq.lambda.Collectable;
 import org.jooq.lambda.Seq;
 
