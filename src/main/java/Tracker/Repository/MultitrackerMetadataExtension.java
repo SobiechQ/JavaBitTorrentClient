@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
 /**
  * <a href="https://www.bittorrent.org/beps/bep_0012.html">Multitracker Metadata Extension</a>
  */
@@ -54,6 +55,16 @@ public class MultitrackerMetadataExtension {
                 .ifPresent(t -> t.notifySuccess(tracker));
     }
 
+    public int getLayersCount() {
+        return this.layerToTier.size();
+    }
+
+    public Stream<Tracker> getTrackers(int layer) {
+        return this.getTier(layer)
+                .stream()
+                .flatMap(Tier::getTrackers);
+    }
+
     private Optional<Tier> getTier(@NonNull Tracker tracker) {
         return Optional.ofNullable(this.trackerToTier.get(tracker));
     }
@@ -78,17 +89,17 @@ public class MultitrackerMetadataExtension {
 
         //noinspection unchecked
         return Seq.ofType(torrent.getAnnounceList(), List.class)
-                .map(l ->(List<URI>)l)
+                .map(l -> (List<URI>) l)
                 .zipWithIndex()
                 .map(t -> t.map2(Math::toIntExact))
-                .map(t -> t.map1(l->l.stream().map(u -> toTracker(u, torrent)).toList()))
+                .map(t -> t.map1(l -> l.stream().map(u -> toTracker(u, torrent)).toList()))
                 .map(t -> new Tier(t.v1, t.v2))
                 .collect((Supplier<Map<Tracker, Tier>>) HashMap::new,
                         (trackerTierMap, tier) -> tier.getTrackers().forEach(t -> trackerTierMap.put(t, tier)),
                         Map::putAll);
     }
 
-    private static Map<Integer, Tier> newLayerToTierMap(Map<Tracker, Tier> trackerToTier){
+    private static Map<Integer, Tier> newLayerToTierMap(Map<Tracker, Tier> trackerToTier) {
         return Seq.ofType(trackerToTier.values().stream(), Tier.class)
                 .collect(TreeMap::new, (integerTierMap, tier) -> integerTierMap.putIfAbsent(tier.getLayer(), tier), (BiConsumer<Map<Integer, Tier>, Map<Integer, Tier>>) Map::putAll);
     }
