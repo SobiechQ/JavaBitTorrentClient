@@ -1,5 +1,6 @@
-package TCP;
+package atodo.TCP;
 
+import Peer.Model.MessageType;
 import Model.DecodedBencode.Torrent;
 import Utils.ByteUtils;
 import com.google.common.hash.Hashing;
@@ -9,9 +10,6 @@ import lombok.NonNull;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static TCP.MessageType.PIECE;
-import static TCP.MessageType.REQUEST;
-
 public class Piece {
     private record PieceMessage(@NonNull PeerMessage peerMessage, int id, int begin) {
         public PieceMessage(@NonNull PeerMessage peerMessage) {
@@ -19,7 +17,7 @@ public class Piece {
         }
 
         private static int getId(@NonNull PeerMessage peerMessage) {
-            if (peerMessage.getMessageType() != PIECE) {
+            if (peerMessage.getMessageType() != MessageType.PIECE) {
                 throw new IllegalArgumentException("Provided peer message does not represent piece");
             }
             final var arr = new byte[4];
@@ -28,7 +26,7 @@ public class Piece {
         }
 
         private static int getBegin(@NonNull PeerMessage peerMessage) {
-            if (peerMessage.getMessageType() != PIECE) {
+            if (peerMessage.getMessageType() != MessageType.PIECE) {
                 throw new IllegalArgumentException("Provided peer message does not represent piece");
             }
             final var arr = new byte[4];
@@ -72,7 +70,7 @@ public class Piece {
     public PeerMessage nextRequest() {
         if (this.isComplete())
             throw new IllegalStateException("Pieces are already complete");
-        return new PeerMessage(REQUEST, this.id, peerMessages.isEmpty() ? 0 : lastBegin() + LENGTH, LENGTH);
+        return new PeerMessage(MessageType.REQUEST, this.id, peerMessages.isEmpty() ? 0 : lastBegin() + LENGTH, LENGTH);
     }
 
     private int lastBegin() {

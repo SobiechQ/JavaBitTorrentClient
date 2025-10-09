@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = Configuration.Main.class)
 @ContextConfiguration(classes = TrackerControllerImpl.class)
 @Slf4j

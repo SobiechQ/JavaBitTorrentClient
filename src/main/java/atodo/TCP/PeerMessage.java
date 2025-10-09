@@ -1,5 +1,6 @@
-package TCP;
+package atodo.TCP;
 
+import Peer.Model.MessageType;
 import Utils.ByteUtils;
 import io.vavr.control.Try;
 import lombok.Getter;
@@ -9,12 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import static TCP.MessageType.*;
+import static Peer.Model.MessageType.*;
 
 /**
  * Represents a single entity  of peer-client communication. Can be used to represent either input or output value.

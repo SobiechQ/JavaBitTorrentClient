@@ -1,6 +1,7 @@
 package Model.DecodedBencode;
 
 import Model.Bencode.Bencode;
+import Model.Bencode.DecodingError;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +9,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
-
-import Model.Bencode.DecodingError;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;

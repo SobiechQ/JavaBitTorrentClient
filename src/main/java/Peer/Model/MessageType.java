@@ -1,4 +1,4 @@
-package TCP;
+package Peer.Model;
 
 import lombok.Getter;
 

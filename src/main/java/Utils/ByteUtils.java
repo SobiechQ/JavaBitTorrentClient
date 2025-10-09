@@ -1,7 +1,5 @@
 package Utils;
 
-import TCP.PeerMessage;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;

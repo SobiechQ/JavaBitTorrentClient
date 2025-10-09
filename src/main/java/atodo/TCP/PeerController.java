@@ -1,5 +1,6 @@
-package TCP;
+package atodo.TCP;
 
+import Peer.Model.MessageType;
 import Model.DecodedBencode.Peer;
 import Model.DecodedBencode.Torrent;
 import lombok.NonNull;

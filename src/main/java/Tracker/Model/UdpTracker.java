@@ -6,7 +6,6 @@ import Tracker.Model.Messages.TrackerResponse;
 import io.vavr.NotImplementedError;
 import lombok.NonNull;
 
-import java.io.IOException;
 import java.net.URI;
 
 public class UdpTracker extends Tracker{

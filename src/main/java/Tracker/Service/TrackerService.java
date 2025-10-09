@@ -3,7 +3,6 @@ package Tracker.Service;
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.Messages.TrackerRequestProjection;
 import Tracker.Model.Tracker;
-import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
