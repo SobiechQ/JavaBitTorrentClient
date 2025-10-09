@@ -3,7 +3,7 @@ package Peer.Service;
 import Message.Model.MessageRequest;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.PeerMessage;
-import Peer.Model.PeerStatistic;
+import Peer.Repository.PeerStatistic;
 import Peer.Repository.PeerRepository;
 import Tracker.Controller.TrackerController;
 import lombok.NonNull;
@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToIntFunction;
 
 import static Message.Model.DefaultMessage.CHOKE;
 import static Message.Model.DefaultMessage.UNCHOKE;
@@ -23,11 +22,11 @@ import static Message.Model.DefaultMessage.UNCHOKE;
 public class PeerServiceImpl implements PeerService {
 
     private TrackerController trackerController;
-    private Map<Torrent, PeerRepository> repositoryMap;
+    private Map<Torrent, PeerRepository> peerRepository;
 
     public PeerServiceImpl(TrackerController trackerController) {
         this.trackerController = trackerController;
-        this.repositoryMap = new HashMap<>();
+        this.peerRepository = new HashMap<>();
     }
 
     public MessageRequest getRequest(@NonNull Torrent torrent) {
@@ -53,6 +52,6 @@ public class PeerServiceImpl implements PeerService {
     }
 
     private PeerRepository getPeerRepository(@NonNull Torrent torrent) {
-        return this.repositoryMap.computeIfAbsent(torrent, _ -> new PeerRepository());
+        return this.peerRepository.computeIfAbsent(torrent, _ -> new PeerRepository());
     }
 }

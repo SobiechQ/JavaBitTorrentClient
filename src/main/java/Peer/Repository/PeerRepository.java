@@ -1,14 +1,12 @@
 package Peer.Repository;
 
+import Message.Model.MessageBitfield;
 import Peer.Model.Peer;
-import Peer.Model.PeerStatistic;
 import Tracker.Model.Messages.TrackerResponse;
-import lombok.Getter;
+import lombok.NonNull;
 import org.jooq.lambda.Seq;
-import org.jooq.lambda.tuple.Tuple2;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class PeerRepository {
     private final Map<Peer, PeerStatistic> peers;
@@ -17,15 +15,30 @@ public class PeerRepository {
         this.peers = new HashMap<>();
     }
 
-    public void addPeers(TrackerResponse response) {
+    public void addPeers(@NonNull TrackerResponse response) {
         response.getPeers().forEach(this::addPeer);
-    }
-
-    private void addPeer(Peer peer) {
-        this.peers.putIfAbsent(peer, new PeerStatistic(peer));
     }
 
     public Seq<PeerStatistic> getPeers() {
         return Seq.ofType(peers.values().stream(), PeerStatistic.class);
+    }
+
+    public boolean hasBitfield(@NonNull Peer peer, int index){
+        return this.getStatistic(peer)
+                .getBitfield()
+                .map(m -> m.hasPiece(index))
+                .orElse(false);
+    }
+
+    public void setBitfield(@NonNull Peer peer, @NonNull MessageBitfield bitfield) {
+        this.getStatistic(peer).setBitfield(bitfield);
+    }
+
+    private PeerStatistic getStatistic(@NonNull Peer peer) {
+        return this.peers.computeIfAbsent(peer, _ -> new PeerStatistic(peer));
+    }
+
+    private void addPeer(@NonNull Peer peer) {
+        this.peers.putIfAbsent(peer, new PeerStatistic(peer));
     }
 }

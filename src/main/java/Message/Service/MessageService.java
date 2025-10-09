@@ -1,9 +1,6 @@
 package Message.Service;
 
-import Message.Model.MessageHave;
-import Message.Model.MessagePiece;
-import Message.Model.MessageProjection;
-import Message.Model.MessageRequest;
+import Message.Model.*;
 import Peer.Model.PeerInputProjection;
 
 public interface MessageService {
@@ -11,4 +8,6 @@ public interface MessageService {
     MessageHave have(int index);
     MessageRequest request(int index, int begin);
     MessagePiece piece(PeerInputProjection inputProjection);
+    MessageBitfield bitfield(PeerInputProjection inputProjection);
+
 }

@@ -2,7 +2,13 @@ package Message.Service;
 
 import Message.Model.*;
 import Peer.Model.PeerInputProjection;
+import Utils.ByteUtils;
+import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static Message.Model.DefaultMessage.*;
 import static Utils.ByteUtils.bytesToInt;
 
@@ -50,5 +56,22 @@ public class MessageServiceImpl implements MessageService {
         return new MessagePiece(bytesToInt(receivedIndex), bytesToInt(receivedBegin), receivedPiece);
     }
 
+    @Override
+    public MessageBitfield bitfield(PeerInputProjection inputProjection) {
+        final var data = inputProjection.data();
 
+        final var payload = new byte[data.length - 1];
+        System.arraycopy(data, 1, payload, 0, payload.length);
+
+        final var bitfield = Seq.ofType(ByteUtils.bytesToStream(payload), Byte.class)
+                .map(ByteUtils::byteToBits)
+                .flatMap(ByteUtils::bitsToStream)
+                .zipWithIndex()
+                .map(t -> t.map2(Math::toIntExact))
+                .collect(() -> new HashMap<Integer, Boolean>(),
+                        (map, tuple) -> map.putIfAbsent(tuple.v2, tuple.v1),
+                        Map::putAll);
+
+        return new MessageBitfield(payload, bitfield);
+    }
 }

@@ -10,6 +10,28 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public final class ByteUtils {
+
+    public static boolean[] byteToBits(byte b) {
+        boolean[] bits = new boolean[8];
+        for (int i = 0; i < 8; i++) {
+            bits[7 - i] = (b & (1 << i)) != 0;
+        }
+        return bits;
+    }
+
+    public static byte bitsToByte(boolean[] bits) {
+        if (bits.length != 8) {
+            throw new IllegalArgumentException("Array length must be 8");
+        }
+        byte b = 0;
+        for (int i = 0; i < 8; i++) {
+            if (bits[7 - i]) {
+                b |= (1 << i);
+            }
+        }
+        return b;
+    }
+
     public static int bytesToInt(byte[] bytes) {
         int result = 0;
         for (byte aByte : bytes) {
@@ -30,6 +52,11 @@ public final class ByteUtils {
     public static Stream<Byte> bytesToStream(byte[] bytes){
         return IntStream.range(0, bytes.length)
                 .mapToObj(i -> bytes[i]);
+    }
+
+    public static Stream<Boolean> bitsToStream(boolean[] booleans) {
+        return IntStream.range(0, booleans.length)
+                .mapToObj(i -> booleans[i]);
     }
 
     public static byte[] intsToBytes(int[] data) {

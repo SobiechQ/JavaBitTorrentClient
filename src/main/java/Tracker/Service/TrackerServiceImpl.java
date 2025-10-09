@@ -3,7 +3,6 @@ package Tracker.Service;
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.Messages.TrackerRequestProjection;
 import Tracker.Model.Tracker;
-import Tracker.Repository.MultitrackerMetadataExtension;
 import Tracker.Repository.TorrentProgressStatus;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
