@@ -16,4 +16,9 @@ public abstract class DecodedBencode {
     public DecodedBencode(String encoded) {
         this.bencode = new Bencode(encoded);
     }
+
+    @Override
+    public String toString() {
+        return bencode.toString();
+    }
 }

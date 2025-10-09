@@ -4,19 +4,26 @@ import Model.Bencode.Bencode;
 import Model.Bencode.DecodingError;
 import Model.DecodedBencode.DecodedBencode;
 import Model.DecodedBencode.Peer;
+import Tracker.Model.Tracker;
+import lombok.Getter;
 import org.jooq.lambda.Collectable;
 import org.jooq.lambda.Seq;
 
 import java.util.stream.Stream;
 
+@Getter
 public class TrackerResponse extends DecodedBencode {
 
-    public TrackerResponse(Bencode bencode) {
+    private final Tracker respondTo;
+
+    public TrackerResponse(Tracker tracker, Bencode bencode) {
         super(bencode);
+        this.respondTo = tracker;
     }
 
-    public TrackerResponse(String string) {
+    public TrackerResponse(Tracker tracker, String string) {
         super(string);
+        this.respondTo = tracker;
     }
 
     public long getInterval() {
@@ -41,7 +48,10 @@ public class TrackerResponse extends DecodedBencode {
                 .stream();
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "TrackerResponse{" +
+               "respondTo=" + respondTo +
+               "} " + super.toString();
+    }
 }

@@ -75,7 +75,7 @@ public class MultitrackerMetadataExtension {
 
     private static Tracker toTracker(@NonNull URI uri, @NonNull Torrent torrent) {
         return switch (uri.getScheme()) {
-            case "http" -> new HttpTracker(uri, torrent);
+            case "http", "https" -> new HttpTracker(uri, torrent);
             case "udp" -> throw new UnsupportedOperationException("Not yet implemented");
             default -> throw new IllegalStateException("Unexpected value: " + uri.getScheme());
         };

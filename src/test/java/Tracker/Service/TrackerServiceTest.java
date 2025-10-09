@@ -1,6 +1,7 @@
 package Tracker.Service;
 
 import Model.DecodedBencode.Torrent;
+import Tracker.Model.Messages.TrackerRequestProjection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -70,30 +71,32 @@ class TrackerServiceTest {
     }
 
     @Test
-    void notifySuccessAndFailure() {
-        Supplier<URI> getUri = () -> {
-            try {
-                return service.getRequest(MOCK_TORRENT).url().toURI();
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-        };
+    void notifySuccessAndFailure() throws URISyntaxException {
+        service.reset(MOCK_TORRENT);
+        Supplier<TrackerRequestProjection> getTracker = () -> service.getRequest(MOCK_TORRENT);
+        var projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(0), projection.url().toURI());
 
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(0), getUri.get());
-        service.notifyFailure(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(1), getUri.get());
-        service.notifyFailure(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), getUri.get());
-        service.notifySuccess(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), getUri.get());
-        service.notifyFailure(MOCK_TORRENT);
-        service.notifyFailure(MOCK_TORRENT);
-        service.notifyFailure(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(0), getUri.get());
-        service.notifyFailure(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(1), getUri.get());
-        service.notifyFailure(MOCK_TORRENT);
-        service.notifyFailure(MOCK_TORRENT);
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), getUri.get());
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(1), projection.url().toURI());
+
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
+
+        service.notifySuccess(MOCK_TORRENT, projection.tracker());
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
+
+        getTracker.get();
+        getTracker.get();
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(0), projection.url().toURI());
+
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(1), projection.url().toURI());
+
+        getTracker.get();
+        projection = getTracker.get();
+        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
     }
 }
