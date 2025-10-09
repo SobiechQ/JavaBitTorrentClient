@@ -1,4 +1,4 @@
-package Peer.Model;
+package Message.Model;
 
 import lombok.Getter;
 

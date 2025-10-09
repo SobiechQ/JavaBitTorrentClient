@@ -1,4 +1,4 @@
-package Peer.Model;
+package Handshake.Model;
 
 import lombok.NonNull;
 

@@ -1,6 +1,6 @@
 package atodo.TCP;
 
-import Peer.Model.MessageType;
+import Message.Model.MessageType;
 import Model.DecodedBencode.Torrent;
 import Utils.ByteUtils;
 import com.google.common.hash.Hashing;

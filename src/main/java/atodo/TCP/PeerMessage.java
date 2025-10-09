@@ -1,6 +1,6 @@
 package atodo.TCP;
 
-import Peer.Model.MessageType;
+import Message.Model.MessageType;
 import Utils.ByteUtils;
 import io.vavr.control.Try;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
-import static Peer.Model.MessageType.*;
+import static Message.Model.MessageType.*;
 
 /**
  * Represents a single entity  of peer-client communication. Can be used to represent either input or output value.
@@ -36,7 +36,6 @@ public class PeerMessage {
 
     public PeerMessage(@NonNull MessageType messageType, int... data) { //todo test that splits to 4
         this(messageType,  ByteUtils.intsToBytes(data));
-
     }
     
     public static PeerMessage get(@NonNull InputStream is) throws IOException {

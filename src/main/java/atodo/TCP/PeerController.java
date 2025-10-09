@@ -1,6 +1,6 @@
 package atodo.TCP;
 
-import Peer.Model.MessageType;
+import Message.Model.MessageType;
 import Model.DecodedBencode.Peer;
 import Model.DecodedBencode.Torrent;
 import lombok.NonNull;
@@ -28,10 +28,6 @@ public class PeerController {
         logger.info("Opening connection to... {}", peer);
         try (final var socket = new Socket(peer.address(), peer.port())) {
             logger.info("Connection established {}", peer);
-            final var hand = new Handshake(torrent.getInfoHash(), "00112233445566778899".getBytes());
-            if (!hand.get(socket)){
-                throw new IOException("Unable to establish handshake");
-            }
 
             final var msg = PeerMessage.get(socket.getInputStream());
 

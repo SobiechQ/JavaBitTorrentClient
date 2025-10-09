@@ -1,7 +1,7 @@
-package Peer.Handshake.Service;
+package Handshake.Service;
 
-import Peer.Model.HandshakeInputProjection;
-import Peer.Model.HandshakeOutputProjection;
+import Handshake.Model.HandshakeInputProjection;
+import Handshake.Model.HandshakeOutputProjection;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 

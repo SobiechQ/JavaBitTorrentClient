@@ -1,8 +1,8 @@
 package Peer.Handshake.Service;
 
-import Peer.Model.HandshakeInputProjection;
-import Peer.Model.HandshakeOutputProjection;
-import Tracker.Service.TrackerServiceImpl;
+import Handshake.Model.HandshakeInputProjection;
+import Handshake.Service.HandshakeService;
+import Handshake.Service.HandshakeServiceImpl;
 import Utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = Configuration.Main.class)
 @ContextConfiguration(classes = HandshakeServiceImpl.class)
