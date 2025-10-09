@@ -3,11 +3,11 @@ package Message.Model;
 import lombok.Getter;
 
 @Getter
-public enum DefaultPeerMessage {
+public enum DefaultMessage {
     KEEP_ALIVE(MessageType.KEEP_ALIVE), CHOKE(MessageType.CHOKE), UNCHOKE(MessageType.UNCHOKE), INTERESTED(MessageType.INTERESTED), NOT_INTERESTED(MessageType.NOT_INTERESTED);
-    private final PeerMessageProjection projection;
+    private final MessageProjection projection;
 
-    DefaultPeerMessage(MessageType messageType) {
-        this.projection = new PeerMessageProjection(messageType);
+    DefaultMessage(MessageType messageType) {
+        this.projection = new MessageProjection(messageType);
     }
 }

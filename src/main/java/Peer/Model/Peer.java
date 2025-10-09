@@ -1,4 +1,4 @@
-package Model.DecodedBencode;
+package Peer.Model;
 
 import Model.Bencode.DecodingError;
 

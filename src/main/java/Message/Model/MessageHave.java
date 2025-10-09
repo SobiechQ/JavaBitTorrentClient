@@ -5,10 +5,10 @@ import lombok.Getter;
 import static Message.Model.MessageType.HAVE;
 
 @Getter
-public class PeerMessageHave extends PeerMessageProjection {
+public class MessageHave extends MessageProjection {
     private final int index;
 
-    public PeerMessageHave(int index) {
+    public MessageHave(int index) {
         super(HAVE, index);
         this.index = index;
     }

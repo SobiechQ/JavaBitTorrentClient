@@ -3,7 +3,7 @@ package Tracker.Model.Messages;
 import Model.Bencode.Bencode;
 import Model.Bencode.DecodingError;
 import Model.DecodedBencode.DecodedBencode;
-import Model.DecodedBencode.Peer;
+import Peer.Model.Peer;
 import Tracker.Model.Tracker;
 import lombok.Getter;
 import org.jooq.lambda.Collectable;
@@ -33,19 +33,19 @@ public class TrackerResponse extends DecodedBencode {
                 .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce"));
     }
 
-    private String getPeersString() {
-        return this.getBencode()
-                .asDictionary("peers")
-                .flatMap(Bencode::asString)
-                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce"));
-    }
-
     public Stream<Peer> getPeers() {
         return Seq.seq(this.getPeersString().chars().boxed())
                 .sliding(6)
                 .map(Collectable::toUnmodifiableList)
                 .map(Peer::new)
                 .stream();
+    }
+
+    private String getPeersString() {
+        return this.getBencode()
+                .asDictionary("peers")
+                .flatMap(Bencode::asString)
+                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce"));
     }
 
     @Override

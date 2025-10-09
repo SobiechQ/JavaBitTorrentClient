@@ -6,12 +6,12 @@ import lombok.Getter;
 import static Message.Model.MessageType.PIECE;
 
 @Getter
-public class PeerMessagePiece extends PeerMessageProjection{
+public class MessagePiece extends MessageProjection {
     private final int index;
     private final int begin;
     private final byte[] piece;
 
-    public PeerMessagePiece(int index, int begin, byte[] piece) {
+    public MessagePiece(int index, int begin, byte[] piece) {
         super(PIECE, toPayload(index, begin, piece));
         this.index = index;
         this.begin = begin;

@@ -1,8 +1,8 @@
 package atodo.TCP;
 
 import Message.Model.MessageType;
-import Model.DecodedBencode.Peer;
 import Model.DecodedBencode.Torrent;
+import Peer.Model.Peer;
 import lombok.NonNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

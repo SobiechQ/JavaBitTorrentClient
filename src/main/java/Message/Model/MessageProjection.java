@@ -9,20 +9,20 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Data
-public class PeerMessageProjection {
+public class MessageProjection {
     private final MessageType messageType;
     private final byte[] payload;
 
-    public PeerMessageProjection(@NonNull MessageType messageType, byte @Nullable [] payload) {
+    public MessageProjection(@NonNull MessageType messageType, byte @Nullable [] payload) {
         this.messageType = messageType;
         this.payload = payload == null ? new byte[0] : payload;
     }
 
-    public PeerMessageProjection(@NonNull MessageType messageType) {
+    public MessageProjection(@NonNull MessageType messageType) {
         this(messageType,(byte[]) null);
     }
 
-    public PeerMessageProjection(@NonNull MessageType messageType, int... data) { //todo test that splits to 4
+    public MessageProjection(@NonNull MessageType messageType, int... data) { //todo test that splits to 4
         this(messageType,  ByteUtils.intsToBytes(data));
     }
 
@@ -40,7 +40,7 @@ public class PeerMessageProjection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PeerMessageProjection that = (PeerMessageProjection) o;
+        MessageProjection that = (MessageProjection) o;
         return messageType == that.messageType && Objects.deepEquals(payload, that.payload);
     }
 
