@@ -3,6 +3,7 @@ package Tracker.Repository;
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.HttpTracker;
 import Tracker.Model.Tracker;
+import Tracker.Model.UdpTracker;
 import lombok.Getter;
 import lombok.NonNull;
 import org.jooq.lambda.Seq;
@@ -76,7 +77,7 @@ public class MultitrackerMetadataExtension {
     private static Tracker toTracker(@NonNull URI uri, @NonNull Torrent torrent) {
         return switch (uri.getScheme()) {
             case "http", "https" -> new HttpTracker(uri, torrent);
-            case "udp" -> throw new UnsupportedOperationException("Not yet implemented");
+            case "udp" -> new UdpTracker(uri, torrent);
             default -> throw new IllegalStateException("Unexpected value: " + uri.getScheme());
         };
     }
