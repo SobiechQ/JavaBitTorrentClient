@@ -20,14 +20,8 @@ class HandshakeServiceTest {
     private final static byte[] EMPTY_PEERID = new byte[20];
 
     static {
-        MOCK_INFOHASH = ByteUtils.unbox(Stream.generate(() -> Math.random() * 255)
-                .map(i -> (byte) Math.round(i))
-                .limit(20)
-                .toList());
-        MOCK_PEERID = ByteUtils.unbox(Stream.generate(() -> Math.random() * 255)
-                .map(i -> (byte) Math.round(i))
-                .limit(20)
-                .toList());
+        MOCK_INFOHASH = ByteUtils.getRandomByteArray(20);
+        MOCK_PEERID = ByteUtils.getRandomByteArray(20);
     }
 
     @Autowired

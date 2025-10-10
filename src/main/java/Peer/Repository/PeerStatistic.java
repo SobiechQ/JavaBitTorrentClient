@@ -16,6 +16,8 @@ public class PeerStatistic {
     private MessageBitfield bitfield;
     private int chokedCount = 0;
     private int unchokedCount = 0;
+    @Setter
+    private boolean isChoked = true;
 
     public PeerStatistic(Peer peer) {
         this.peer = peer;
@@ -31,5 +33,9 @@ public class PeerStatistic {
 
     public Optional<MessageBitfield> getBitfield() {
         return Optional.ofNullable(bitfield);
+    }
+
+    public boolean isUnchoked() {
+        return !this.isChoked;
     }
 }

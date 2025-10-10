@@ -22,18 +22,26 @@ public class MessageProjection {
         this(messageType,(byte[]) null);
     }
 
-    public MessageProjection(@NonNull MessageType messageType, int... data) { //todo test that splits to 4
+    public MessageProjection(@NonNull MessageType messageType, int... data) {
         this(messageType,  ByteUtils.intsToBytes(data));
     }
 
     public byte[] getData() {
         if (this.getMessageType().equals(MessageType.KEEP_ALIVE))
-            return new byte[0];
+            return new byte[]{0, 0, 0, 0};
 
-        final var data = new byte[payload.length + 1];
-        data[0] = messageType.getValue();
-        System.arraycopy(payload, 0, data, 1, payload.length);
+        final var data = new byte[4 + 1 + payload.length];
+        final var lengthPrefix = getLengthPrefix();
+
+        System.arraycopy(lengthPrefix, 0, data, 0, 4);
+        data[4] = messageType.getValue();
+        System.arraycopy(payload, 0, data, 5, payload.length);
+
         return data;
+    }
+
+    private byte[] getLengthPrefix() {
+        return ByteUtils.intToBytes(1 + payload.length);
     }
 
     @Override

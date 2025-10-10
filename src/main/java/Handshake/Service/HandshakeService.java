@@ -5,5 +5,5 @@ import Handshake.Model.HandshakeOutputProjection;
 
 public interface HandshakeService {
     HandshakeOutputProjection getHandshake(byte[] infoHash, byte[] peerId);
-    boolean verifyHandshake(HandshakeInputProjection handshakeInput, HandshakeOutputProjection handshakeOutput);
+    boolean verifyHandshake(HandshakeInputProjection handshakeInput, byte[] handshakeOutput);
 }

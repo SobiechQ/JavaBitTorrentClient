@@ -7,6 +7,7 @@ import lombok.NonNull;
 import org.jooq.lambda.Seq;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class PeerRepository {
     private final Map<Peer, PeerStatistic> peers;
@@ -19,8 +20,14 @@ public class PeerRepository {
         response.getPeers().forEach(this::addPeer);
     }
 
-    public Seq<PeerStatistic> getPeers() {
-        return Seq.ofType(peers.values().stream(), PeerStatistic.class);
+    public Stream<PeerStatistic> getPeers() {
+        return peers.values().stream();
+    }
+
+    public Stream<Peer> getUnchokedPeers() {
+        return this.getPeers()
+                .filter(PeerStatistic::isUnchoked)
+                .map(PeerStatistic::getPeer);
     }
 
     public boolean hasBitfield(@NonNull Peer peer, int index){

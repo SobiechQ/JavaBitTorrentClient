@@ -1,12 +1,17 @@
 package Peer.Service;
 
+import Handshake.Model.HandshakeInputProjection;
+import Handshake.Model.HandshakeOutputProjection;
 import Model.DecodedBencode.Torrent;
-import Peer.Model.PeerMessage;
+import Peer.Model.Peer;
+import Peer.Model.PeerDataInputProjection;
+import Peer.Model.PeerMessageProjection;
 
 import java.util.List;
 
 public interface PeerService {
 
-    List<PeerMessage> chokeAlgorithm(Torrent torrent);
-    List<PeerMessage> optimisticUnchoke(Torrent torrent);
+    void handleInput(Torrent torrent, Peer peer, PeerDataInputProjection projection);
+    List<PeerMessageProjection> chokeAlgorithm(Torrent torrent);
+    List<PeerMessageProjection> optimisticUnchoke(Torrent torrent);
 }

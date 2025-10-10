@@ -1,13 +1,14 @@
 package Message.Service;
 
 import Message.Model.*;
-import Peer.Model.PeerInputProjection;
+import Peer.Model.PeerDataInputProjection;
 
 public interface MessageService {
-    MessageProjection decode(PeerInputProjection inputProjection);
+    int getLength(byte[] lengthPrefix);
+    MessageProjection decode(PeerDataInputProjection inputProjection);
     MessageHave have(int index);
     MessageRequest request(int index, int begin);
-    MessagePiece piece(PeerInputProjection inputProjection);
-    MessageBitfield bitfield(PeerInputProjection inputProjection);
+    MessagePiece piece(PeerDataInputProjection inputProjection);
+    MessageBitfield bitfield(PeerDataInputProjection inputProjection);
 
 }

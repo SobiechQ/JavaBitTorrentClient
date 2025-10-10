@@ -11,6 +11,13 @@ import java.util.stream.Stream;
 
 public final class ByteUtils {
 
+    public static byte[] getRandomByteArray(int length) {
+        return ByteUtils.unbox(Stream.generate(() -> Math.random() * 255)
+                .map(i -> (byte) Math.round(i))
+                .limit(length)
+                .toList());
+    }
+
     public static boolean[] byteToBits(byte b) {
         boolean[] bits = new boolean[8];
         for (int i = 0; i < 8; i++) {
@@ -33,6 +40,10 @@ public final class ByteUtils {
     }
 
     public static int bytesToInt(byte[] bytes) {
+        if (bytes.length != 4) {
+            throw new IllegalArgumentException("Expected 4 bytes, got " + bytes.length);
+        }
+
         int result = 0;
         for (byte aByte : bytes) {
             result <<= 8;
@@ -49,6 +60,7 @@ public final class ByteUtils {
                 (byte) value
         };
     }
+
     public static Stream<Byte> bytesToStream(byte[] bytes){
         return IntStream.range(0, bytes.length)
                 .mapToObj(i -> bytes[i]);

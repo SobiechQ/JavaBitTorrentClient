@@ -1,7 +1,7 @@
 package Message.Service;
 
 import Message.Model.*;
-import Peer.Model.PeerInputProjection;
+import Peer.Model.PeerDataInputProjection;
 import Utils.ByteUtils;
 import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
@@ -17,17 +17,34 @@ public class MessageServiceImpl implements MessageService {
     private final static int REQUEST_LENGTH = (int) Math.pow(2, 14);
 
     @Override
-    public MessageProjection decode(PeerInputProjection strategyInput) {
-        final var data = strategyInput.data();
+    public int getLength(byte[] lengthPrefix) {
+        if (lengthPrefix.length != 4)
+            throw new IllegalArgumentException("Length prefix must be 4 bytes");
+        return ByteUtils.bytesToInt(lengthPrefix);
+    }
+
+    @Override
+    public MessageProjection decode(PeerDataInputProjection inputProjection) {
+        final var data = inputProjection.data();
 
         if (data.length == 0)
             return KEEP_ALIVE.getProjection();
 
-        final var receivedMessageType = data[0];
+        final var receivedMessageType = MessageType.valueOf(data[0]);
+
+        switch (receivedMessageType) {
+            case PIECE -> {
+                return piece(inputProjection);
+            }
+            case BITFIELD -> {
+                return bitfield(inputProjection);
+            }
+        }
+
         final var receivedPayload = new byte[data.length - 1];
         System.arraycopy(data, 1, receivedPayload, 0, receivedPayload.length);
 
-        return new MessageProjection(MessageType.valueOf(receivedMessageType), receivedPayload);
+        return new MessageProjection(receivedMessageType, receivedPayload);
     }
 
     @Override
@@ -41,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessagePiece piece(PeerInputProjection inputProjection) {
+    public MessagePiece piece(PeerDataInputProjection inputProjection) {
         final var data = inputProjection.data();
 
         final var receivedIndex = new byte[4];
@@ -57,7 +74,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageBitfield bitfield(PeerInputProjection inputProjection) {
+    public MessageBitfield bitfield(PeerDataInputProjection inputProjection) {
         final var data = inputProjection.data();
 
         final var payload = new byte[data.length - 1];
