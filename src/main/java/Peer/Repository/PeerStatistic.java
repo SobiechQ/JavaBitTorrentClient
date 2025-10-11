@@ -14,28 +14,35 @@ public class PeerStatistic {
     @Setter
     @Nullable
     private MessageBitfield bitfield;
-    private int chokedCount = 0;
-    private int unchokedCount = 0;
+    private long lastSeen;
+
     @Setter
     private boolean isChoked = true;
 
     public PeerStatistic(Peer peer) {
+        this.lastSeen = System.currentTimeMillis();
         this.peer = peer;
     }
 
-    private void addChocked() {
-        chokedCount++;
+    public boolean isSeeder() {
+        return this.getBitfield().map(MessageBitfield::isSeeder).orElse(false);
     }
 
-    private void addUnchoked() {
-        unchokedCount++;
+    public boolean hasPiece(int index) {
+        if (isSeeder())
+            return true;
+        return this.getBitfield().map(mb -> mb.hasPiece(index)).orElse(false);
     }
 
-    public Optional<MessageBitfield> getBitfield() {
-        return Optional.ofNullable(bitfield);
+    public void updateLastSeen() {
+        this.lastSeen = System.currentTimeMillis();
     }
 
     public boolean isUnchoked() {
         return !this.isChoked;
+    }
+
+    public Optional<MessageBitfield> getBitfield() {
+        return Optional.ofNullable(bitfield);
     }
 }

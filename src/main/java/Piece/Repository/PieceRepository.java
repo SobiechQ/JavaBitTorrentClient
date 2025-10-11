@@ -1,9 +1,8 @@
-package Peer.Repository;
+package Piece.Repository;
 
 import Message.Model.MessagePiece;
 import Model.DecodedBencode.Torrent;
 import Utils.RandomComparator;
-import org.jooq.lambda.Seq;
 
 import java.util.*;
 import java.util.stream.IntStream;

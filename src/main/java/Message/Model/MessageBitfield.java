@@ -17,4 +17,10 @@ public class MessageBitfield extends MessageProjection {
     public boolean hasPiece(int index) {
         return Optional.ofNullable(bitfield.get(index)).orElse(false);
     }
+
+    public boolean isSeeder() {
+        return this.bitfield.values()
+                .stream()
+                .allMatch(t -> t);
+    }
 }

@@ -1,4 +1,4 @@
-package Peer.Repository;
+package Piece.Repository;
 
 import lombok.NonNull;
 

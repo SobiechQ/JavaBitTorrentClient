@@ -4,7 +4,6 @@ import Message.Model.MessageBitfield;
 import Peer.Model.Peer;
 import Tracker.Model.Messages.TrackerResponse;
 import lombok.NonNull;
-import org.jooq.lambda.Seq;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -28,13 +27,6 @@ public class PeerRepository {
         return this.getPeers()
                 .filter(PeerStatistic::isUnchoked)
                 .map(PeerStatistic::getPeer);
-    }
-
-    public boolean hasBitfield(@NonNull Peer peer, int index){
-        return this.getStatistic(peer)
-                .getBitfield()
-                .map(m -> m.hasPiece(index))
-                .orElse(false);
     }
 
     public void setBitfield(@NonNull Peer peer, @NonNull MessageBitfield bitfield) {

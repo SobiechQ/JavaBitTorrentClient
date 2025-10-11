@@ -2,6 +2,7 @@ package Tracker.Repository;
 
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.HttpTracker;
+import Tracker.Model.Messages.TrackerResponse;
 import Tracker.Model.Tracker;
 import Tracker.Model.UdpTracker;
 import lombok.Getter;
@@ -32,15 +33,18 @@ public class MultitrackerMetadataExtension {
             this(List.of(tracker), layer);
         }
 
-        private void notifySuccess(@NonNull Tracker tracker) {
+        private void notifyFailure(@NonNull Tracker tracker) {
             if (trackers.remove(tracker))
-                trackers.addFirst(tracker);
+                trackers.addLast(tracker);
+        }
+
+        private Optional<Tracker> getTracker() {
+            return this.trackers.stream().findFirst();
         }
 
         private Stream<Tracker> getTrackers() {
             return this.trackers.stream();
         }
-
     }
 
     private final Map<Tracker, Tier> trackerToTier;
@@ -51,35 +55,23 @@ public class MultitrackerMetadataExtension {
         this.layerToTier = newLayerToTierMap(this.trackerToTier);
     }
 
-    public void notifySuccess(@NonNull Tracker tracker) {
+    public void notifyFailure(@NonNull Tracker tracker) {
         this.getTier(tracker)
-                .ifPresent(t -> t.notifySuccess(tracker));
+                .ifPresent(t -> t.notifyFailure(tracker));
     }
 
-    public int getLayersCount() {
-        return this.layerToTier.size();
+    public void notifySuccess(@NonNull TrackerResponse response) {
     }
 
-    public Stream<Tracker> getTrackers(int layer) {
-        return this.getTier(layer)
+    public Stream<Tracker> getFavorableTrackers() {
+        return this.layerToTier
+                .values()
                 .stream()
-                .flatMap(Tier::getTrackers);
+                .flatMap(t -> t.getTracker().stream());
     }
 
     private Optional<Tier> getTier(@NonNull Tracker tracker) {
         return Optional.ofNullable(this.trackerToTier.get(tracker));
-    }
-
-    private Optional<Tier> getTier(int layer) {
-        return Optional.ofNullable(this.layerToTier.get(layer));
-    }
-
-    private static Tracker toTracker(@NonNull URI uri, @NonNull Torrent torrent) {
-        return switch (uri.getScheme()) {
-            case "http", "https" -> new HttpTracker(uri, torrent);
-            case "udp" -> new UdpTracker(uri, torrent);
-            default -> throw new IllegalStateException("Unexpected value: " + uri.getScheme());
-        };
     }
 
     private static Map<Tracker, Tier> newTrackerToTierMap(@NonNull Torrent torrent) {
@@ -103,5 +95,13 @@ public class MultitrackerMetadataExtension {
     private static Map<Integer, Tier> newLayerToTierMap(Map<Tracker, Tier> trackerToTier) {
         return Seq.ofType(trackerToTier.values().stream(), Tier.class)
                 .collect(TreeMap::new, (integerTierMap, tier) -> integerTierMap.putIfAbsent(tier.getLayer(), tier), (BiConsumer<Map<Integer, Tier>, Map<Integer, Tier>>) Map::putAll);
+    }
+
+    private static Tracker toTracker(@NonNull URI uri, @NonNull Torrent torrent) {
+        return switch (uri.getScheme()) {
+            case "http", "https" -> new HttpTracker(uri, torrent);
+            case "udp" -> new UdpTracker(uri, torrent);
+            default -> throw new IllegalStateException("Unexpected value: " + uri.getScheme());
+        };
     }
 }

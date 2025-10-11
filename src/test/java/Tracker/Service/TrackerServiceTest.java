@@ -2,6 +2,8 @@ package Tracker.Service;
 
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.Messages.TrackerRequestProjection;
+import io.vavr.NotImplementedError;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -44,58 +46,62 @@ class TrackerServiceTest {
 
     @Test
     void computeUploaded() {
-        final var uploadedBefore = service.getRequest(MOCK_TORRENT).uploaded();
-        service.computeUploaded(MOCK_TORRENT, l -> l + 1000);
-        final var uploadedAfter = service.getRequest(MOCK_TORRENT).uploaded();
-
-        Assertions.assertEquals(uploadedBefore + 1000, uploadedAfter);
+        throw new NotImplementedError("todo");
+//        final var uploadedBefore = service.getRequest(MOCK_TORRENT).uploaded();
+//        service.computeUploaded(MOCK_TORRENT, l -> l + 1000);
+//        final var uploadedAfter = service.getRequest(MOCK_TORRENT).uploaded();
+//
+//        Assertions.assertEquals(uploadedBefore + 1000, uploadedAfter);
     }
 
     @Test
     void computeDownloaded() {
-        final var downloadedBefore = service.getRequest(MOCK_TORRENT).downloaded();
-        service.computeDownloaded(MOCK_TORRENT, l -> l + 1000);
-        final var downloadedAfter = service.getRequest(MOCK_TORRENT).downloaded();
-
-        Assertions.assertEquals(downloadedBefore + 1000, downloadedAfter);
+        throw new NotImplementedError("todo");
+//        final var downloadedBefore = service.getRequest(MOCK_TORRENT).downloaded();
+//        service.computeDownloaded(MOCK_TORRENT, l -> l + 1000);
+//        final var downloadedAfter = service.getRequest(MOCK_TORRENT).downloaded();
+//
+//        Assertions.assertEquals(downloadedBefore + 1000, downloadedAfter);
     }
 
     @Test
     void computeLeft() {
-        final var leftBefore = service.getRequest(MOCK_TORRENT).left();
-        service.computeLeft(MOCK_TORRENT, l -> l - 1000);
-        final var leftAfter = service.getRequest(MOCK_TORRENT).left();
-
-        Assertions.assertEquals(leftBefore - 1000, leftAfter);
+        throw new NotImplementedError("todo");
+//        final var leftBefore = service.getRequest(MOCK_TORRENT).left();
+//        service.computeLeft(MOCK_TORRENT, l -> l - 1000);
+//        final var leftAfter = service.getRequest(MOCK_TORRENT).left();
+//
+//        Assertions.assertEquals(leftBefore - 1000, leftAfter);
     }
 
     @Test
     void notifySuccessAndFailure() throws URISyntaxException {
-        service.reset(MOCK_TORRENT);
-        Supplier<TrackerRequestProjection> getTracker = () -> service.getRequest(MOCK_TORRENT);
-        var projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(0), projection.url().toURI());
-
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(1), projection.url().toURI());
-
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
-
-        service.notifySuccess(MOCK_TORRENT, projection.tracker());
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
-
-        getTracker.get();
-        getTracker.get();
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(0), projection.url().toURI());
-
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(1), projection.url().toURI());
-
-        getTracker.get();
-        projection = getTracker.get();
-        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
+        throw new NotImplementedError("todo");
+//        service.reset(MOCK_TORRENT);
+//        Supplier<TrackerRequestProjection> getTracker = () -> service.getRequest(MOCK_TORRENT);
+//        var projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(0), projection.url().toURI());
+//
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(1), projection.url().toURI());
+//
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
+//
+//        service.notifySuccess(MOCK_TORRENT, projection.tracker());
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
+//
+//        getTracker.get();
+//        getTracker.get();
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(0), projection.url().toURI());
+//
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.get(1).get(1), projection.url().toURI());
+//
+//        getTracker.get();
+//        projection = getTracker.get();
+//        Assertions.assertEquals(MOCK_ANNOUNCE_LIST.getFirst().get(2), projection.url().toURI());
     }
 }
