@@ -1,5 +1,6 @@
 package Peer.Service;
 
+import Message.Model.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Model.PeerMessageProjection;
@@ -11,9 +12,6 @@ public interface PeerService {
 
     void announce(Torrent torrent);
     void subscribeAsyncRevalidation(Torrent torrent);
-    Stream<Peer> getPeers(Torrent torrent);
     void notifySuccess(Torrent torrent, Peer peer);
-    void handleBitfield(Torrent torrent, Peer peer);
-    List<PeerMessageProjection> chokeAlgorithm(Torrent torrent);
-    List<PeerMessageProjection> optimisticUnchoke(Torrent torrent);
+    void handleBitfield(Torrent torrent, Peer peer, MessageBitfield bitfield);
 }

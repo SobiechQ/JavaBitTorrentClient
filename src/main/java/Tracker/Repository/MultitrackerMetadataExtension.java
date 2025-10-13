@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * <a href="https://www.bittorrent.org/beps/bep_0012.html">Multitracker Metadata Extension</a>
  */
-public class MultitrackerMetadataExtension {
+class MultitrackerMetadataExtension {
     private static class Tier {
         @Getter
         private final int layer;
@@ -46,7 +46,7 @@ public class MultitrackerMetadataExtension {
             return this.trackers.stream();
         }
 
-        private void removeTracker(@NonNull Tracker tracker){
+        private void removeTracker(@NonNull Tracker tracker) {
             trackers.remove(tracker);
         }
 
@@ -58,35 +58,28 @@ public class MultitrackerMetadataExtension {
     private final Map<Tracker, Tier> trackerToTier;
     private final Map<Integer, Tier> layerToTier;
 
-    public MultitrackerMetadataExtension(@NonNull Torrent torrent) {
+    MultitrackerMetadataExtension(@NonNull Torrent torrent) {
         this.trackerToTier = newTrackerToTierMap(torrent);
         this.layerToTier = newLayerToTierMap(this.trackerToTier);
     }
 
-    public void notifyFailure(@NonNull Tracker tracker) {
+    void notifyFailure(@NonNull Tracker tracker) {
         this.getTier(tracker)
                 .ifPresent(t -> t.notifyFailure(tracker));
     }
 
-    public void removeUnreachableTrackers() {
-        final var unreachableTrackers = trackerToTier.keySet().stream()
-                .filter(Tracker::isUnreachable)
-                .toList()
-                .stream();
-
-        unreachableTrackers.forEach(tracker -> {
-            final var optionalTier = getTier(tracker);
-            optionalTier.ifPresent(tier -> tier.removeTracker(tracker));
-            optionalTier.ifPresent(tier -> {
-                if (tier.isEmpty()) {
-                    layerToTier.remove(tier.layer);
-                }
-            });
-            trackerToTier.remove(tracker);
+    void removeTracker(@NonNull Tracker tracker) {
+        final var optionalTier = this.getTier(tracker);
+        optionalTier.ifPresent(tier -> tier.removeTracker(tracker));
+        optionalTier.ifPresent(tier -> {
+            if (tier.isEmpty()) {
+                layerToTier.remove(tier.layer);
+            }
         });
+        trackerToTier.remove(tracker);
     }
 
-    public Stream<Tracker> getFavorableTrackers() {
+    Stream<Tracker> getFavorableTrackers() {
         return this.layerToTier
                 .values()
                 .stream()

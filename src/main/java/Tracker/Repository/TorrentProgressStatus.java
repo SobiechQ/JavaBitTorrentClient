@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 @Data
 @Getter
 @Setter
-public class TorrentProgressStatus {
+class TorrentProgressStatus {
     private long uploaded = 0;
     private long downloaded = 0;
     private long left = 0;
@@ -18,20 +18,20 @@ public class TorrentProgressStatus {
     @Setter(value = AccessLevel.NONE)
     private MultitrackerMetadataExtension multitrackerMetadataExtension;
 
-    public TorrentProgressStatus(@NonNull Torrent torrent) {
+    TorrentProgressStatus(@NonNull Torrent torrent) {
         this.left = torrent.getLength();
         this.multitrackerMetadataExtension = new MultitrackerMetadataExtension(torrent);
     }
 
-    public void notifyFailure(@NonNull Tracker tracker) {
+    void notifyFailure(@NonNull Tracker tracker) {
         this.multitrackerMetadataExtension.notifyFailure(tracker);
     }
 
-    public Stream<Tracker> getFavorableTrackers() {
+    Stream<Tracker> getFavorableTrackers() {
         return this.multitrackerMetadataExtension.getFavorableTrackers();
     }
 
-    public void removeUnreachableTrackers() {
-        this.multitrackerMetadataExtension.removeUnreachableTrackers();
+    void removeTracker(@NonNull Tracker tracker) {
+        this.multitrackerMetadataExtension.removeTracker(tracker);
     }
 }

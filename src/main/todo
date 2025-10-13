@@ -2,5 +2,13 @@ test corectness of 4 bytes into int. - what if some are negative??
 logger
 
 pieces - ilosć powinno być chyba w pliku torrent, nie trzeba wyliczać
+weighted peers - asn kod ip z ze3wnętrznego api
+
+„Rarest first” — pobieraj te kawałki, które są najrzadsze wśród peerów (zwiększa różnorodność i równowagę sieci),
+
+„Random first” — na początku sesji, zanim masz statystyki,
+
+„Endgame mode” — gdy brakuje kilku kawałków, pobieraj je od wszystkich naraz (dla szybkości).
+
 
 test byte utils

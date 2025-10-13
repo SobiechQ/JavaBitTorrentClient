@@ -1,96 +1,48 @@
 package Peer.Service;
 
 import Message.Model.MessageBitfield;
-import Message.Service.MessageService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
-import Peer.Model.PeerMessageProjection;
-import Peer.Repository.PeerStatistic;
 import Peer.Repository.PeerRepository;
 import Tracker.Controller.TrackerController;
 import Tracker.Model.Messages.TrackerResponse;
-import Utils.ByteUtils;
 import lombok.NonNull;
-import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Stream;
-
-import static Message.Model.DefaultMessage.CHOKE;
-import static Message.Model.DefaultMessage.UNCHOKE;
 
 @Service
 public class PeerServiceImpl implements PeerService {
-
-    private final static byte[] PEER_ID;
-
     private final TrackerController trackerController;
-    private final Map<Torrent, PeerRepository> peerRepository;
+    private final PeerRepository peerRepository;
 
-    static {
-        PEER_ID = ByteUtils.getRandomByteArray(20);
-    }
-
-    public PeerServiceImpl(TrackerController trackerController) {
+    public PeerServiceImpl(@NonNull TrackerController trackerController,@NonNull PeerRepository peerRepository) {
         this.trackerController = trackerController;
-        this.peerRepository = new HashMap<>();
+        this.peerRepository = peerRepository;
     }
 
     @Override
-    public void announce(Torrent torrent) {
-
+    public void announce(@NonNull Torrent torrent) {
+        trackerController.subscribeAnnounce(torrent, this::handleResponse);
     }
 
     @Override
-
-    public Stream<Peer> getPeers(Torrent torrent) {
-        return Stream.empty();
+    public void subscribeAsyncRevalidation(@NonNull Torrent torrent) {
+        this.trackerController.subscribeAsyncRevalidation(torrent, this::handleResponse);
     }
 
     @Override
-    public void notifySuccess(Torrent torrent, Peer peer) {
-
+    public void notifySuccess(@NonNull Torrent torrent, @NonNull Peer peer) {
+        this.peerRepository.updateLastSeen(torrent, peer);
     }
 
     @Override
-    public void handleBitfield(Torrent torrent, Peer peer) {
-
-    }
-
-    @Override
-    public void subscribeAsyncRevalidation(Torrent torrent) {
-
-    }
-
-    @Override
-    public List<PeerMessageProjection> chokeAlgorithm(Torrent torrent) {
-        final var peerStatistic = Seq.ofType(this.getPeerRepository(torrent).getPeers(), PeerStatistic.class);
-
-        final var split = peerStatistic
-                .sorted(Comparator.comparingInt(PeerStatistic::getUnchokedCount))
-                .splitAt(4);
-
-        final var unchoke = split.v1.map(p -> new PeerMessageProjection(p.getPeer(), UNCHOKE.getProjection()));
-        final var choke = split.v2.map(p -> new PeerMessageProjection(p.getPeer(), CHOKE.getProjection()));
-
-        return Seq.concat(unchoke, choke).toList();
-    }
-
-    @Override
-    public List<PeerMessageProjection> optimisticUnchoke(Torrent torrent) {
-        return List.of();
+    public void handleBitfield(@NonNull Torrent torrent, @NonNull Peer peer, @NonNull MessageBitfield bitfield) {
+        this.peerRepository.setBitfield(torrent, peer, bitfield);
     }
 
     private void handleResponse(@NonNull TrackerResponse response) {
+        final var torrent = response.getRespondTo().getTorrent();
+        response.getPeers()
+                .forEach(p -> peerRepository.addPeer(torrent, p));
 
-    }
-
-    private void handleBitfield(@NonNull Torrent torrent, @NonNull Peer peer, @NonNull MessageBitfield bitfield) {
-        this.getPeerRepository(torrent).setBitfield(peer, bitfield);
-    }
-
-    private PeerRepository getPeerRepository(@NonNull Torrent torrent) {
-        return this.peerRepository.computeIfAbsent(torrent, _ -> new PeerRepository());
     }
 }

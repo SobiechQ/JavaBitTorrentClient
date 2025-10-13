@@ -33,16 +33,16 @@ class TrackerControllerTest {
     private TrackerController controller;
 
     @Test
-    void asyncAnnounce() throws ExecutionException, InterruptedException, TimeoutException {
+    void subscribeAnnounce() throws ExecutionException, InterruptedException, TimeoutException {
         log.info("Start Async 1");
-        final var futureResponse1 = controller.asyncAnnounce(TORRENT).whenComplete((trackerResponse, throwable) -> {
+        final var futureResponse1 = controller.subscribeAnnounce(TORRENT).whenComplete((trackerResponse, throwable) -> {
             log.info("Async 1 finished with {}", trackerResponse);
             if (throwable != null) {
                 log.warn("Async 1 failed", throwable);
             }
         });
         log.info("Start Async 2");
-        final var futureResponse2 = controller.asyncAnnounce(TORRENT).whenComplete((trackerResponse, throwable) -> {
+        final var futureResponse2 = controller.subscribeAnnounce(TORRENT).whenComplete((trackerResponse, throwable) -> {
             log.info("Async 2 finished with {}", trackerResponse);
             if (throwable != null) {
                 log.warn("Async 2 failed", throwable);
