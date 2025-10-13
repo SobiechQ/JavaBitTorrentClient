@@ -44,6 +44,11 @@ public class TrackerServiceImpl implements TrackerService {
         return this.getRequests(torrent, favorableTrackers);
     }
 
+    @Override
+    public void removeUnreachableTrackers(@NonNull Torrent torrent) {
+        this.getTorrentProgressStatus(torrent).removeUnreachableTrackers();
+    }
+
     private Stream<TrackerRequestProjection> getRequests(@NonNull Torrent torrent, Stream<Tracker> trackers) {
         final var status = this.getTorrentProgressStatus(torrent);
 

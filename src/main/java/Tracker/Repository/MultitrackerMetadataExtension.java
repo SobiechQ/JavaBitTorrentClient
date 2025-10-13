@@ -45,6 +45,14 @@ public class MultitrackerMetadataExtension {
         private Stream<Tracker> getTrackers() {
             return this.trackers.stream();
         }
+
+        private void removeTracker(@NonNull Tracker tracker){
+            trackers.remove(tracker);
+        }
+
+        private boolean isEmpty() {
+            return this.trackers.isEmpty();
+        }
     }
 
     private final Map<Tracker, Tier> trackerToTier;
@@ -60,7 +68,22 @@ public class MultitrackerMetadataExtension {
                 .ifPresent(t -> t.notifyFailure(tracker));
     }
 
-    public void notifySuccess(@NonNull TrackerResponse response) {
+    public void removeUnreachableTrackers() {
+        final var unreachableTrackers = trackerToTier.keySet().stream()
+                .filter(Tracker::isUnreachable)
+                .toList()
+                .stream();
+
+        unreachableTrackers.forEach(tracker -> {
+            final var optionalTier = getTier(tracker);
+            optionalTier.ifPresent(tier -> tier.removeTracker(tracker));
+            optionalTier.ifPresent(tier -> {
+                if (tier.isEmpty()) {
+                    layerToTier.remove(tier.layer);
+                }
+            });
+            trackerToTier.remove(tracker);
+        });
     }
 
     public Stream<Tracker> getFavorableTrackers() {

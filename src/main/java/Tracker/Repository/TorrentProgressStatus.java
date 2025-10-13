@@ -30,4 +30,8 @@ public class TorrentProgressStatus {
     public Stream<Tracker> getFavorableTrackers() {
         return this.multitrackerMetadataExtension.getFavorableTrackers();
     }
+
+    public void removeUnreachableTrackers() {
+        this.multitrackerMetadataExtension.removeUnreachableTrackers();
+    }
 }

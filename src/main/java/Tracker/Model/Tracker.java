@@ -17,6 +17,7 @@ import java.util.Optional;
 @Data
 @ToString(exclude = "torrent")
 public abstract class Tracker {
+    private final static long MAXIMUM_TIMEOUT = 60 * 30 * 1000; // 30 minutes
     private final URI uri;
     private final Torrent torrent;
     @Nullable
@@ -52,6 +53,14 @@ public abstract class Tracker {
 
     private Optional<Long> getLastSeen() {
         return Optional.ofNullable(this.lastSeen);
+    }
+
+    public boolean isUnreachable() {
+        final var now = System.currentTimeMillis();
+
+        return !this.getLastSeen()
+                .map(l -> now - l <= MAXIMUM_TIMEOUT)
+                .orElse(true);
     }
 
     private Optional<Long> getInterval() {

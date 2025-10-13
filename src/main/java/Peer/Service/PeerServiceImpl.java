@@ -8,6 +8,7 @@ import Peer.Model.PeerMessageProjection;
 import Peer.Repository.PeerStatistic;
 import Peer.Repository.PeerRepository;
 import Tracker.Controller.TrackerController;
+import Tracker.Model.Messages.TrackerResponse;
 import Utils.ByteUtils;
 import lombok.NonNull;
 import org.jooq.lambda.Seq;
@@ -37,6 +38,32 @@ public class PeerServiceImpl implements PeerService {
     }
 
     @Override
+    public void announce(Torrent torrent) {
+
+    }
+
+    @Override
+
+    public Stream<Peer> getPeers(Torrent torrent) {
+        return Stream.empty();
+    }
+
+    @Override
+    public void notifySuccess(Torrent torrent, Peer peer) {
+
+    }
+
+    @Override
+    public void handleBitfield(Torrent torrent, Peer peer) {
+
+    }
+
+    @Override
+    public void subscribeAsyncRevalidation(Torrent torrent) {
+
+    }
+
+    @Override
     public List<PeerMessageProjection> chokeAlgorithm(Torrent torrent) {
         final var peerStatistic = Seq.ofType(this.getPeerRepository(torrent).getPeers(), PeerStatistic.class);
 
@@ -53,6 +80,10 @@ public class PeerServiceImpl implements PeerService {
     @Override
     public List<PeerMessageProjection> optimisticUnchoke(Torrent torrent) {
         return List.of();
+    }
+
+    private void handleResponse(@NonNull TrackerResponse response) {
+
     }
 
     private void handleBitfield(@NonNull Torrent torrent, @NonNull Peer peer, @NonNull MessageBitfield bitfield) {
