@@ -30,6 +30,11 @@ public class PeerServiceImpl implements PeerService {
     }
 
     @Override
+    public void notifyAttempt(Torrent torrent, Peer peer) {
+        this.peerRepository.updateAttempt(torrent, peer);
+    }
+
+    @Override
     public void notifySuccess(@NonNull Torrent torrent, @NonNull Peer peer) {
         this.peerRepository.updateLastSeen(torrent, peer);
     }

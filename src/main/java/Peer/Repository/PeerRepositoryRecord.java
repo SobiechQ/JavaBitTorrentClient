@@ -19,10 +19,8 @@ class PeerRepositoryRecord {
         return peers.values().stream();
     }
 
-    Stream<Peer> getUnchokedPeers() {
-        return this.getPeers()
-                .filter(PeerStatistic::isUnchoked)
-                .map(PeerStatistic::getPeer);
+    void updateAttempt(@NonNull Peer peer){
+        this.getStatistic(peer).updateLastAttempt();
     }
 
     void updateLastSeen(@NonNull Peer peer){

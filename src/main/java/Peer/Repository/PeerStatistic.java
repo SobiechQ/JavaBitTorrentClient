@@ -6,16 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
-class PeerStatistic {
+public class PeerStatistic {
     private final Peer peer;
     @Setter
     @Nullable
     private MessageBitfield bitfield;
     private long lastSeen;
     private long lastAttempt;
+
+    //todo delta of downloaded length -
 
     @Setter
     private boolean isChoked = true;
@@ -26,14 +29,30 @@ class PeerStatistic {
         this.peer = peer;
     }
 
-    boolean isSeeder() {
+    public boolean isSeeder() {
         return this.getBitfield().map(MessageBitfield::isSeeder).orElse(false);
     }
 
-    boolean hasPiece(int index) {
+    public boolean hasPiece(int index) {
         if (isSeeder())
             return true;
         return this.getBitfield().map(mb -> mb.hasPiece(index)).orElse(false);
+    }
+
+    public Optional<MessageBitfield> getBitfield() {
+        return Optional.ofNullable(bitfield);
+    }
+
+    public boolean isChoked() {
+        return this.isChoked;
+    }
+
+    public boolean isUnchoked() {
+        return !this.isChoked;
+    }
+
+    void updateLastAttempt() {
+        this.lastAttempt = System.currentTimeMillis();
     }
 
     void updateLastSeen() {
@@ -41,17 +60,5 @@ class PeerStatistic {
 
         this.lastAttempt = time;
         this.lastSeen = time;
-    }
-
-    void updateLastAttempt() {
-        this.lastAttempt = System.currentTimeMillis();
-    }
-
-    boolean isUnchoked() {
-        return !this.isChoked;
-    }
-
-    Optional<MessageBitfield> getBitfield() {
-        return Optional.ofNullable(bitfield);
     }
 }
