@@ -1,12 +1,8 @@
 package Peer.Service;
 
-import Message.Model.MessageBitfield;
+import MessageFactory.Model.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
-import Peer.Model.PeerMessageProjection;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 public interface PeerService {
 
@@ -15,4 +11,6 @@ public interface PeerService {
     void notifyAttempt(Torrent torrent, Peer peer);
     void notifySuccess(Torrent torrent, Peer peer);
     void handleBitfield(Torrent torrent, Peer peer, MessageBitfield bitfield);
+    void handleChoke(Torrent torrent, Peer peer);
+    void handleUnchoke(Torrent torrent, Peer peer);
 }

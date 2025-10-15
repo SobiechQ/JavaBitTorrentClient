@@ -1,12 +1,11 @@
 package Peer.Repository;
 
-import Message.Model.MessageBitfield;
+import MessageFactory.Model.MessageBitfield;
 import Peer.Model.Peer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Getter

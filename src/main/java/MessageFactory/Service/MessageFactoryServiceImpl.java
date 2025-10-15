@@ -1,6 +1,6 @@
-package Message.Service;
+package MessageFactory.Service;
 
-import Message.Model.*;
+import MessageFactory.Model.*;
 import Peer.Model.PeerDataInputProjection;
 import Utils.ByteUtils;
 import org.jooq.lambda.Seq;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Message.Model.DefaultMessage.*;
+import static MessageFactory.Model.DefaultMessage.*;
 import static Utils.ByteUtils.bytesToInt;
 
 @Service
-public class MessageServiceImpl implements MessageService {
+public class MessageFactoryServiceImpl implements MessageFactoryService {
     private final static int REQUEST_LENGTH = (int) Math.pow(2, 14);
 
     @Override

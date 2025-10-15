@@ -1,9 +1,9 @@
-package Message.Service;
+package MessageFactory.Service;
 
-import Message.Model.*;
+import MessageFactory.Model.*;
 import Peer.Model.PeerDataInputProjection;
 
-public interface MessageService {
+public interface MessageFactoryService {
     int getLength(byte[] lengthPrefix);
     MessageProjection decode(PeerDataInputProjection inputProjection);
     MessageHave have(int index);

@@ -34,7 +34,13 @@ public class TrackerControllerImpl implements TrackerController {
 
     public void subscribeAsyncRevalidation(@NonNull Torrent torrent, Consumer<TrackerResponse> consumer) {
         scheduledExecutor.scheduleAtFixedRate(() -> {
-            this.subscribeAnnounce(torrent, consumer);
+            trackerService.getScheduledRequests(torrent)
+                    .map(this::announce)
+                    .map(cf -> cf.exceptionally(ex -> {
+                        log.warn("Tracker announce failed", ex);
+                        return null;
+                    }))
+                    .forEach(cf -> cf.thenAccept(consumer));
         }, 1, 1, TimeUnit.MINUTES);
 
         scheduledExecutor.scheduleAtFixedRate(() -> trackerService.removeUnreachableTrackers(torrent), 10, 5, TimeUnit.MINUTES);
@@ -42,15 +48,19 @@ public class TrackerControllerImpl implements TrackerController {
 
     private CompletableFuture<TrackerResponse> announce(TrackerRequestProjection projection) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                final var resp = projection.tracker().announce(projection);
-                this.trackerService.notifySuccess(resp);
-                return resp;
-            } catch (IOException e) {
-                this.trackerService.notifyFailure(projection.tracker());
-                throw new RuntimeException(e);
-            }
-        }, virtualExecutor);
+                    try {
+                        return projection.tracker().announce(projection);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, virtualExecutor)
+                .whenComplete(((response, _) -> {
+                    if (response != null) {
+                        this.trackerService.notifySuccess(response);
+                        return;
+                    }
+                    this.trackerService.notifyFailure(projection.tracker());
+                }));
     }
 
 

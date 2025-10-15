@@ -1,7 +1,4 @@
-package Message.Model;
-
-import lombok.NonNull;
-import org.jetbrains.annotations.Nullable;
+package MessageFactory.Model;
 
 import java.util.Map;
 import java.util.Optional;

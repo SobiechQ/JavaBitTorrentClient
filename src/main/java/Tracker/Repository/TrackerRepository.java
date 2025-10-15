@@ -2,13 +2,12 @@ package Tracker.Repository;
 
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.Tracker;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public interface TrackerRepository {
-    Stream<Tracker> getFavorableTrackers(Torrent torrent);
+    List<Tracker> getFavorableTrackers(Torrent torrent);
     void removeUnreachableTrackers(Torrent torrent);
     long getUploaded(Torrent torrent);
     long getDownloaded(Torrent torrent);

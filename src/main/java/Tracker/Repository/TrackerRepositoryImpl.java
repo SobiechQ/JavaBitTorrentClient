@@ -6,6 +6,7 @@ import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,109 +24,120 @@ public class TrackerRepositoryImpl implements TrackerRepository {
     }
 
     @Override
-    public Stream<Tracker> getFavorableTrackers(@NonNull Torrent torrent) {
+    public List<Tracker> getFavorableTrackers(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             return this.getTorrentProgressStatus(torrent)
-                    .getFavorableTrackers();
+                    .getFavorableTrackers()
+                    .toList();
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public void removeUnreachableTrackers(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             this.getFavorableTrackers(torrent)
+                    .stream()
                     .filter(Tracker::isUnreachable)
                     .toList()
                     .forEach(t -> this.getTorrentProgressStatus(torrent).removeTracker(t));
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public long getUploaded(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             return this.getTorrentProgressStatus(torrent).getUploaded();
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public long getDownloaded(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             return this.getTorrentProgressStatus(torrent).getDownloaded();
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public long getLeft(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             return this.getTorrentProgressStatus(torrent).getLeft();
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public void notifyFailure(@NonNull Tracker tracker) {
         final var torrent = tracker.getTorrent();
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             this.getTorrentProgressStatus(torrent).notifyFailure(tracker);
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public void computeUploaded(@NonNull Torrent torrent, Function<Long, Long> compute) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             final var progres = this.getTorrentProgressStatus(torrent);
             final var computed = compute.apply(progres.getUploaded());
             if (computed <= 0)
                 throw new IllegalStateException("Computed uploaded value cant be negative");
             progres.setUploaded(computed);
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public void computeDownloaded(@NonNull Torrent torrent, Function<Long, Long> compute) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             final var progres = this.getTorrentProgressStatus(torrent);
             final var computed = compute.apply(progres.getDownloaded());
             if (computed <= 0)
                 throw new IllegalStateException("Computed downloaded value cant be negative");
             progres.setDownloaded(computed);
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 
     @Override
     public void computeLeft(@NonNull Torrent torrent, Function<Long, Long> compute) {
+        final var lock = this.getLock(torrent);
         try {
-            this.getLock(torrent).lock();
+            lock.lock();
             final var progres = this.getTorrentProgressStatus(torrent);
             final var computed = compute.apply(progres.getLeft());
             if (computed <= 0)
                 throw new IllegalStateException("Computed left value cant be negative");
             progres.setLeft(computed);
         } finally {
-            this.getLock(torrent).unlock();
+            lock.unlock();
         }
     }
 

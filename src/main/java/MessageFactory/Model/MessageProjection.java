@@ -1,4 +1,4 @@
-package Message.Model;
+package MessageFactory.Model;
 
 import Utils.ByteUtils;
 import lombok.Data;

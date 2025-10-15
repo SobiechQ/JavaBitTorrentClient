@@ -20,7 +20,6 @@ public abstract class Tracker {
     private final static long MAXIMUM_TIMEOUT = 60 * 30 * 1000; // 30 minutes
     private final URI uri;
     private final Torrent torrent;
-    @Nullable
     private Long lastSeen;
     @Nullable
     private Long interval;
@@ -28,6 +27,7 @@ public abstract class Tracker {
     public Tracker(@NonNull URI uri, @NonNull Torrent torrent) {
         this.uri = uri;
         this.torrent = torrent;
+        this.lastSeen = System.currentTimeMillis();
     }
 
     public URL getUrl() {

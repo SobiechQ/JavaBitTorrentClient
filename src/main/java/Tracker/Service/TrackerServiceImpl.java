@@ -23,7 +23,7 @@ public class TrackerServiceImpl implements TrackerService {
 
     @Override
     public Stream<TrackerRequestProjection> getRequests(@NotNull Torrent torrent) {
-        final var favorableTrackers = this.trackerRepository.getFavorableTrackers(torrent);
+        final var favorableTrackers = this.trackerRepository.getFavorableTrackers(torrent).stream();
         return this.getRequests(torrent, favorableTrackers);
     }
 
@@ -31,6 +31,7 @@ public class TrackerServiceImpl implements TrackerService {
     public Stream<TrackerRequestProjection> getScheduledRequests(@NotNull Torrent torrent) {
         final var favorableTrackers = this.trackerRepository
                 .getFavorableTrackers(torrent)
+                .stream()
                 .filter(Tracker::shouldAnnounce);
         return this.getRequests(torrent, favorableTrackers);
     }

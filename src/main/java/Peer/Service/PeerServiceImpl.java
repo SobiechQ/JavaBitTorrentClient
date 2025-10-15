@@ -1,6 +1,6 @@
 package Peer.Service;
 
-import Message.Model.MessageBitfield;
+import MessageFactory.Model.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Repository.PeerRepository;
@@ -14,19 +14,19 @@ public class PeerServiceImpl implements PeerService {
     private final TrackerController trackerController;
     private final PeerRepository peerRepository;
 
-    public PeerServiceImpl(@NonNull TrackerController trackerController,@NonNull PeerRepository peerRepository) {
+    public PeerServiceImpl(@NonNull TrackerController trackerController, @NonNull PeerRepository peerRepository) {
         this.trackerController = trackerController;
         this.peerRepository = peerRepository;
     }
 
     @Override
     public void announce(@NonNull Torrent torrent) {
-        trackerController.subscribeAnnounce(torrent, this::handleResponse);
+        trackerController.subscribeAnnounce(torrent, this::handleTrackerResponse);
     }
 
     @Override
     public void subscribeAsyncRevalidation(@NonNull Torrent torrent) {
-        this.trackerController.subscribeAsyncRevalidation(torrent, this::handleResponse);
+        this.trackerController.subscribeAsyncRevalidation(torrent, this::handleTrackerResponse);
     }
 
     @Override
@@ -44,7 +44,17 @@ public class PeerServiceImpl implements PeerService {
         this.peerRepository.setBitfield(torrent, peer, bitfield);
     }
 
-    private void handleResponse(@NonNull TrackerResponse response) {
+    @Override
+    public void handleChoke(@NonNull Torrent torrent, @NonNull Peer peer) {
+        //todo implement
+    }
+
+    @Override
+    public void handleUnchoke(@NonNull Torrent torrent, @NonNull Peer peer) {
+        //todo implement
+    }
+
+    private void handleTrackerResponse(@NonNull TrackerResponse response) {
         final var torrent = response.getRespondTo().getTorrent();
         response.getPeers()
                 .forEach(p -> peerRepository.addPeer(torrent, p));

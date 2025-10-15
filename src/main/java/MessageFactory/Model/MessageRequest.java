@@ -1,8 +1,8 @@
-package Message.Model;
+package MessageFactory.Model;
 
 import lombok.Getter;
 
-import static Message.Model.MessageType.REQUEST;
+import static MessageFactory.Model.MessageType.REQUEST;
 
 @Getter
 public class MessageRequest extends MessageProjection {

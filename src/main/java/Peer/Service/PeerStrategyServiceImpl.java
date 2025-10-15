@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
-import static Message.Model.DefaultMessage.CHOKE;
-import static Message.Model.DefaultMessage.UNCHOKE;
+import static MessageFactory.Model.DefaultMessage.CHOKE;
+import static MessageFactory.Model.DefaultMessage.UNCHOKE;
 
 @Service
 public class PeerStrategyServiceImpl implements PeerStrategyService {
