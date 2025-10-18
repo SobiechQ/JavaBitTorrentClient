@@ -6,6 +6,7 @@ import Peer.Model.PeerMessageProjection;
 import Peer.Repository.PeerRepository;
 import Peer.Repository.PeerStatistic;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 import static MessageFactory.Model.DefaultMessage.CHOKE;
 import static MessageFactory.Model.DefaultMessage.UNCHOKE;
 
+@Slf4j
 @Service
 public class PeerStrategyServiceImpl implements PeerStrategyService {
     private final static int MAX_CONCURRENT_CONNECTIONS = 50;
@@ -44,6 +46,7 @@ public class PeerStrategyServiceImpl implements PeerStrategyService {
 
     @Override
     public Stream<PeerMessageProjection> chokingAndUnchoking(Torrent torrent) {
+        log.info("Choking and unchoking algorithm started");
         final var peerStatistic = Seq.ofType(this.peerRepository.getPeerStatisticProjection(torrent), PeerStatistic.class);
 
         final var split = peerStatistic
@@ -65,6 +68,7 @@ public class PeerStrategyServiceImpl implements PeerStrategyService {
 
     @Override
     public Stream<PeerMessageProjection> optimisticUnchoke(Torrent torrent) {
+        log.info("Optimistic unchoke algorithm started");
         return Seq.ofType(this.peerRepository.getPeerStatisticProjection(torrent), PeerStatistic.class)
                 .filter(PeerStatistic::isChoked)
                 .map(PeerStatistic::getPeer)
@@ -76,6 +80,7 @@ public class PeerStrategyServiceImpl implements PeerStrategyService {
 
     @Override
     public Stream<PeerMessageProjection> chokeUnreachable(Torrent torrent) {
+        log.info("Choke unreachable algorithm started");
         return this.peerRepository.getPeerStatisticProjection(torrent)
                 .filter(ps -> System.currentTimeMillis() - ps.getLastSeen() >= MAX_TIMEOUT)
                 .map(PeerStatistic::getPeer)

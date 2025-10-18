@@ -3,12 +3,13 @@ package Peer.Model;
 import Model.Bencode.DecodingError;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
 public record Peer(InetAddress address, int port) {
 
-    public Peer(List<Integer> src){
+    public Peer(List<Integer> src) {
         this(getInetAddressByBytes(src), getPortByBytes(src));
     }
 
@@ -25,5 +26,9 @@ public record Peer(InetAddress address, int port) {
 
     private static int getPortByBytes(List<Integer> src) {
         return src.get(4) * 256 + src.get(5);
+    }
+
+    public InetSocketAddress getInetSocketAddress() {
+        return new InetSocketAddress(this.address(), this.port());
     }
 }

@@ -2,10 +2,15 @@ package Configuration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(scanBasePackages = {"Configuration", "Tracker", "AsyncClient", "AsyncServer", "Handshake", "MessageFactory", "Model", "Peer", "Piece"})
+import javax.swing.*;
+
+@EnableAsync
+@SpringBootApplication(scanBasePackages = {"Configuration", "Tracker", "ClientSession", "AsyncServer", "Handshake", "MessageFactory", "Model", "Peer", "Piece", "Decoder"})
 public class Main {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(Frame::new);
         SpringApplication.run(Main.class, args);
     }
 }

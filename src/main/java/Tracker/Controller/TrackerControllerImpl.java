@@ -41,24 +41,27 @@ public class TrackerControllerImpl implements TrackerController {
                         return null;
                     }))
                     .forEach(cf -> cf.thenAccept(consumer));
-        }, 1, 1, TimeUnit.MINUTES);
+        }, 0, 1, TimeUnit.MINUTES);
 
         scheduledExecutor.scheduleAtFixedRate(() -> trackerService.removeUnreachableTrackers(torrent), 10, 5, TimeUnit.MINUTES);
     }
 
     private CompletableFuture<TrackerResponse> announce(TrackerRequestProjection projection) {
         return CompletableFuture.supplyAsync(() -> {
+            log.info("Connecting to tracker {}", projection);
                     try {
                         return projection.tracker().announce(projection);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }, virtualExecutor)
-                .whenComplete(((response, _) -> {
+                .whenComplete(((response, ex) -> {
                     if (response != null) {
+                        log.info("Tracker connection success {}", projection);
                         this.trackerService.notifySuccess(response);
                         return;
                     }
+                    log.warn("Tracker connection failure", ex);
                     this.trackerService.notifyFailure(projection.tracker());
                 }));
     }

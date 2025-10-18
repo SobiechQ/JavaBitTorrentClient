@@ -2,8 +2,12 @@ package Handshake.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import Handshake.Model.HandshakeOutputProjection;
+import Model.DecodedBencode.Torrent;
+
+import java.nio.ByteBuffer;
+import java.util.Optional;
 
 public interface HandshakeService {
-    HandshakeOutputProjection getHandshake(byte[] infoHash, byte[] peerId);
-    boolean verifyHandshake(HandshakeInputProjection handshakeInput, byte[] handshakeOutput);
+    HandshakeOutputProjection getHandshake(Torrent torrent);
+    boolean verifyHandshake(Torrent torrent, HandshakeInputProjection handshakeInput);
 }

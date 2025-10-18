@@ -7,6 +7,7 @@ import Peer.Model.PeerMessageProjection;
 import Peer.Service.PeerService;
 import Peer.Service.PeerStrategyService;
 import lombok.NonNull;
+import org.springframework.stereotype.Controller;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+@Controller
 public class PeerControllerImpl implements PeerController {
     private final PeerService peerService;
     private final PeerStrategyService peerStrategyService;

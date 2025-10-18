@@ -1,8 +1,14 @@
 package AsyncClient;
 
+import ClientSession.Controller.ClientSessionController;
+import Model.DecodedBencode.Torrent;
+import Peer.Controller.PeerController;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -12,52 +18,22 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutorService;
 
 @Controller
+@AllArgsConstructor
 public class AsyncServerTest {
-    private final AsynchronousServerSocketChannel listener;
+    private final ClientSessionController controller;
+    private final PeerController peerController;
+    private final static Torrent MOCK_TORRENT;
 
-    public AsyncServerTest(ExecutorService executor) throws IOException {
-        this.listener = AsynchronousServerSocketChannel.open();
+    static {
+        try {
+            MOCK_TORRENT = Torrent.fromFile(new File("src/test/java/resources/ubuntu-25.04-desktop-amd64.iso.torrent"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostConstruct
     public void postConstruct() {
-        try {
-            this.listener.bind(new InetSocketAddress("127.0.0.1", 8081));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        this.accept();
-    }
 
-    private void accept() {
-        listener.accept(ByteBuffer.allocate(1024), new CompletionHandler<AsynchronousSocketChannel, ByteBuffer>() {
-            @Override
-            public void completed(AsynchronousSocketChannel client, ByteBuffer attachment) {
-                client.read(attachment, attachment, new CompletionHandler<Integer, ByteBuffer>() {
-                    @Override
-                    public void completed(Integer result, ByteBuffer buffer) {
-                        buffer.flip();
-                        String msg = new String(buffer.array(), 0, buffer.limit()).trim();
-                        String response = "Processed: " + msg;
-                        client.write(ByteBuffer.wrap(response.getBytes()));
-                        buffer.clear();
-                        client.read(buffer, buffer, this);
-                    }
-
-                    @Override
-                    public void failed(Throwable exc, ByteBuffer attachment) {
-                        try {
-                            client.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void failed(Throwable exc, ByteBuffer attachment) {
-
-            }
-        });
     }
 }

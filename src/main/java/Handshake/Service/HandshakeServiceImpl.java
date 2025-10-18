@@ -2,21 +2,23 @@ package Handshake.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import Handshake.Model.HandshakeOutputProjection;
+import Model.DecodedBencode.Torrent;
+import Peer.Model.Peer;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Service
 public class HandshakeServiceImpl implements HandshakeService {
     private final static String PROTOCOL_NAME = "BitTorrent protocol";
-    private final static byte[] PROTOCOL_NAME_BYTES = PROTOCOL_NAME.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    public final static byte[] PROTOCOL_NAME_BYTES = PROTOCOL_NAME.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    private final static byte[] PEER_ID = "00112233445566778899".getBytes();
 
     @Override
-    public HandshakeOutputProjection getHandshake(byte[] infoHash, byte[] peerId) {
-        if (infoHash.length != 20 || peerId.length != 20)
-            throw new IllegalArgumentException("Passed arrays have to be 20 bytes long.");
-
+    public HandshakeOutputProjection getHandshake(@NonNull Torrent torrent) {
         final var handshake = new byte[68];
         handshake[0] = 19;
 
@@ -24,14 +26,14 @@ public class HandshakeServiceImpl implements HandshakeService {
 
         Arrays.fill(handshake, 20, 28, (byte) 0);
 
-        System.arraycopy(infoHash, 0, handshake, 28, infoHash.length);
-        System.arraycopy(peerId, 0, handshake, 48, peerId.length);
+        System.arraycopy(torrent.getInfoHash(), 0, handshake, 28, torrent.getInfoHash().length);
+        System.arraycopy(PEER_ID, 0, handshake, 48, PEER_ID.length);
 
-        return new HandshakeOutputProjection(handshake, infoHash, peerId);
+        return new HandshakeOutputProjection(handshake, torrent.getInfoHash(), PEER_ID);
     }
 
     @Override
-    public boolean verifyHandshake(@NonNull HandshakeInputProjection handshakeInput, byte @NonNull [] infoHash) {
+    public boolean verifyHandshake(@NonNull Torrent torrent, @NonNull HandshakeInputProjection handshakeInput) {
         if (handshakeInput.handshake().length != 68 || handshakeInput.handshake()[0] != 19)
             return false;
 
@@ -44,7 +46,9 @@ public class HandshakeServiceImpl implements HandshakeService {
         final var receivedInfoHash = new byte[20];
         System.arraycopy(handshakeInput.handshake(), 28, receivedInfoHash, 0, 20);
 
-        return Arrays.equals(receivedInfoHash, infoHash);
+        return Arrays.equals(receivedInfoHash, torrent.getInfoHash());
     }
+
+
 
 }

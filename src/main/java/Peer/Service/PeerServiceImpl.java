@@ -7,10 +7,13 @@ import Peer.Repository.PeerRepository;
 import Tracker.Controller.TrackerController;
 import Tracker.Model.Messages.TrackerResponse;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PeerServiceImpl implements PeerService {
+    private static final Logger log = LoggerFactory.getLogger(PeerServiceImpl.class);
     private final TrackerController trackerController;
     private final PeerRepository peerRepository;
 
@@ -55,6 +58,7 @@ public class PeerServiceImpl implements PeerService {
     }
 
     private void handleTrackerResponse(@NonNull TrackerResponse response) {
+        log.info("Handling tracker response {}", response);
         final var torrent = response.getRespondTo().getTorrent();
         response.getPeers()
                 .forEach(p -> peerRepository.addPeer(torrent, p));
