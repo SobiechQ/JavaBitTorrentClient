@@ -2,6 +2,8 @@ package Decoder.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
@@ -12,11 +14,14 @@ import static Handshake.Service.HandshakeServiceImpl.PROTOCOL_NAME_BYTES;
 @Service
 public class DecoderServiceImpl implements DecoderService {
 
+    private static final Logger log = LoggerFactory.getLogger(DecoderServiceImpl.class);
+
     @Override
     public Optional<HandshakeInputProjection> decodeHandshake(@NonNull ByteBuffer buffer) {
-
-        if (buffer.remaining() < 68)
+        buffer.rewind();
+        if (buffer.remaining() < 68) {
             return Optional.empty();
+        }
 
         buffer.mark();
 

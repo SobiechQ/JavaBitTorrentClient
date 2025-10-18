@@ -1,28 +1,30 @@
 package Tracker.Service;
 
 import Model.DecodedBencode.Torrent;
+import Peer.Repository.PeerRepository;
 import Tracker.Model.Messages.TrackerRequestProjection;
 import Tracker.Model.Messages.TrackerResponse;
 import Tracker.Model.Tracker;
 import Tracker.Repository.TrackerRepository;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-
+@AllArgsConstructor
 @Service
 public class TrackerServiceImpl implements TrackerService {
+    private static final Logger log = LoggerFactory.getLogger(TrackerServiceImpl.class);
     private final TrackerRepository trackerRepository;
-
-    public TrackerServiceImpl(TrackerRepository trackerRepository) {
-        this.trackerRepository = trackerRepository;
-    }
+    private final PeerRepository peerRepository;
 
     @Override
     public Stream<TrackerRequestProjection> getRequests(@NotNull Torrent torrent) {
+        trackerRepository.addTrackers(torrent);
         final var favorableTrackers = this.trackerRepository.getFavorableTrackers(torrent).stream();
         return this.getRequests(torrent, favorableTrackers);
     }
@@ -34,6 +36,14 @@ public class TrackerServiceImpl implements TrackerService {
                 .stream()
                 .filter(Tracker::shouldAnnounce);
         return this.getRequests(torrent, favorableTrackers);
+    }
+
+    @Override
+    public void handleResponse(@NotNull Torrent torrent, @NonNull TrackerResponse response) {
+        log.info("Handling tracker response, peer count [{}]", response.getPeers().count());
+        response.getPeers()
+                .forEach(p -> peerRepository.addPeer(torrent, p));
+
     }
 
     @Override

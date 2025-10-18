@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 public interface TrackerRepository {
     List<Tracker> getFavorableTrackers(Torrent torrent);
+    void addTrackers(Torrent torrent);
     void removeUnreachableTrackers(Torrent torrent);
     long getUploaded(Torrent torrent);
     long getDownloaded(Torrent torrent);

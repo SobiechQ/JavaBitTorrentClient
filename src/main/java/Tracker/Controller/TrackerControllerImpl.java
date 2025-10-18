@@ -1,6 +1,7 @@
 package Tracker.Controller;
 
 import Model.DecodedBencode.Torrent;
+import Peer.Repository.PeerRepository;
 import Tracker.Model.Messages.TrackerRequestProjection;
 import Tracker.Model.Messages.TrackerResponse;
 import Tracker.Service.TrackerService;
@@ -21,34 +22,36 @@ public class TrackerControllerImpl implements TrackerController {
     private final ExecutorService virtualExecutor;
     private final ScheduledExecutorService scheduledExecutor;
 
+
     @Override
-    public void subscribeAnnounce(@NonNull Torrent torrent, Consumer<TrackerResponse> consumer) {
+    public void subscribeAnnounce(@NonNull Torrent torrent) {
+
         trackerService.getRequests(torrent)
                 .map(this::announce)
                 .map(cf -> cf.exceptionally(ex -> {
                     log.warn("Tracker announce failed", ex);
                     return null;
                 }))
-                .forEach(cf -> cf.thenAccept(consumer));
+                .forEach(cf -> cf.thenAccept(r -> trackerService.handleResponse(torrent, r)));
+        this.subscribeAsyncRevalidation(torrent);
     }
 
-    public void subscribeAsyncRevalidation(@NonNull Torrent torrent, Consumer<TrackerResponse> consumer) {
-        scheduledExecutor.scheduleAtFixedRate(() -> {
-            trackerService.getScheduledRequests(torrent)
-                    .map(this::announce)
-                    .map(cf -> cf.exceptionally(ex -> {
-                        log.warn("Tracker announce failed", ex);
-                        return null;
-                    }))
-                    .forEach(cf -> cf.thenAccept(consumer));
-        }, 0, 1, TimeUnit.MINUTES);
+    private void subscribeAsyncRevalidation(@NonNull Torrent torrent) {
+        scheduledExecutor.scheduleAtFixedRate(() ->
+                trackerService.getScheduledRequests(torrent)
+                .map(this::announce)
+                .map(cf -> cf.exceptionally(ex -> {
+                    log.warn("Tracker announce failed", ex);
+                    return null;
+                }))
+                .forEach(cf -> cf.thenAccept(r -> trackerService.handleResponse(torrent, r))), 0, 1, TimeUnit.MINUTES);
 
         scheduledExecutor.scheduleAtFixedRate(() -> trackerService.removeUnreachableTrackers(torrent), 10, 5, TimeUnit.MINUTES);
     }
 
     private CompletableFuture<TrackerResponse> announce(TrackerRequestProjection projection) {
         return CompletableFuture.supplyAsync(() -> {
-            log.info("Connecting to tracker {}", projection);
+                    log.info("Connecting to tracker {}", projection);
                     try {
                         return projection.tracker().announce(projection);
                     } catch (IOException e) {

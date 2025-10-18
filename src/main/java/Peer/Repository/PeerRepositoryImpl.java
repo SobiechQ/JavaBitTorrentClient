@@ -24,13 +24,8 @@ public class PeerRepositoryImpl implements PeerRepository {
     }
 
     @Override
-    public void updateAttempt(@NonNull Torrent torrent,@NonNull Peer peer) {
-        this.getPeerRepositoryRecord(torrent).updateAttempt(peer);
-    }
-
-    @Override
-    public void updateLastSeen(@NonNull Torrent torrent, @NonNull Peer peer) {
-        this.getPeerRepositoryRecord(torrent).updateLastSeen(peer);
+    public void updateFailed(@NonNull Torrent torrent, @NonNull Peer peer) {
+        this.getPeerRepositoryRecord(torrent).updateFailed(peer);
     }
 
     @Override
@@ -41,16 +36,6 @@ public class PeerRepositoryImpl implements PeerRepository {
     @Override
     public Stream<PeerStatistic> getPeerStatisticProjection(@NonNull Torrent torrent) {
         return this.getPeerRepositoryRecord(torrent).getPeers();
-    }
-
-    @Override
-    public void setChoked(@NonNull Torrent torrent, @NonNull Peer peer) {
-        this.getPeerRepositoryRecord(torrent).getStatistic(peer).setChoked(true);
-    }
-
-    @Override
-    public void setUnchoked(@NonNull Torrent torrent,@NonNull Peer peer) {
-        this.getPeerRepositoryRecord(torrent).getStatistic(peer).setChoked(false);
     }
 
     private PeerRepositoryRecord getPeerRepositoryRecord(@NonNull Torrent torrent) {

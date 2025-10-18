@@ -8,6 +8,5 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public interface TrackerController {
-    void subscribeAnnounce(Torrent torrent, Consumer<TrackerResponse> consumer);
-    void subscribeAsyncRevalidation(Torrent torrent, Consumer<TrackerResponse> consumer);
+    void subscribeAnnounce(Torrent torrent);
 }

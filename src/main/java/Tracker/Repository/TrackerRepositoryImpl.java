@@ -37,6 +37,17 @@ public class TrackerRepositoryImpl implements TrackerRepository {
     }
 
     @Override
+    public void addTrackers(@NonNull Torrent torrent) {
+        final var lock = this.getLock(torrent);
+        try {
+            lock.lock();
+            this.getTorrentProgressStatus(torrent);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
     public void removeUnreachableTrackers(@NonNull Torrent torrent) {
         final var lock = this.getLock(torrent);
         try {

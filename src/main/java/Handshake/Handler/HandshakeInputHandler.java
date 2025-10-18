@@ -5,6 +5,7 @@ import Decoder.Service.DecoderService;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
+import Peer.Service.PeerService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,17 +17,23 @@ import java.nio.channels.CompletionHandler;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class HandshakeInputHandler implements CompletionHandler<Integer, ByteBuffer> {
+public class HandshakeInputHandler implements CompletionHandler<Integer, Object> {
     private final Torrent torrent;
     private final AsynchronousSocketChannel socket;
     private final Peer peer;
+    private final ByteBuffer bufferIn;
     private final HandshakeService handshakeService;
     private final DecoderService decoderService;
     private final ClientSessionService clientSessionService;
+    private final PeerService peerService;
 
 
     @Override
-    public void completed(Integer bytesRead, ByteBuffer bufferIn) {
+    public void completed(Integer bytesRead, Object object) {
+        if (bufferIn == null) {
+            log.warn("Received null buffer, bytes read: [{}]", bytesRead);
+            return;
+        }
         if (bytesRead < 68) {
             this.failed(new IllegalStateException("Input handshake too short"), bufferIn);
             return;
@@ -46,8 +53,9 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, ByteBuf
 
 
     @Override
-    public void failed(Throwable exc, ByteBuffer bufferIn) {
+    public void failed(Throwable exc, Object object) {
         log.warn("Unable to handle handshake from peer {}, exception: {}", this.peer,  exc.getMessage());
         clientSessionService.removeSession(torrent, peer);
+        peerService.notifyFailed(torrent, peer);
     }
 }

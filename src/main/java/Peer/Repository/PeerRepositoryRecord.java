@@ -19,12 +19,8 @@ class PeerRepositoryRecord {
         return peers.values().stream();
     }
 
-    void updateAttempt(@NonNull Peer peer){
-        this.getStatistic(peer).updateLastAttempt();
-    }
-
-    void updateLastSeen(@NonNull Peer peer){
-        this.getStatistic(peer).updateLastSeen();
+    void updateFailed(@NonNull Peer peer){
+        this.getStatistic(peer).updateFailed();
     }
 
     void setBitfield(@NonNull Peer peer, @NonNull MessageBitfield bitfield) {

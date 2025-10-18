@@ -14,17 +14,11 @@ public class PeerStatistic {
     @Setter
     @Nullable
     private MessageBitfield bitfield;
-    private long lastSeen;
-    private long lastAttempt;
+    private int failedCount;
 
     //todo delta of downloaded length -
 
-    @Setter
-    private boolean isChoked = true;
-
     PeerStatistic(Peer peer) {
-        this.lastSeen = System.currentTimeMillis();
-        this.lastAttempt = System.currentTimeMillis();
         this.peer = peer;
     }
 
@@ -42,22 +36,8 @@ public class PeerStatistic {
         return Optional.ofNullable(bitfield);
     }
 
-    public boolean isChoked() {
-        return this.isChoked;
+    void updateFailed() {
+        this.failedCount++;
     }
 
-    public boolean isUnchoked() {
-        return !this.isChoked;
-    }
-
-    void updateLastAttempt() {
-        this.lastAttempt = System.currentTimeMillis();
-    }
-
-    void updateLastSeen() {
-        final var time = System.currentTimeMillis();
-
-        this.lastAttempt = time;
-        this.lastSeen = time;
-    }
 }

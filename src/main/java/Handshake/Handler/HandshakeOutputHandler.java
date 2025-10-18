@@ -6,6 +6,7 @@ import Handshake.Model.HandshakeInputProjection;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
+import Peer.Service.PeerService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class HandshakeOutputHandler implements CompletionHandler<Void, Object> {
     private final Peer peer;
     private final HandshakeService handshakeService;
     private final ClientSessionService clientSessionService;
+    private final PeerService peerService;
     private final HandshakeHandlerFactory handshakeHandlerFactory;
 
 
@@ -35,12 +37,13 @@ public class HandshakeOutputHandler implements CompletionHandler<Void, Object> {
         bufferOut.rewind();
         socket.write(bufferOut);
         final var bufferIn = ByteBuffer.allocate(4096);
-        socket.read(bufferIn, bufferIn, handshakeHandlerFactory.getHandshakeInputHandler(torrent, socket, peer));
+        socket.read(bufferIn, null, handshakeHandlerFactory.getHandshakeInputHandler(torrent, socket, peer, bufferIn));
     }
 
     @Override
     public void failed(Throwable exc, Object peerMessage) {
-        log.warn("Unable to connect to peer {}, exception: {}", this.peer,  exc.getMessage());
+//        log.warn("Unable to connect to peer {}, exception: {}", this.peer,  exc.getMessage());
         clientSessionService.removeSession(torrent, peer);
+        peerService.notifyFailed(torrent, peer);
     }
 }

@@ -4,6 +4,8 @@ import com.google.common.base.Charsets;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.jooq.lambda.tuple.Tuple2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -25,6 +27,7 @@ import java.util.stream.Stream;
  */
 @EqualsAndHashCode
 public class Bencode {
+    private static final Logger log = LoggerFactory.getLogger(Bencode.class);
     private final BencodeValue bencodeValue;
     public final static Charset CHARSET = Charsets.ISO_8859_1;
 
@@ -84,6 +87,7 @@ public class Bencode {
             default -> {
                 if (Character.isDigit(encoded.charAt(0)))
                     yield BString.decode(encoded).map1(Bencode::new);
+                log.warn("unable to determine type of encoded value {}", encoded);
                 throw new DecodingError("unable to determine type of encoded value");
             }
         };
