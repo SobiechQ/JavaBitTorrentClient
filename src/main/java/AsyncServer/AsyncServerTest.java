@@ -23,18 +23,18 @@ public class AsyncServerTest {
         this.listener = AsynchronousServerSocketChannel.open();
     }
 
-    @Async
-    @PostConstruct
-    public void postConstruct() {
-        try {
-            final var inet = new InetSocketAddress("127.0.0.1", 6881); //set to random and inform tracker about port in use
-            log.info("Server listening on address {}", inet);
-            this.listener.bind(inet);
-            this.accept();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Async
+//    @PostConstruct
+//    public void postConstruct() {
+//        try {
+////            final var inet = new InetSocketAddress("127.0.0.1", 6881); //set to random and inform tracker about port in use
+//            this.listener.bind(null);
+//            log.info("Server listening on address {}", this.listener.);
+//            this.accept();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     private void accept() {
         listener.accept(ByteBuffer.allocate(1024), new CompletionHandler<AsynchronousSocketChannel, ByteBuffer>() {

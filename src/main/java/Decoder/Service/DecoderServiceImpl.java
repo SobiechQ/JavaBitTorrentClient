@@ -78,7 +78,7 @@ public class DecoderServiceImpl implements DecoderService {
             case BITFIELD -> this.decodeMessageBitfield(buffer, messageLength);
             case REQUEST -> this.decodeMessageRequest(buffer, messageLength);
             case PIECE -> this.decodePiece(buffer, messageLength);
-            case KEEP_ALIVE -> Optional.empty();
+            case KEEP_ALIVE -> Optional.of(KEEP_ALIVE.getProjection());
             case CANCEL -> this.decodeMessageProjection(buffer, MessageType.CANCEL, messageLength);
             case PORT -> this.decodeMessageProjection(buffer, MessageType.PORT, messageLength);
         };

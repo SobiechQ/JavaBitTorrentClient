@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static Model.Message.MessageType.*;
 
 @SpringBootTest(classes = Configuration.Main.class)
-@ContextConfiguration(classes = {DecoderServiceImpl.class, HandshakeServiceImpl.class})
+@ContextConfiguration(classes = {HandshakeServiceImpl.class})
 class DecoderServiceImplTest {
     @Autowired
     private DecoderService decoderService;
@@ -305,7 +305,7 @@ class DecoderServiceImplTest {
         final var array = ByteUtils.getRandomByteArray(10);
         final var data = new MessagePiece(1111, 2222, array);
         final var buffer = ByteBuffer.allocate(22);
-        buffer.put(data.getData(), 0, 1228);
+        buffer.put(data.getData(), 0, 22);
         buffer.rewind();
 
         final var decoded = decoderService.decodeMessage(buffer);
