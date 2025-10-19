@@ -1,16 +1,14 @@
 package Peer.Repository;
 
-import MessageFactory.Model.MessageBitfield;
+import Model.Message.MessageBitfield;
 import Peer.Model.Peer;
 import Peer.Model.PeerStatisticProjection;
 import lombok.NonNull;
-import org.jetbrains.annotations.Blocking;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 class PeerRepositoryRecord {

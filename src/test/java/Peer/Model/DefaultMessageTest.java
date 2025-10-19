@@ -1,8 +1,8 @@
 package Peer.Model;
 
-import MessageFactory.Model.DefaultMessage;
-import MessageFactory.Model.MessageType;
-import MessageFactory.Model.MessageProjection;
+import Model.Message.DefaultMessage;
+import Model.Message.MessageType;
+import Model.Message.MessageProjection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

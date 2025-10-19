@@ -1,6 +1,6 @@
 package Peer.Repository;
 
-import MessageFactory.Model.MessageBitfield;
+import Model.Message.MessageBitfield;
 import Peer.Model.Peer;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package Peer.Model;
 
-import MessageFactory.Model.MessageProjection;
+import Model.Message.MessageProjection;
 import lombok.NonNull;
 
 import java.net.InetSocketAddress;

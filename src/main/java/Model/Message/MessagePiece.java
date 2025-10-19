@@ -1,9 +1,9 @@
-package MessageFactory.Model;
+package Model.Message;
 
 import Utils.ByteUtils;
 import lombok.Getter;
 
-import static MessageFactory.Model.MessageType.PIECE;
+import static Model.Message.MessageType.PIECE;
 
 @Getter
 public class MessagePiece extends MessageProjection {

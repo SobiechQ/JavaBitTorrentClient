@@ -2,10 +2,9 @@ package Decoder.Service;
 
 import Handshake.Service.HandshakeService;
 import Handshake.Service.HandshakeServiceImpl;
-import MessageFactory.Model.*;
 import Model.Bencode.DecodingError;
 import Model.DecodedBencode.Torrent;
-import Peer.Model.PeerDataInputProjection;
+import Model.Message.*;
 import Utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 
-import static MessageFactory.Model.MessageType.*;
+import static Model.Message.MessageType.*;
 
 @SpringBootTest(classes = Configuration.Main.class)
 @ContextConfiguration(classes = {DecoderServiceImpl.class, HandshakeServiceImpl.class})

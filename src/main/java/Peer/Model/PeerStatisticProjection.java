@@ -1,6 +1,6 @@
 package Peer.Model;
 
-import MessageFactory.Model.MessageBitfield;
+import Model.Message.MessageBitfield;
 import lombok.Builder;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;

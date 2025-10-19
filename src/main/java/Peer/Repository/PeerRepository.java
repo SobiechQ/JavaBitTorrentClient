@@ -1,6 +1,6 @@
 package Peer.Repository;
 
-import MessageFactory.Model.MessageBitfield;
+import Model.Message.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Model.PeerStatisticProjection;

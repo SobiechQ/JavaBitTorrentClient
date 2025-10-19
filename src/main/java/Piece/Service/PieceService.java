@@ -1,7 +1,7 @@
 package Piece.Service;
 
-import MessageFactory.Model.MessageHave;
-import MessageFactory.Model.MessageProjection;
+import Model.Message.MessageHave;
+import Model.Message.MessageProjection;
 import Model.DecodedBencode.Torrent;
 
 import java.util.stream.Stream;

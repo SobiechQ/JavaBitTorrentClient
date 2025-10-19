@@ -1,6 +1,6 @@
 package atodo.TCP;
 
-import MessageFactory.Model.MessageType;
+import Model.Message.MessageType;
 import Utils.ByteUtils;
 import io.vavr.control.Try;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
-import static MessageFactory.Model.MessageType.*;
+import static Model.Message.MessageType.*;
 
 /**
  * Represents a single entity  of peer-client communication. Can be used to represent either input or output value.

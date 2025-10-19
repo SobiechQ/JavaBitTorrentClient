@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-import static MessageFactory.Model.DefaultMessage.CHOKE;
-import static MessageFactory.Model.DefaultMessage.UNCHOKE;
-
 @Slf4j
 @Service
 public class PeerStrategyServiceImpl implements PeerStrategyService {

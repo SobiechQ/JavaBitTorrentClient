@@ -1,7 +1,7 @@
 package Decoder.Service;
 
 import Handshake.Model.HandshakeInputProjection;
-import MessageFactory.Model.MessageProjection;
+import Model.Message.MessageProjection;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

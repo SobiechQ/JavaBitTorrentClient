@@ -1,6 +1,6 @@
 package Peer.Controller;
 
-import MessageFactory.Model.MessageBitfield;
+import Model.Message.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
