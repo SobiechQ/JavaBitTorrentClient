@@ -1,9 +1,12 @@
 package Model.Message;
 
 import Utils.ByteUtils;
+import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.BitSet;
 
+@Getter
 public class MessageBitfield extends MessageProjection {
     private final BitSet bitfield;
 
@@ -30,5 +33,13 @@ public class MessageBitfield extends MessageProjection {
             reversed[i] = ByteUtils.reverseBits(payload[i]);
         }
         return BitSet.valueOf(reversed);
+    }
+
+    @Override
+    public String toString() {
+        return "MessageBitfield{" +
+               "length=" + this.getData().length +
+               ", bitfield=" + Arrays.toString(bitfield.toByteArray()) +
+               "} " + super.toString();
     }
 }

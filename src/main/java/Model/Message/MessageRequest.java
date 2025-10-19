@@ -6,7 +6,7 @@ import static Model.Message.MessageType.REQUEST;
 
 @Getter
 public class MessageRequest extends MessageProjection {
-    private final static int REQUEST_LENGTH = (int) Math.pow(2, 14);
+    public final static int REQUEST_LENGTH = (int) Math.pow(2, 14);
     private final int index;
     private final int begin;
     private final int length;

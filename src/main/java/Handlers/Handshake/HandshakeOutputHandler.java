@@ -1,15 +1,12 @@
-package Handshake.Handler;
+package Handlers.Handshake;
 
 import ClientSession.Service.ClientSessionService;
-import Decoder.Service.DecoderService;
-import Handshake.Model.HandshakeInputProjection;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;

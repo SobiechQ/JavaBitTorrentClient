@@ -1,4 +1,4 @@
-package Decoder.Service;
+package Handlers.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import Model.Message.MessageProjection;

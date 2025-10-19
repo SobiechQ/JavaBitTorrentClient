@@ -15,8 +15,4 @@ public class PieceServiceImpl implements PieceService {
         return Stream.of();
     }
 
-    @Override
-    public void handleHave(Torrent torrent, MessageHave messageHave) {
-
-    }
 }

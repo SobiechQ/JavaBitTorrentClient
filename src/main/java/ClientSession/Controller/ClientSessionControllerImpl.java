@@ -1,7 +1,7 @@
 package ClientSession.Controller;
 
 import ClientSession.Service.ClientSessionService;
-import Handshake.Handler.HandshakeHandlerFactory;
+import Handlers.Handshake.HandshakeHandlerFactory;
 import Model.DecodedBencode.Torrent;
 import Peer.Controller.PeerController;
 import Peer.Model.Peer;

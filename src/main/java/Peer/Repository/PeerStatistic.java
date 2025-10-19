@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.BitSet;
 import java.util.Optional;
 
 @Getter
@@ -13,7 +14,7 @@ class PeerStatistic {
     private final Peer peer;
     @Setter
     @Nullable
-    private MessageBitfield bitfield;
+    private BitSet bitfield;
     private int failedCount;
 
     //todo delta of downloaded length -
@@ -22,22 +23,30 @@ class PeerStatistic {
         this.peer = peer;
     }
 
-    public boolean isSeeder() {
-        return this.getBitfield().map(MessageBitfield::isSeeder).orElse(false);
+    boolean isSeeder() {
+        return this.getBitfield()
+                .map(bs -> bs.nextClearBit(0) >= bs.length())
+                .orElse(false);
     }
 
-    public boolean hasPiece(int index) {
+    boolean hasPiece(int index) {
         if (isSeeder())
             return true;
-        return this.getBitfield().map(mb -> mb.hasPiece(index)).orElse(false);
+        return this.getBitfield().map(bs -> bs.get(index)).orElse(false);
     }
 
-    public Optional<MessageBitfield> getBitfield() {
+    Optional<BitSet> getBitfield() {
         return Optional.ofNullable(bitfield);
     }
 
     void updateFailed() {
         this.failedCount++;
+    }
+
+    void updateBitfield(int index) {
+        if (this.bitfield == null)
+            this.bitfield = new BitSet();
+        this.bitfield.set(index);
     }
 
 }

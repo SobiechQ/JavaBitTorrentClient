@@ -1,19 +1,22 @@
-package Handshake.Handler;
+package Handlers.Handshake;
 
 import ClientSession.Service.ClientSessionService;
-import Decoder.Service.DecoderService;
+import Handlers.Service.DecoderService;
+import Handlers.Message.MessageHandlerFactory;
+import Handlers.Service.HandlerService;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+
+import static Model.Message.MessageRequest.REQUEST_LENGTH;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -26,14 +29,12 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
     private final DecoderService decoderService;
     private final ClientSessionService clientSessionService;
     private final PeerService peerService;
+    private final MessageHandlerFactory messageHandlerFactory;
+    private final HandlerService handlerService;
 
 
     @Override
     public void completed(Integer bytesRead, Object object) {
-        if (bufferIn == null) {
-            log.warn("Received null buffer, bytes read: [{}]", bytesRead);
-            return;
-        }
         if (bytesRead < 68) {
             this.failed(new IllegalStateException("Input handshake too short"), bufferIn);
             return;
@@ -48,7 +49,9 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
         }
 
         log.info("Handshake established with peer {}", peer);
-        socket.read(bufferIn, null, this);
+        handlerService.handleMessageInput(torrent, peer, bufferIn, bytesRead - 68);
+        final var messageBuffer = ByteBuffer.allocate(REQUEST_LENGTH);
+        socket.read(messageBuffer, null, messageHandlerFactory.getMessageInputHandler(torrent, socket, peer, messageBuffer));
     }
 
 

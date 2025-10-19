@@ -1,5 +1,6 @@
 package Peer.Repository;
 
+import Model.DecodedBencode.Torrent;
 import Model.Message.MessageBitfield;
 import Peer.Model.Peer;
 import Peer.Model.PeerStatisticProjection;
@@ -38,11 +39,21 @@ class PeerRepositoryRecord {
         }
     }
 
-    void setBitfield(@NonNull Peer peer, @NonNull MessageBitfield bitfield) {
+    void setBitfield(@NonNull Peer peer, @NonNull BitSet bitfield) {
         final var lock = this.getLock(peer).writeLock();
         try {
             lock.lock();
             this.getStatistic(peer).setBitfield(bitfield);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    void updateBitfield(@NonNull Peer peer, int index) {
+        final var lock = this.getLock(peer).writeLock();
+        try {
+            lock.lock();
+            this.getStatistic(peer).updateBitfield(index);
         } finally {
             lock.unlock();
         }
@@ -70,7 +81,10 @@ class PeerRepositoryRecord {
     private PeerStatisticProjection toPeerStatisticProjection(@NonNull PeerStatistic statistic) {
         return PeerStatisticProjection.builder()
                 .peer(statistic.getPeer())
-                .messageBitfield(statistic.getBitfield().orElse(null))
+                .messageBitfield(statistic
+                        .getBitfield()
+                        .map(bs -> (BitSet) bs.clone())
+                        .orElse(null))
                 .failedCount(statistic.getFailedCount())
                 .isSeeder(statistic.isSeeder())
                 .build();

@@ -1,7 +1,9 @@
-package Handshake.Handler;
+package Handlers.Handshake;
 
 import ClientSession.Service.ClientSessionService;
-import Decoder.Service.DecoderService;
+import Handlers.Service.DecoderService;
+import Handlers.Message.MessageHandlerFactory;
+import Handlers.Service.HandlerService;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
@@ -20,6 +22,8 @@ public class HandshakeHandlerFactory {
     private final DecoderService decoderService;
     private final ClientSessionService clientSessionService;
     private final PeerService peerService;
+    private final MessageHandlerFactory messageHandlerFactory;
+    private final HandlerService handlerService;
 
 
     public HandshakeOutputHandler getHandshakeOutputHandler(@NonNull Torrent torrent, @NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) {
@@ -43,7 +47,9 @@ public class HandshakeHandlerFactory {
                 handshakeService,
                 decoderService,
                 clientSessionService,
-                peerService
+                peerService,
+                messageHandlerFactory,
+                handlerService
         );
     }
 }

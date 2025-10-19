@@ -7,6 +7,7 @@ import Peer.Model.PeerStatisticProjection;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -30,8 +31,13 @@ public class PeerRepositoryImpl implements PeerRepository {
     }
 
     @Override
-    public void setBitfield(@NonNull Torrent torrent, @NonNull Peer peer, @NonNull MessageBitfield bitfield) {
+    public void setBitfield(@NonNull Torrent torrent, @NonNull Peer peer, @NonNull BitSet bitfield) {
         this.getPeerRepositoryRecord(torrent).setBitfield(peer, bitfield);
+    }
+
+    @Override
+    public void updateBitfield(@NonNull Torrent torrent, @NonNull Peer peer, int index) {
+        this.getPeerRepositoryRecord(torrent).updateBitfield(peer, index);
     }
 
     @Override
