@@ -107,4 +107,22 @@ public final class ByteUtils {
         Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
         return bytes;
     }
+
+    public static boolean[] bytesToBooleans(byte[] bytes) {
+        boolean[] bits = new boolean[bytes.length * 8];
+        for (int i = 0; i < bytes.length; i++) {
+            for (int bit = 0; bit < 8; bit++) {
+                bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;
+            }
+        }
+        return bits;
+    }
+
+    public static byte reverseBits(byte b) {
+        int v = b & 0xFF;
+        v = ((v & 0x55) << 1) | ((v & 0xAA) >>> 1);
+        v = ((v & 0x33) << 2) | ((v & 0xCC) >>> 2);
+        v = ((v & 0x0F) << 4) | ((v & 0xF0) >>> 4);
+        return (byte) v;
+    }
 }

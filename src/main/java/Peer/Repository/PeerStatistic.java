@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 @Getter
-public class PeerStatistic {
+class PeerStatistic {
     private final Peer peer;
     @Setter
     @Nullable

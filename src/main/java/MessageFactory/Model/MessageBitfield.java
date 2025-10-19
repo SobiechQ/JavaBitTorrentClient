@@ -1,23 +1,34 @@
 package MessageFactory.Model;
 
-import java.util.Map;
-import java.util.Optional;
+import Utils.ByteUtils;
+
+import java.util.BitSet;
 
 public class MessageBitfield extends MessageProjection {
-    private final Map<Integer, Boolean> bitfield;
+    private final BitSet bitfield;
 
-    public MessageBitfield(byte[] payload, Map<Integer, Boolean> bitfield) {
+    public MessageBitfield(byte[] payload) {
         super(MessageType.BITFIELD, payload);
-        this.bitfield = bitfield;
+        this.bitfield = getBitset(payload);
     }
 
     public boolean hasPiece(int index) {
-        return Optional.ofNullable(bitfield.get(index)).orElse(false);
+        return this.bitfield.get(index);
     }
 
     public boolean isSeeder() {
-        return this.bitfield.values()
-                .stream()
-                .allMatch(t -> t);
+        return this.bitfield.nextClearBit(0) >= this.bitfield.length();
+    }
+
+    private static byte[] getPayload(BitSet bitfield) {
+        return bitfield.toByteArray();
+    }
+
+    private static BitSet getBitset(byte[] payload) {
+        byte[] reversed = new byte[payload.length];
+        for (int i = 0; i < payload.length; i++) {
+            reversed[i] = ByteUtils.reverseBits(payload[i]);
+        }
+        return BitSet.valueOf(reversed);
     }
 }

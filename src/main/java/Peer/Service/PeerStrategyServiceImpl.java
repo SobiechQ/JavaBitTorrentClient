@@ -3,8 +3,8 @@ package Peer.Service;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Model.PeerMessageProjection;
+import Peer.Model.PeerStatisticProjection;
 import Peer.Repository.PeerRepository;
-import Peer.Repository.PeerStatistic;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Seq;
@@ -30,16 +30,16 @@ public class PeerStrategyServiceImpl implements PeerStrategyService {
     @Override
     public Stream<Peer> getPeers(@NonNull Torrent torrent) {
         return this.peerRepository.getPeerStatisticProjection(torrent)
-                .sorted(Comparator.comparingInt(PeerStatistic::getFailedCount))
-                .map(PeerStatistic::getPeer);
+                .sorted(Comparator.comparingInt(PeerStatisticProjection::failedCount))
+                .map(PeerStatisticProjection::peer);
     }
 
     @Override
     public Stream<Peer> getPeers(Torrent torrent, int index) {
         return this.peerRepository.getPeerStatisticProjection(torrent)
                 .filter(ps -> ps.hasPiece(index))
-                .sorted(Comparator.comparingInt(PeerStatistic::getFailedCount))
-                .map(PeerStatistic::getPeer);
+                .sorted(Comparator.comparingInt(PeerStatisticProjection::failedCount))
+                .map(PeerStatisticProjection::peer);
     }
 
     @Override

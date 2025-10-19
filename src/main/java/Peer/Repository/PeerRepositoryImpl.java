@@ -3,6 +3,7 @@ package Peer.Repository;
 import MessageFactory.Model.MessageBitfield;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
+import Peer.Model.PeerStatisticProjection;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -34,8 +35,10 @@ public class PeerRepositoryImpl implements PeerRepository {
     }
 
     @Override
-    public Stream<PeerStatistic> getPeerStatisticProjection(@NonNull Torrent torrent) {
-        return this.getPeerRepositoryRecord(torrent).getPeers();
+    public Stream<PeerStatisticProjection> getPeerStatisticProjection(@NonNull Torrent torrent) {
+        return this.getPeerRepositoryRecord(torrent)
+                .getPeers()
+                .stream();
     }
 
     private PeerRepositoryRecord getPeerRepositoryRecord(@NonNull Torrent torrent) {

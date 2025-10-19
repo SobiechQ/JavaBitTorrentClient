@@ -2,36 +2,87 @@ package Peer.Repository;
 
 import MessageFactory.Model.MessageBitfield;
 import Peer.Model.Peer;
+import Peer.Model.PeerStatisticProjection;
 import lombok.NonNull;
+import org.jetbrains.annotations.Blocking;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 class PeerRepositoryRecord {
     private final Map<Peer, PeerStatistic> peers;
+    private final Map<Peer, ReentrantReadWriteLock> locks;
 
     PeerRepositoryRecord() {
         this.peers = new HashMap<>();
+        this.locks = new ConcurrentHashMap<>();
     }
 
-    Stream<PeerStatistic> getPeers() {
-        return peers.values().stream();
+    Set<PeerStatisticProjection> getPeers() {
+        synchronized (this.peers) {
+            return peers.values().stream()
+                    .map(this::toPeerStatisticProjection)
+                    .collect(Collectors.toUnmodifiableSet());
+        }
     }
 
     void updateFailed(@NonNull Peer peer){
-        this.getStatistic(peer).updateFailed();
+        final var lock = this.getLock(peer).writeLock();
+        try {
+            lock.lock();
+            this.getStatistic(peer).updateFailed();
+        } finally {
+            lock.unlock();
+        }
     }
 
     void setBitfield(@NonNull Peer peer, @NonNull MessageBitfield bitfield) {
-        this.getStatistic(peer).setBitfield(bitfield);
-    }
-
-    PeerStatistic getStatistic(@NonNull Peer peer) {
-        return this.peers.computeIfAbsent(peer, _ -> new PeerStatistic(peer));
+        final var lock = this.getLock(peer).writeLock();
+        try {
+            lock.lock();
+            this.getStatistic(peer).setBitfield(bitfield);
+        } finally {
+            lock.unlock();
+        }
     }
 
     void addPeer(@NonNull Peer peer) {
-        this.peers.putIfAbsent(peer, new PeerStatistic(peer));
+        final var lock = this.getLock(peer).writeLock();
+        try {
+            lock.lock();
+            this.peers.putIfAbsent(peer, new PeerStatistic(peer));
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private PeerStatisticProjection getStatisticProjection(@NonNull Peer peer) {
+        final var lock = this.getLock(peer).readLock();
+        try {
+            return this.toPeerStatisticProjection(this.getStatistic(peer));
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private PeerStatisticProjection toPeerStatisticProjection(@NonNull PeerStatistic statistic) {
+        return PeerStatisticProjection.builder()
+                .peer(statistic.getPeer())
+                .messageBitfield(statistic.getBitfield().orElse(null))
+                .failedCount(statistic.getFailedCount())
+                .isSeeder(statistic.isSeeder())
+                .build();
+    }
+
+    private PeerStatistic getStatistic(@NonNull Peer peer) {
+        return this.peers.computeIfAbsent(peer, _ -> new PeerStatistic(peer));
+    }
+
+    private synchronized ReentrantReadWriteLock getLock(@NonNull Peer peer) {
+        return this.locks.computeIfAbsent(peer, _ -> new ReentrantReadWriteLock());
     }
 }

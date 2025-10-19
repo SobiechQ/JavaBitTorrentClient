@@ -27,7 +27,7 @@ public class AsyncClientTest {
 
     @PostConstruct
     public void postConstruct() {
-        trackerController.subscribeAnnounce(MOCK_TORRENT);
-        sessionController.subscribeRepopulateSessions(MOCK_TORRENT);
+//        trackerController.subscribeAnnounce(MOCK_TORRENT);
+//        sessionController.subscribeRepopulateSessions(MOCK_TORRENT);
     }
 }

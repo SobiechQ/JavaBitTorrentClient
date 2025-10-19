@@ -1,8 +1,8 @@
 package Configuration;
 
 import ClientSession.Repository.ClientSessionRepository;
+import Peer.Model.PeerStatisticProjection;
 import Peer.Repository.PeerRepository;
-import Peer.Repository.PeerStatistic;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -34,9 +34,8 @@ public class InformationService {
 
         }, 0, 1, TimeUnit.SECONDS);
         executor.scheduleAtFixedRate(() -> {
-            final var sessions = peerRepository.getPeerStatisticProjection(MOCK_TORRENT);
             log.info("Failed count array: [{}]", peerRepository.getPeerStatisticProjection(MOCK_TORRENT)
-                    .map(PeerStatistic::getFailedCount)
+                    .map(PeerStatisticProjection::failedCount)
                     .sorted(Comparator.comparingInt(i -> -i))
                     .map(i -> Integer.toString(i))
                     .collect(Collectors.joining(", ")));
