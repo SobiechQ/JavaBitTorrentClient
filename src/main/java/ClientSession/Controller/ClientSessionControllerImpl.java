@@ -7,6 +7,7 @@ import Peer.Controller.PeerController;
 import Peer.Model.Peer;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
@@ -22,8 +23,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 @AllArgsConstructor
 @Controller
+@Slf4j
 public class ClientSessionControllerImpl implements ClientSessionController {
-    private static final Logger log = LoggerFactory.getLogger(ClientSessionControllerImpl.class);
     private final ClientSessionService clientSessionService;
     private final PeerController peerController;
     private final HandshakeHandlerFactory handshakeHandlerFactory;

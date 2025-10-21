@@ -81,13 +81,7 @@ class PieceRepositoryRecord {
     }
 
     private boolean isPieceNotStarted(int index) {
-        final var lock = this.getLock(index).readLock();
-        try {
-            lock.lock();
-            return this.getPieceSet(index).isEmpty();
-        } finally {
-            lock.unlock();
-        }
+        return this.getPieceSet(index).isEmpty();
     }
 
     private Set<PiecePart> getPieceSet(int index) {

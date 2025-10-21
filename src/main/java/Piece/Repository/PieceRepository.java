@@ -6,9 +6,9 @@ import lombok.NonNull;
 import java.util.List;
 
 public interface PieceRepository {
-    void handlePiece(@NonNull Torrent torrent, int index, int begin, byte[] piece);
-    boolean isPieceComplete(@NonNull Torrent torrent, int index);
-    int getNextBegin(@NonNull Torrent torrent, int index);
-    List<Integer> getNotStartedPieces(@NonNull Torrent torrent);
-    List<Integer> getIncompletePieces(@NonNull Torrent torrent);
+    void handlePiece(Torrent torrent, int index, int begin, byte[] piece);
+    boolean isPieceComplete(Torrent torrent, int index);
+    int getNextBegin(Torrent torrent, int index);
+    List<Integer> getNotStartedPieces(Torrent torrent);
+    List<Integer> getIncompletePieces(Torrent torrent);
 }

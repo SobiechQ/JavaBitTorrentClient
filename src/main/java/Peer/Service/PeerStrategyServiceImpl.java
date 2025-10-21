@@ -11,13 +11,14 @@ import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 @Service
 public class PeerStrategyServiceImpl implements PeerStrategyService {
-    private final static long MAX_TIMEOUT = 1000 * 60 * 30;
-
     private final PeerRepository peerRepository;
 
     public PeerStrategyServiceImpl(@NonNull PeerRepository peerRepository) {
@@ -37,6 +38,20 @@ public class PeerStrategyServiceImpl implements PeerStrategyService {
                 .filter(ps -> ps.hasPiece(index))
                 .sorted(Comparator.comparingInt(PeerStatisticProjection::failedCount))
                 .map(PeerStatisticProjection::peer);
+    }
+
+    @Override
+    public Stream<Integer> getPiecesRarest(@NonNull Torrent torrent) {
+        return this.peerRepository
+                .getPeerStatisticProjection(torrent)
+                .map(PeerStatisticProjection::getBitfield)
+                .flatMap(Optional::stream)
+                .flatMap(bs -> bs.stream().boxed())
+                .collect(Collectors.groupingBy(i -> i, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Comparator.comparingLong(Map.Entry::getValue))
+                .map(Map.Entry::getKey);
     }
 
     @Override

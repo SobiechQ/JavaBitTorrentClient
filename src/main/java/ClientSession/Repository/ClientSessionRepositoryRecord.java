@@ -2,6 +2,7 @@ package ClientSession.Repository;
 
 import Peer.Model.Peer;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
+@Slf4j
 class ClientSessionRepositoryRecord {
-    private static final Logger log = LoggerFactory.getLogger(ClientSessionRepositoryRecord.class);
     private final ConcurrentHashMap<Peer, Session> sessions;
     private final Semaphore semaphore;
 

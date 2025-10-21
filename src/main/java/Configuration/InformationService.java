@@ -3,12 +3,11 @@ package Configuration;
 import ClientSession.Repository.ClientSessionRepository;
 import Peer.Model.PeerStatisticProjection;
 import Peer.Repository.PeerRepository;
+import Peer.Service.PeerStrategyService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.BasicMarker;
-import org.slf4j.helpers.BasicMarkerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -25,6 +24,7 @@ public class InformationService {
     private final ScheduledExecutorService executor;
     private final ClientSessionRepository clientSessionRepository;
     private final PeerRepository peerRepository;
+    private final PeerStrategyService peerStrategyService;
 
     @PostConstruct
     void start() {

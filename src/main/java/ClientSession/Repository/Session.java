@@ -2,16 +2,15 @@ package ClientSession.Repository;
 
 import Peer.Model.Peer;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.channels.AsynchronousSocketChannel;
 
+@Slf4j
 public record Session(@NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) implements AutoCloseable {
-
-    private static final Logger log = LoggerFactory.getLogger(Session.class);
-
     @Override
     public void close(){
         try {

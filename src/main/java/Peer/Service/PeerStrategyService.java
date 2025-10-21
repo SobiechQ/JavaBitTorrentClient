@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public interface PeerStrategyService {
     Stream<Peer> getPeers(Torrent torrent);
     Stream<Peer> getPeers(Torrent torrent, int index);
+    Stream<Integer> getPiecesRarest(Torrent torrent);
     Stream<PeerMessageProjection> chokingAndUnchoking(Torrent torrent);
     Stream<PeerMessageProjection> optimisticUnchoke(Torrent torrent);
     Stream<PeerMessageProjection> chokeUnreachable(Torrent torrent);
