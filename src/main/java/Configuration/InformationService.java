@@ -4,6 +4,8 @@ import ClientSession.Repository.ClientSessionRepository;
 import Peer.Model.PeerStatisticProjection;
 import Peer.Repository.PeerRepository;
 import Peer.Service.PeerStrategyService;
+import Piece.Repository.PieceRepository;
+import Piece.Service.PieceService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -24,6 +26,8 @@ public class InformationService {
     private final ScheduledExecutorService executor;
     private final ClientSessionRepository clientSessionRepository;
     private final PeerRepository peerRepository;
+    private final PieceRepository pieceRepository;
+    private final PieceService pieceService;
     private final PeerStrategyService peerStrategyService;
 
     @PostConstruct
@@ -39,6 +43,10 @@ public class InformationService {
                     .sorted(Comparator.comparingInt(i -> -i))
                     .map(i -> Integer.toString(i))
                     .collect(Collectors.joining(", ")));
+
+            pieceRepository.getPieceProjection(MOCK_TORRENT)
+                    .filter(p -> p.downloaded() != 0)
+                    .forEach(System.out::println);
 
         }, 0, 10, TimeUnit.SECONDS);
     }

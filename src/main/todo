@@ -1,5 +1,7 @@
 GUI z wykresem pokazującym statystykę na podstawie projection ropbionego przez scheduled executor
 
+slf4j exceptions to external file
+
 Zmiana locków na concurrent hjash mapy
 
 repozytoria niech przyjmują tylko postawwe dane a nie całe obiekty (tylko ich składowe int index, int begin, byte[] piece)

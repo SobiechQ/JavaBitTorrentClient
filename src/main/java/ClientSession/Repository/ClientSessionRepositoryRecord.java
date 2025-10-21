@@ -48,6 +48,13 @@ class ClientSessionRepositoryRecord {
                 .collect(Collectors.toUnmodifiableSet());
     }
 
+    Set<Peer> getActivePeers() {
+        return this.sessions
+                .keySet()
+                .stream()
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
     Optional<Session> getSession(@NonNull Peer peer) {
         return Optional.ofNullable(this.sessions.get(peer));
     }

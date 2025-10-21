@@ -9,4 +9,5 @@ public interface PeerService {
     void notifyFailed(Torrent torrent, Peer peer);
     void handleBitfield(Torrent torrent, Peer peer, MessageBitfield bitfield);
     void handleHave(Torrent torrent, Peer peer, MessageHave have);
+    boolean isPieceAvailable(Torrent torrent, Peer peer, int index);
 }

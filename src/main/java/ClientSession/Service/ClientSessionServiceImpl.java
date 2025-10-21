@@ -38,4 +38,10 @@ public class ClientSessionServiceImpl implements ClientSessionService {
     public void removeSession(@NonNull Torrent torrent,@NonNull Peer peer) {
         this.clientSessionRepository.removeSession(torrent, peer);
     }
+
+    @Override
+    public Stream<Peer> getActivePeers(Torrent torrent) {
+        return clientSessionRepository.getActivePeers(torrent)
+                .stream();
+    }
 }

@@ -14,4 +14,5 @@ public interface PeerRepository {
     void setBitfield(Torrent torrent, Peer peer, BitSet bitfield);
     void updateBitfield(Torrent torrent, Peer peer, int index);
     Stream<PeerStatisticProjection> getPeerStatisticProjection(Torrent torrent);
+    PeerStatisticProjection getPeerStatisticProjection(Torrent torrent, Peer peer);
 }

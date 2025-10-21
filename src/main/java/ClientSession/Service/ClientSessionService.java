@@ -10,4 +10,5 @@ import java.util.stream.Stream;
 public interface ClientSessionService {
     void populateSessions(Torrent torrent, Stream<Tuple2<AsynchronousSocketChannel, Peer>> socketPeer);
     void removeSession(Torrent torrent, Peer peer);
+    Stream<Peer> getActivePeers(Torrent torrent);
 }

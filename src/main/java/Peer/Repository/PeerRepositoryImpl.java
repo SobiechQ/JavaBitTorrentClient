@@ -47,6 +47,12 @@ public class PeerRepositoryImpl implements PeerRepository {
                 .stream();
     }
 
+    @Override
+    public PeerStatisticProjection getPeerStatisticProjection(@NonNull Torrent torrent, @NonNull Peer peer) {
+        return this.getPeerRepositoryRecord(torrent)
+                .getStatisticProjection(peer);
+    }
+
     private PeerRepositoryRecord getPeerRepositoryRecord(@NonNull Torrent torrent) {
         return this.peerRepository.computeIfAbsent(torrent, _ -> new PeerRepositoryRecord());
     }

@@ -3,6 +3,7 @@ package Handlers.Message;
 import ClientSession.Service.ClientSessionService;
 import Handlers.Service.HandlerService;
 import Model.DecodedBencode.Torrent;
+import Model.Message.MessageProjection;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
@@ -26,9 +28,19 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
 
     @Override
     public void completed(Integer bytesRead, Object attachment) {
+        if (bytesRead == -1) {
+            this.failed(new IllegalStateException("Connection closed"), bufferIn);
+            return;
+        }
+        if (!handlerService.isMessageComplete(bufferIn, bytesRead)) {
+            socket.read(bufferIn, null, this);
+            return;
+        }
+        final var read = bufferIn.position();
         bufferIn.rewind();
-        handlerService.handleMessageInput(torrent, peer, bufferIn, bytesRead);
+        final var outputMessages = handlerService.handleMessageInput(torrent, peer, bufferIn, read);
         bufferIn.clear();
+        this.handleOutputMessages(outputMessages);
         socket.read(bufferIn, null, this);
     }
 
@@ -37,5 +49,16 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
         log.warn("Unable to handle message from peer {}, exception: {}", this.peer,  exc.getMessage());
         clientSessionService.removeSession(torrent, peer);
         peerService.notifyFailed(torrent, peer);
+    }
+
+    private void handleOutputMessages(List<MessageProjection> messages) {
+        messages.forEach(m -> {
+            log.info("Sending to peer {} message {}", peer, m);
+            final var data = m.getData();
+            final var bufferOut = ByteBuffer.allocate(data.length);
+            bufferOut.put(data);
+            bufferOut.rewind();
+            socket.write(bufferOut);
+        });
     }
 }

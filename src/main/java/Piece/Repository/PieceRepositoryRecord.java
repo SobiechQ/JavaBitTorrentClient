@@ -42,7 +42,7 @@ class PieceRepositoryRecord {
                     return false;
                 offset += part.piece().length;
             }
-            return offset == torrent.getPieceLength();
+            return offset == this.getPieceLength(index);
         } finally {
             lock.unlock();
         }
@@ -67,7 +67,11 @@ class PieceRepositoryRecord {
         }
     }
 
-    List<Integer> getNotStartedPieces() {
+    Set<Integer> getPieces() {
+        return this.pieces.keySet();
+    }
+
+    List<Integer> getNotStartedPieces() { //todo set<>?
         return IntStream.range(0, torrent.getPieceCount())
                 .filter(this::isPieceNotStarted)
                 .boxed()
@@ -80,12 +84,21 @@ class PieceRepositoryRecord {
                 .toList();
     }
 
-    private boolean isPieceNotStarted(int index) {
-        return this.getPieceSet(index).isEmpty();
+    Set<PiecePart> getPieceSet(int index) {
+        return this.pieces.computeIfAbsent(index, _ -> new TreeSet<>(PIECE_PART_COMPARATOR));
     }
 
-    private Set<PiecePart> getPieceSet(int index) {
-        return this.pieces.computeIfAbsent(index, _ -> new TreeSet<>(PIECE_PART_COMPARATOR));
+    int getPieceLength(int index) {
+        final var length = torrent.getPieceLength();
+        final var count = torrent.getPieceCount();
+        if (index < count - 1)
+            return length;
+
+        return (int) (torrent.getLength() - ((long) length * (count - 1)));
+    }
+
+    private boolean isPieceNotStarted(int index) {
+        return this.getPieceSet(index).isEmpty();
     }
 
     private synchronized ReentrantReadWriteLock getLock(int index) {

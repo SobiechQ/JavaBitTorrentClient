@@ -1,12 +1,14 @@
 package Piece.Repository;
 
 import Model.DecodedBencode.Torrent;
+import Piece.Model.PieceProjection;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 @Repository
 public class PieceRepositoryImpl implements PieceRepository {
@@ -32,6 +34,26 @@ public class PieceRepositoryImpl implements PieceRepository {
     }
 
     @Override
+    public PieceProjection getPieceProjection(@NonNull Torrent torrent, int index) {
+        final var pieceSet = this.getPieceRepositoryRecord(torrent).getPieceSet(index);
+        return this.toProjection(torrent, index, pieceSet);
+    }
+
+    @Override
+    public Stream<PieceProjection> getPieceProjection(@NonNull Torrent torrent) {
+        final var record = this.getPieceRepositoryRecord(torrent);
+        return record
+                .getPieces()
+                .stream()
+                .map(i -> this.toProjection(torrent, i, record.getPieceSet(i)));
+    }
+
+    @Override
+    public int getPieceLength(@NonNull Torrent torrent, int index) {
+        return this.getPieceRepositoryRecord(torrent).getPieceLength(index);
+    }
+
+    @Override
     public List<Integer> getNotStartedPieces(@NonNull Torrent torrent) {
         return this.getPieceRepositoryRecord(torrent).getNotStartedPieces();
     }
@@ -43,6 +65,15 @@ public class PieceRepositoryImpl implements PieceRepository {
 
     private PieceRepositoryRecord getPieceRepositoryRecord(@NonNull Torrent torrent) {
         return this.pieceRepository.computeIfAbsent(torrent, _ -> new PieceRepositoryRecord(torrent));
+    }
+
+    private PieceProjection toProjection(@NonNull Torrent torrent, int index, @NonNull Set<PiecePart> parts) {
+        final var downloaded = parts.stream()
+                .map(piecePart -> piecePart.piece().length)
+                .mapToInt(i -> i)
+                .sum();
+
+        return new PieceProjection(index, downloaded, this.getPieceRepositoryRecord(torrent).getPieceLength(index) - downloaded);
     }
 
 

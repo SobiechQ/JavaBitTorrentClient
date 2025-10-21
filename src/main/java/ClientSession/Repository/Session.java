@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.channels.AsynchronousSocketChannel;
 
 @Slf4j
-public record Session(@NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) implements AutoCloseable {
+record Session(@NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) implements AutoCloseable {
     @Override
     public void close(){
         try {

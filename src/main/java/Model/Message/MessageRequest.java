@@ -21,4 +21,13 @@ public class MessageRequest extends MessageProjection {
     public MessageRequest(int index, int begin) {
         this(index, begin, REQUEST_LENGTH);
     }
+
+    @Override
+    public String toString() {
+        return "MessageRequest{" +
+               "index=" + index +
+               ", begin=" + begin +
+               ", length=" + length +
+               "} ";
+    }
 }

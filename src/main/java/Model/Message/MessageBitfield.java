@@ -39,7 +39,7 @@ public class MessageBitfield extends MessageProjection {
     public String toString() {
         return "MessageBitfield{" +
                "length=" + this.getData().length +
-               ", bitfield=" + Arrays.toString(bitfield.toByteArray()) +
+               ", bitfield.length=" + bitfield.size() +
                "} " + super.toString();
     }
 }

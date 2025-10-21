@@ -75,6 +75,7 @@ public class DecoderServiceImpl implements DecoderService {
 
         final var messageType = MessageType.valueOf(typeByte);
         return switch (messageType) {
+            case KEEP_ALIVE -> Optional.of(KEEP_ALIVE.getProjection());
             case CHOKE -> Optional.of(CHOKE.getProjection());
             case UNCHOKE -> Optional.of(UNCHOKE.getProjection());
             case INTERESTED -> Optional.of(INTERESTED.getProjection());
@@ -83,14 +84,13 @@ public class DecoderServiceImpl implements DecoderService {
             case BITFIELD -> this.decodeMessageBitfield(buffer, messageLength);
             case REQUEST -> this.decodeMessageRequest(buffer, messageLength);
             case PIECE -> this.decodePiece(buffer, messageLength);
-            case KEEP_ALIVE -> Optional.of(KEEP_ALIVE.getProjection());
-            case CANCEL -> this.decodeMessageProjection(buffer, MessageType.CANCEL, messageLength);
-            case PORT -> this.decodeMessageProjection(buffer, MessageType.PORT, messageLength);
+            case CANCEL -> Optional.of(CANCEL.getProjection());
+            case PORT -> Optional.of(PORT.getProjection());
         };
     }
 
     private Optional<MessageProjection> decodeMessageHave(@NonNull ByteBuffer buffer, int length) {
-        if (isTooShort(buffer, length, 4))
+        if (isTooShort(buffer, length))
             return Optional.empty();
 
         final var index = this.nextInt(buffer);
@@ -99,7 +99,7 @@ public class DecoderServiceImpl implements DecoderService {
     }
 
     private Optional<MessageProjection> decodeMessageBitfield(@NonNull ByteBuffer buffer, int length) {
-        if (isTooShort(buffer, length, length - 1))
+        if (isTooShort(buffer, length))
             return Optional.empty();
 
         final var data = new byte[length - 1];
@@ -109,7 +109,7 @@ public class DecoderServiceImpl implements DecoderService {
     }
 
     private Optional<MessageProjection> decodeMessageRequest(@NonNull ByteBuffer buffer, int length) {
-        if (isTooShort(buffer, length, 12))
+        if (isTooShort(buffer, length))
             return Optional.empty();
 
         final var index = this.nextInt(buffer);
@@ -120,7 +120,7 @@ public class DecoderServiceImpl implements DecoderService {
     }
 
     private Optional<MessageProjection> decodePiece(@NonNull ByteBuffer buffer, int length) {
-        if (isTooShort(buffer, length, length - 1))
+        if (isTooShort(buffer, length))
             return Optional.empty();
 
         final var index = this.nextInt(buffer);
@@ -133,7 +133,7 @@ public class DecoderServiceImpl implements DecoderService {
     }
 
     private Optional<MessageProjection> decodeMessageProjection(@NonNull ByteBuffer buffer, @NonNull MessageType messageType, int length) {
-        if (isTooShort(buffer, length, length - 1))
+        if (isTooShort(buffer, length))
             return Optional.empty();
 
         final var payload = new byte[length - 1];
@@ -148,8 +148,8 @@ public class DecoderServiceImpl implements DecoderService {
         return ByteUtils.bytesToInt(readArray);
     }
 
-    private boolean isTooShort(@NonNull ByteBuffer buffer, int decodedLength, int minimalLength) {
-        final var isTooShort = (decodedLength - 1) < minimalLength || buffer.remaining() < minimalLength;
+    private boolean isTooShort(@NonNull ByteBuffer buffer, int decodedLength) {
+        final var isTooShort = buffer.remaining() < decodedLength - 1;
         if (isTooShort)
             buffer.reset();
         return isTooShort;

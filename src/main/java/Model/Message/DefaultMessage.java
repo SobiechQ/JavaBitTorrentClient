@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum DefaultMessage {
-    KEEP_ALIVE(MessageType.KEEP_ALIVE), CHOKE(MessageType.CHOKE), UNCHOKE(MessageType.UNCHOKE), INTERESTED(MessageType.INTERESTED), NOT_INTERESTED(MessageType.NOT_INTERESTED);
+    KEEP_ALIVE(new MessageKeepAlive()), CHOKE(new MessageChoke()), UNCHOKE(new MessageUnchoke()), INTERESTED(new MessageInterested()), NOT_INTERESTED(new MessageNotInterested()), CANCEL(new MessageCancel()), PORT(new MessagePort());
     private final MessageProjection projection;
 
-    DefaultMessage(MessageType messageType) {
-        this.projection = new MessageProjection(messageType);
+    DefaultMessage(MessageProjection projection) {
+        this.projection = projection;
     }
 }

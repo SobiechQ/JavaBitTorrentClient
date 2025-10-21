@@ -1,5 +1,6 @@
 package ClientSession.Repository;
 
+import ClientSession.Model.SessionProjection;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import lombok.NonNull;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 @Repository
 public class ClientSessionRepositoryImpl implements ClientSessionRepository {
@@ -46,22 +48,39 @@ public class ClientSessionRepositoryImpl implements ClientSessionRepository {
     }
 
     @Override
-    public Set<Session> getSessions(@NonNull Torrent torrent) {
+    public Set<SessionProjection> getSessions(@NonNull Torrent torrent) {
         final var lock = this.getLock(torrent).readLock();
         try {
             lock.lock();
-            return this.getClientSessionRepositoryRecord(torrent).getSessions();
+            return this.getClientSessionRepositoryRecord(torrent)
+                    .getSessions()
+                    .stream()
+                    .map(s -> new SessionProjection(s.socket(), s.peer()))
+                    .collect(Collectors.toUnmodifiableSet());
         } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public Optional<Session> getSession(@NonNull Torrent torrent, @NonNull Peer peer) {
+    public Optional<SessionProjection> getSession(@NonNull Torrent torrent, @NonNull Peer peer) {
         final var lock = this.getLock(torrent).readLock();
         try {
             lock.lock();
-            return this.getClientSessionRepositoryRecord(torrent).getSession(peer);
+            return this.getClientSessionRepositoryRecord(torrent)
+                    .getSession(peer)
+                    .map(s -> new SessionProjection(s.socket(), s.peer()));
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public Set<Peer> getActivePeers(Torrent torrent) {
+        final var lock = this.getLock(torrent).readLock();
+        try {
+            lock.lock();
+            return this.getClientSessionRepositoryRecord(torrent).getActivePeers();
         } finally {
             lock.unlock();
         }

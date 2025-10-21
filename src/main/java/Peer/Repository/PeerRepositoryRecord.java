@@ -69,9 +69,10 @@ class PeerRepositoryRecord {
         }
     }
 
-    private PeerStatisticProjection getStatisticProjection(@NonNull Peer peer) {
+    PeerStatisticProjection getStatisticProjection(@NonNull Peer peer) {
         final var lock = this.getLock(peer).readLock();
         try {
+            lock.lock();
             return this.toPeerStatisticProjection(this.getStatistic(peer));
         } finally {
             lock.unlock();

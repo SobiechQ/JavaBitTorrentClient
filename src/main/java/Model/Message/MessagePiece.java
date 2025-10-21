@@ -3,6 +3,8 @@ package Model.Message;
 import Utils.ByteUtils;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 import static Model.Message.MessageType.PIECE;
 
 @Getter
@@ -24,5 +26,14 @@ public class MessagePiece extends MessageProjection {
         System.arraycopy(ByteUtils.intToBytes(begin), 0, payload, 4, 4);
         System.arraycopy(piece, 0, payload, 8, piece.length);
         return payload;
+    }
+
+    @Override
+    public String toString() {
+        return "MessagePiece{" +
+               "index=" + index +
+               ", begin=" + begin +
+               ", piece.length=" + piece.length +
+               "} ";
     }
 }
