@@ -13,6 +13,7 @@ public interface PieceRepository {
     int getNextBegin(Torrent torrent, int index);
     PieceProjection getPieceProjection(Torrent torrent, int index);
     Stream<PieceProjection> getPieceProjection(Torrent torrent);
+    byte[] getCompletedPiece(Torrent torrent, int index);
     int getPieceLength(Torrent torrent, int index);
     List<Integer> getNotStartedPieces(Torrent torrent);
     List<Integer> getIncompletePieces(Torrent torrent);

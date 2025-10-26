@@ -1,23 +1,23 @@
 package Piece.Service;
 
-import ClientSession.Service.ClientSessionService;
-import Model.Message.MessageHave;
+import Model.Bencode.Bencode;
 import Model.Message.MessagePiece;
-import Model.Message.MessageProjection;
 import Model.DecodedBencode.Torrent;
 import Model.Message.MessageRequest;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import Peer.Service.PeerStrategyService;
 import Piece.Repository.PieceRepository;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Seq;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static Model.Message.MessageRequest.REQUEST_LENGTH;
 
@@ -47,10 +47,17 @@ public class PieceServiceImpl implements PieceService {
         final var payload = messagePiece.getPiece();
 
         pieceRepository.handlePiece(torrent, index, begin, payload);
-        if (pieceRepository.isPieceComplete(torrent, index))
+        if (pieceRepository.isPieceComplete(torrent, index)) {
+            final var piece = pieceRepository.getCompletedPiece(torrent, index);
+            if (this.verifyHash(torrent, index, piece)) {
+                log.info("Piece part verified successfully");
+            } else {
+                log.warn("Piece verification failed");
+            }
             return Optional
                     .of(this.getRequest(torrent, peer))
                     .flatMap(r -> r);
+        }
 
         return Optional.of(this.toRequest(torrent, index));
     }
@@ -66,5 +73,11 @@ public class PieceServiceImpl implements PieceService {
         final var begin = pieceRepository.getNextBegin(torrent, index);
         final var length = this.getNextLength(torrent, index);
         return new MessageRequest(index, begin, length);
+    }
+
+    private boolean verifyHash(@NonNull Torrent torrent, int index, byte[] piece) {
+        final var checksum = torrent.getPieceHash(index);
+        final var calculated = Hashing.sha1().hashBytes(piece).asBytes();
+        return checksum.map(h -> Arrays.equals(h, calculated)).orElse(false);
     }
 }

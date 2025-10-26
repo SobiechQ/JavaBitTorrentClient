@@ -21,6 +21,7 @@ public class TrackerServiceImpl implements TrackerService {
     private static final Logger log = LoggerFactory.getLogger(TrackerServiceImpl.class);
     private final TrackerRepository trackerRepository;
     private final PeerRepository peerRepository;
+    private final TrackerStatusRetrieverService trackerStatusRetrieverService;
 
     @Override
     public Stream<TrackerRequestProjection> getRequests(@NotNull Torrent torrent) {
@@ -52,9 +53,9 @@ public class TrackerServiceImpl implements TrackerService {
     }
 
     private Stream<TrackerRequestProjection> getRequests(@NonNull Torrent torrent, Stream<Tracker> trackers) {
-        final var uploaded = this.trackerRepository.getUploaded(torrent);
-        final var downloaded = this.trackerRepository.getDownloaded(torrent);
-        final var left = this.trackerRepository.getLeft(torrent);
+        final var uploaded = trackerStatusRetrieverService.getUploaded(torrent);
+        final var downloaded = trackerStatusRetrieverService.getDownloaded(torrent);
+        final var left = trackerStatusRetrieverService.getLeft(torrent);
 
         return trackers.map(t -> TrackerRequestProjection.builder()
                 .tracker(t)
@@ -76,20 +77,5 @@ public class TrackerServiceImpl implements TrackerService {
     @Override
     public void notifyFailure(@NotNull Tracker tracker) {
         this.trackerRepository.notifyFailure(tracker);
-    }
-
-    @Override
-    public void computeUploaded(@NotNull Torrent torrent, Function<Long, Long> compute) {
-        this.trackerRepository.computeUploaded(torrent, compute);
-    }
-
-    @Override
-    public void computeDownloaded(@NotNull Torrent torrent, Function<Long, Long> compute) {
-        this.trackerRepository.computeDownloaded(torrent, compute);
-    }
-
-    @Override
-    public void computeLeft(@NotNull Torrent torrent, Function<Long, Long> compute) {
-        this.trackerRepository.computeLeft(torrent, compute);
     }
 }

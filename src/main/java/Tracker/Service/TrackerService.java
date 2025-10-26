@@ -14,9 +14,6 @@ public interface TrackerService {
     Stream<TrackerRequestProjection> getScheduledRequests(Torrent torrent);
     void handleResponse(Torrent torrent, TrackerResponse response);
     void removeUnreachableTrackers(Torrent torrent);
-    void computeUploaded(Torrent torrent, Function<Long, Long> compute);
-    void computeDownloaded(Torrent torrent, Function<Long, Long> compute);
-    void computeLeft(Torrent torrent, Function<Long, Long> compute);
     void notifyFailure(Tracker tracker);
     void notifySuccess(TrackerResponse response);
 
