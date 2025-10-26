@@ -2,12 +2,14 @@ package Piece.Repository;
 
 import Model.DecodedBencode.Torrent;
 import Piece.Model.PieceProjection;
+import Utils.ByteUtils;
 import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 @Repository
@@ -46,6 +48,20 @@ public class PieceRepositoryImpl implements PieceRepository {
                 .getPieces()
                 .stream()
                 .map(i -> this.toProjection(torrent, i, record.getPieceSet(i)));
+    }
+
+    @Override
+    public byte[] getCompletedPiece(@NonNull Torrent torrent, int index) {
+        if (!this.isPieceComplete(torrent, index)) {
+            throw new IllegalStateException("Piece is not complete");
+        }
+        final var bytes = this.getPieceRepositoryRecord(torrent)
+                .getPieceSet(index)
+                .stream()
+                .map(PiecePart::piece)
+                .flatMap(ByteUtils::bytesToStream)
+                .toList();
+        return ByteUtils.unbox(bytes);
     }
 
     @Override

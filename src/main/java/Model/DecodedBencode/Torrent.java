@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
 
+import Utils.ByteUtils;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.Getter;
@@ -119,9 +120,10 @@ public class Torrent extends DecodedBencode {
                 .map(Torrent::byteArrayToHex);
     }
 
-    public Optional<List<Byte>> getPieceHash(int index) {
+    public Optional<byte[]> getPieceHash(int index) {
         return this.getPieceHash()
                 .skip(index)
+                .map(ByteUtils::unbox)
                 .findFirst();
     }
 

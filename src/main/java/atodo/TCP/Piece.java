@@ -104,17 +104,18 @@ public class Piece {
 
     @SuppressWarnings("UnstableApiUsage")
     public boolean verify() {
-        if (!this.isComplete())
-            return false;
-
-        final var calculatedHashcode = Hashing.sha1().hashBytes(this.getBytes()).asBytes();
-        final var actualHashcode = this.torrent
-                .getPieceHash(this.id)
-                .map(ByteUtils::unbox);
-
-        return actualHashcode
-                .map(ah -> Arrays.equals(ah, calculatedHashcode))
-                .orElse(false);
+//        if (!this.isComplete())
+//            return false;
+//
+//        final var calculatedHashcode = Hashing.sha1().hashBytes(this.getBytes()).asBytes();
+//        final var actualHashcode = this.torrent
+//                .getPieceHash(this.id)
+//                .map(ByteUtils::unbox);
+//
+//        return actualHashcode
+//                .map(ah -> Arrays.equals(ah, calculatedHashcode))
+//                .orElse(false);
+        return false;
     }
 
 
