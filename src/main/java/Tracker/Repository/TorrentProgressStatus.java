@@ -10,16 +10,11 @@ import java.util.stream.Stream;
 @Getter
 @Setter
 class TorrentProgressStatus {
-    private long uploaded = 0;
-    private long downloaded = 0;
-    private long left = 0;
-
     @Getter(value = AccessLevel.NONE)
     @Setter(value = AccessLevel.NONE)
     private MultitrackerMetadataExtension multitrackerMetadataExtension;
 
     TorrentProgressStatus(@NonNull Torrent torrent) {
-        this.left = torrent.getLength();
         this.multitrackerMetadataExtension = new MultitrackerMetadataExtension(torrent);
     }
 
