@@ -19,7 +19,7 @@ public class AsyncClientTest {
 
     static {
         try {
-            MOCK_TORRENT = Torrent.fromFile(new File("src/test/java/resources/debian-12.8.0-amd64-netinst.iso.torrent"));
+            MOCK_TORRENT = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\1A9C88041BD5A6F1569650077D2A1ABEEF6A7EAC.torrent"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

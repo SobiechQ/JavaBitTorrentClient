@@ -11,7 +11,7 @@ import java.net.URI;
 public class UdpTracker extends Tracker{
     public UdpTracker(@NonNull URI uri, @NonNull Torrent torrent) {
         super(uri, torrent);
-        throw new NotImplementedError("Udp trackers are not yet supported");
+//        throw new NotImplementedError("Udp trackers are not yet supported");
     }
 
     @Override

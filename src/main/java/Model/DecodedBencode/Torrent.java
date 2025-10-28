@@ -51,12 +51,45 @@ public class Torrent extends DecodedBencode {
                 .isPresent();
     }
 
-    public long getLength() {
-        return this.getBencode()
+    /**
+     * Multi-file torrent files use array files instead of length.
+     * @return Length value from file if its single file torrent, sum of all lengths of all files if this is multi-file torrent
+     */
+    public Long getLength() {
+        final var length = this.getBencode()
                 .asDictionary("info")
                 .flatMap(b -> b.asDictionary("length"))
-                .flatMap(Bencode::asInteger)
+                .flatMap(Bencode::asInteger);
+
+        final var sumLength = this.getFiles()
+                .map(FileDataProjection::length)
+                .reduce(Long::sum);
+
+        return length.or(() -> sumLength)
                 .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
+    }
+
+    /**
+     * Multi-file torrent files uses Files to represent all files included in torrent
+     * @return Stream of FileData if this is multi file torrent, empty otherwise
+     */
+    public Stream<FileDataProjection> getFiles() {
+        return this.getBencode()
+                .asDictionary("info")
+                .flatMap(b -> b.asDictionary("files"))
+                .flatMap(Bencode::asList)
+                .stream()
+                .flatMap(Collection::stream)
+                .flatMap(b -> b.asDictionary().stream())
+                .flatMap(map -> {
+                    final var len = Optional.ofNullable(map.get("length"))
+                            .flatMap(Bencode::asInteger);
+                    final var path = Optional.ofNullable(map.get("path"))
+                            .flatMap(Bencode::asList)
+                            .map(l -> l.stream().flatMap(b -> b.asString().stream()).toList());
+
+                    return len.flatMap(l -> path.map(p -> new FileDataProjection(l, p))).stream();
+                });
     }
 
     public int getPieceLength() {
