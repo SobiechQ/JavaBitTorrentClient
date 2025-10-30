@@ -1,9 +1,9 @@
-package Handlers.Handshake;
+package Handshake.Handler;
 
 import ClientSession.Service.ClientSessionService;
-import Handlers.Service.DecoderService;
-import Handlers.Message.MessageHandlerFactory;
-import Handlers.Service.HandlerService;
+import Decoder.Service.DecoderService;
+import ClientSession.Handler.MessageHandlerFactory;
+import Decoder.Service.HandlerService;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;

@@ -1,8 +1,7 @@
-package Handlers.Message;
+package ClientSession.Handler;
 
 import ClientSession.Service.ClientSessionService;
-import Handlers.Service.DecoderService;
-import Handlers.Service.HandlerService;
+import Decoder.Service.HandlerService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;

@@ -1,10 +1,11 @@
-package Handlers.Service;
+package Decoder.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import Model.Message.*;
 import Utils.ByteUtils;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,8 @@ import static Model.Message.DefaultMessage.*;
 
 @Service
 @NoArgsConstructor
+@Slf4j
 public class DecoderServiceImpl implements DecoderService {
-
-    private static final Logger log = LoggerFactory.getLogger(DecoderServiceImpl.class);
 
     @Override
     public Optional<HandshakeInputProjection> decodeHandshake(@NonNull ByteBuffer buffer) {
@@ -63,7 +63,6 @@ public class DecoderServiceImpl implements DecoderService {
         final var messageLength = ByteUtils.bytesToInt(messageLengthRead);
 
         if (messageLength == 0) {
-            log.info("because length, buffer {}", buffer);
             return Optional.of(KEEP_ALIVE.getProjection());
         }
 

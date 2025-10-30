@@ -1,7 +1,7 @@
-package Handlers.Message;
+package ClientSession.Handler;
 
 import ClientSession.Service.ClientSessionService;
-import Handlers.Service.HandlerService;
+import Decoder.Service.HandlerService;
 import Model.DecodedBencode.Torrent;
 import Model.Message.MessageProjection;
 import Peer.Model.Peer;
@@ -53,7 +53,7 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
 
     private void handleOutputMessages(List<MessageProjection> messages) {
         messages.forEach(m -> {
-            log.info("Sending to peer {} message {}", peer, m);
+//            log.info("Sending to peer {} message {}", peer, m);
             final var data = m.getData();
             final var bufferOut = ByteBuffer.allocate(data.length);
             bufferOut.put(data);

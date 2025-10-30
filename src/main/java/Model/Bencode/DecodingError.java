@@ -1,11 +1,36 @@
 package Model.Bencode;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
+
 public class DecodingError extends Error {
-    public DecodingError(String message) {
-        super(message);
+    @Nullable
+    private final String received;
+
+    public DecodingError(Throwable throwable){
+        super(throwable);
+        this.received = null;
     }
 
-    public DecodingError(Throwable cause) {
-        super(cause);
+    public DecodingError(String message) {
+        this(message, null);
+    }
+
+    public DecodingError(String message, @Nullable String received) {
+        super(message);
+        this.received = received;
+    }
+
+
+    @Override
+    public String getMessage() {
+        return this.getReceived()
+                .map(r -> String.format("%sReceived: %s", super.getMessage(), r))
+                .orElse(super.getMessage());
+    }
+
+    private Optional<String> getReceived() {
+        return Optional.ofNullable(this.received);
     }
 }

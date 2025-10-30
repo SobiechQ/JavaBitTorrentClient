@@ -1,7 +1,7 @@
 package Tracker.Service;
 
 import Model.DecodedBencode.Torrent;
-import Piece.Model.PieceProjection;
+import Piece.Model.PieceStatusProjection;
 import Piece.Repository.PieceRepository;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -19,8 +19,8 @@ public class TrackerStatusRetrieverServiceImpl implements TrackerStatusRetriever
 
     @Override
     public long getDownloaded(@NonNull Torrent torrent) {
-        return pieceRepository.getPieceProjection(torrent)
-                .map(PieceProjection::downloaded)
+        return pieceRepository.getPieceStatusProjection(torrent)
+                .map(PieceStatusProjection::downloaded)
                 .mapToInt(i -> i)
                 .sum();
     }

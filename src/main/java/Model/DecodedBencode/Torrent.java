@@ -5,7 +5,9 @@ import Model.Bencode.DecodingError;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
@@ -31,6 +33,7 @@ public class Torrent extends DecodedBencode {
                 .asDictionary("announce")
                 .flatMap(Bencode::asString)
                 .map(URI::create)
+                .filter(u -> !u.getScheme().equals("udp"))
                 .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
@@ -42,7 +45,10 @@ public class Torrent extends DecodedBencode {
                 .flatMap(Collection::stream)
                 .flatMap(b -> b.asList().stream())
                 .flatMap(b -> b.stream().map(c -> c.asString().stream().toList()))
-                .map(l -> l.stream().map(URI::create).toList());
+                .map(l -> l.stream().map(URI::create).toList())
+                .filter(l -> l.stream().anyMatch(u -> { //todo remove
+                    return !u.getScheme().equals("udp");
+                }));
     }
 
     public boolean isAnnounceListAvailable() {
@@ -90,6 +96,18 @@ public class Torrent extends DecodedBencode {
 
                     return len.flatMap(l -> path.map(p -> new FileDataProjection(l, p))).stream();
                 });
+    }
+
+    public boolean isMultifile() {
+        return this.getFiles().findAny().isPresent();
+    }
+
+    public String getName() {
+        return this.getBencode()
+                .asDictionary("info")
+                .flatMap(b -> b.asDictionary("name"))
+                .flatMap(Bencode::asString)
+                .orElseThrow(() -> new DecodingError("Provided bencode is not proper torrent file"));
     }
 
     public int getPieceLength() {

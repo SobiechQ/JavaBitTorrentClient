@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import javax.swing.*;
 
 @EnableAsync
-@SpringBootApplication(scanBasePackages = {"Configuration", "Tracker", "ClientSession", "AsyncServer", "Handshake", "Model", "Peer", "Piece", "AsyncClient", "Handlers"})
+@SpringBootApplication(scanBasePackages = {"Configuration", "Tracker", "ClientSession", "AsyncServer", "Handshake", "Model", "Peer", "Piece", "AsyncClient", "Handlers", "Decoder", "File"})
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Frame::new);

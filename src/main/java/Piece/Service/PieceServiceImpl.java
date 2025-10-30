@@ -1,22 +1,21 @@
 package Piece.Service;
 
-import Model.Bencode.Bencode;
 import Model.Message.MessagePiece;
 import Model.DecodedBencode.Torrent;
 import Model.Message.MessageRequest;
 import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import Peer.Service.PeerStrategyService;
+import Piece.Event.PieceCompletedEvent;
+import Piece.Model.PieceProjection;
 import Piece.Repository.PieceRepository;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Seq;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static Model.Message.MessageRequest.REQUEST_LENGTH;
@@ -28,6 +27,7 @@ public class PieceServiceImpl implements PieceService {
     private final PieceRepository pieceRepository;
     private final PeerStrategyService peerStrategyService;
     private final PeerService peerService;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public Optional<MessageRequest> getRequest(@NonNull Torrent torrent, @NonNull Peer peer) {
@@ -48,12 +48,7 @@ public class PieceServiceImpl implements PieceService {
 
         pieceRepository.handlePiece(torrent, index, begin, payload);
         if (pieceRepository.isPieceComplete(torrent, index)) {
-            final var piece = pieceRepository.getCompletedPiece(torrent, index);
-            if (this.verifyHash(torrent, index, piece)) {
-                log.info("Piece part verified successfully");
-            } else {
-                log.warn("Piece verification failed");
-            }
+            publisher.publishEvent(new PieceCompletedEvent(this, torrent, new PieceProjection(index, begin, payload)));
             return Optional
                     .of(this.getRequest(torrent, peer))
                     .flatMap(r -> r);
@@ -64,7 +59,7 @@ public class PieceServiceImpl implements PieceService {
 
     private int getNextLength(@NonNull Torrent torrent, int index) {
         final var remaining = this.pieceRepository
-                .getPieceProjection(torrent, index)
+                .getPieceStatusProjection(torrent, index)
                 .remaining();
         return Math.clamp(remaining, 0, REQUEST_LENGTH);
     }
@@ -75,9 +70,5 @@ public class PieceServiceImpl implements PieceService {
         return new MessageRequest(index, begin, length);
     }
 
-    private boolean verifyHash(@NonNull Torrent torrent, int index, byte[] piece) {
-        final var checksum = torrent.getPieceHash(index);
-        final var calculated = Hashing.sha1().hashBytes(piece).asBytes();
-        return checksum.map(h -> Arrays.equals(h, calculated)).orElse(false);
-    }
+
 }

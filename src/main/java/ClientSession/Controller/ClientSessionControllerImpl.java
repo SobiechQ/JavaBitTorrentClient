@@ -1,7 +1,7 @@
 package ClientSession.Controller;
 
 import ClientSession.Service.ClientSessionService;
-import Handlers.Handshake.HandshakeHandlerFactory;
+import Handshake.Handler.HandshakeHandlerFactory;
 import Model.DecodedBencode.Torrent;
 import Peer.Controller.PeerController;
 import Peer.Model.Peer;
@@ -10,8 +10,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.tuple.Tuple;
 import org.jooq.lambda.tuple.Tuple2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -50,12 +48,12 @@ public class ClientSessionControllerImpl implements ClientSessionController {
 
     private Optional<Tuple2<AsynchronousSocketChannel, Peer>> toSocketPeer(@NonNull Torrent torrent, @NonNull Peer peer) {
         try {
-            log.info("Opening socket to peer {}", peer);
+//            log.info("Opening socket to peer {}", peer);
             final var socket = AsynchronousSocketChannel.open();
             socket.connect(peer.getInetSocketAddress(), null, handshakeHandlerFactory.getHandshakeOutputHandler(torrent, socket, peer));
             return Optional.of(Tuple.tuple(socket, peer));
         } catch (IOException e) {
-            log.warn("Unable to establish connection to peer {}", peer);
+//            log.warn("Unable to establish connection to peer {}", peer);
             return Optional.empty();
         }
     }

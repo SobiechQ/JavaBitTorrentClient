@@ -30,7 +30,7 @@ public class TrackerResponse extends DecodedBencode {
         return this.getBencode()
                 .asDictionary("interval")
                 .flatMap(Bencode::asInteger)
-                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce"));
+                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce", this.toString()));
     }
 
     public Stream<Peer> getPeers() {
@@ -45,7 +45,7 @@ public class TrackerResponse extends DecodedBencode {
         return this.getBencode()
                 .asDictionary("peers")
                 .flatMap(Bencode::asString)
-                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce"));
+                .orElseThrow(()-> new DecodingError("Provided bencode is not proper Announce", this.toString()));
     }
 
     @Override

@@ -1,9 +1,9 @@
-package Handlers.Handshake;
+package Handshake.Handler;
 
 import ClientSession.Service.ClientSessionService;
-import Handlers.Service.DecoderService;
-import Handlers.Message.MessageHandlerFactory;
-import Handlers.Service.HandlerService;
+import Decoder.Service.DecoderService;
+import ClientSession.Handler.MessageHandlerFactory;
+import Decoder.Service.HandlerService;
 import Handshake.Service.HandshakeService;
 import Model.DecodedBencode.Torrent;
 import Peer.Model.Peer;
@@ -36,7 +36,7 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
     @Override
     public void completed(Integer bytesRead, Object object) {
         if (bytesRead < 68) {
-            this.failed(new IllegalStateException("Input handshake too short"), bufferIn);
+//            this.failed(new IllegalStateException("Input handshake too short"), bufferIn);
             return;
         }
         final var handshakeVerified = decoderService.decodeHandshake(bufferIn)
@@ -44,11 +44,11 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
                 .orElse(false);
 
         if (!handshakeVerified) {
-            this.failed(new IllegalStateException("Handshake verification failed"), bufferIn);
+//            this.failed(new IllegalStateException("Handshake verification failed"), bufferIn);
             return;
         }
 
-        log.info("Handshake established with peer {}", peer);
+//        log.info("Handshake established with peer {}", peer);
         handlerService.handleMessageInput(torrent, peer, bufferIn, bytesRead - 68);
         final var messageBuffer = ByteBuffer.allocate(REQUEST_LENGTH + 13);
         socket.read(messageBuffer, null, messageHandlerFactory.getMessageInputHandler(torrent, socket, peer, messageBuffer));
@@ -57,7 +57,7 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
 
     @Override
     public void failed(Throwable exc, Object object) {
-        log.warn("Unable to handle handshake from peer {}, exception: {}", this.peer,  exc.getMessage());
+//        log.warn("Unable to handle handshake from peer {}, exception: {}", this.peer,  exc.getMessage());
         clientSessionService.removeSession(torrent, peer);
         peerService.notifyFailed(torrent, peer);
     }

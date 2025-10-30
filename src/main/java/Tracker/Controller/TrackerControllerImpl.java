@@ -29,7 +29,7 @@ public class TrackerControllerImpl implements TrackerController {
         trackerService.getRequests(torrent)
                 .map(this::announce)
                 .map(cf -> cf.exceptionally(ex -> {
-                    log.warn("Tracker announce failed", ex);
+                    log.warn("Tracker announce failed {}", ex.getMessage());
                     return null;
                 }))
                 .forEach(cf -> cf.thenAccept(r -> trackerService.handleResponse(torrent, r)));
@@ -41,7 +41,7 @@ public class TrackerControllerImpl implements TrackerController {
                 trackerService.getScheduledRequests(torrent)
                 .map(this::announce)
                 .map(cf -> cf.exceptionally(ex -> {
-                    log.warn("Tracker announce failed", ex);
+                    log.warn("Tracker announce failed {}", ex.getMessage());
                     return null;
                 }))
                 .forEach(cf -> cf.thenAccept(r -> trackerService.handleResponse(torrent, r))), 0, 1, TimeUnit.MINUTES);

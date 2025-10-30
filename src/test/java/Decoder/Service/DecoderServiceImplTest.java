@@ -1,6 +1,5 @@
 package Decoder.Service;
 
-import Handlers.Service.DecoderService;
 import Handshake.Service.HandshakeService;
 import Handshake.Service.HandshakeServiceImpl;
 import Model.Bencode.DecodingError;
