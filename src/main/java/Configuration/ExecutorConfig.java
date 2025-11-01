@@ -21,7 +21,7 @@ public class ExecutorConfig {
 
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledExecutor() {
-        return Executors.newSingleThreadScheduledExecutor();
+        return Executors.newScheduledThreadPool(10);
     }
 
     @Bean(name = "applicationEventMulticaster")

@@ -40,6 +40,6 @@ public class MessageBitfield extends MessageProjection {
         return "MessageBitfield{" +
                "length=" + this.getData().length +
                ", bitfield.length=" + bitfield.size() +
-               "} " + super.toString();
+               "} ";
     }
 }

@@ -1,6 +1,7 @@
 package Configuration;
 
 import ClientSession.Repository.ClientSessionRepository;
+import Decoder.Event.MessageEvent;
 import Peer.Repository.PeerRepository;
 import Peer.Service.PeerStrategyService;
 import Piece.Repository.PieceRepository;
@@ -31,6 +32,8 @@ public class InformationServiceImpl implements InformationService {
     private boolean scheduledEnabled;
     @Value("${informationService.events.enabled}")
     private boolean eventsEnabled;
+    @Value("${informationService.messageEvents.enabled}")
+    private boolean messageEventsEnabled = true;
 
     @PostConstruct
     void start() {
@@ -44,7 +47,7 @@ public class InformationServiceImpl implements InformationService {
         executor.scheduleAtFixedRate(() -> {
             pieceRepository.getPieceStatusProjection(MOCK_TORRENT)
                     .filter(p -> p.downloaded() != 0)
-                    .forEach(System.out::println);
+                    .forEach(pieceStatusProjection -> log.info(pieceStatusProjection.toString()));
 
         }, 0, 10, TimeUnit.SECONDS);
     }
@@ -52,6 +55,8 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public void logEvent(ApplicationEvent event) {
         if (!eventsEnabled)
+            return;
+        if (!messageEventsEnabled && event instanceof MessageEvent)
             return;
         log.info("Application Event {}", event);
     }

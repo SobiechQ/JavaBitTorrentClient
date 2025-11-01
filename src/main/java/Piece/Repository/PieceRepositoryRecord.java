@@ -12,59 +12,39 @@ import java.util.stream.Stream;
 class PieceRepositoryRecord {
     private final static Comparator<PiecePart> PIECE_PART_COMPARATOR = Comparator.comparingInt(PiecePart::begin);
     private final Map<Integer, Set<PiecePart>> pieces;
-    private final Map<Integer, ReentrantReadWriteLock> locks;
     private final Torrent torrent;
 
     PieceRepositoryRecord(@NonNull Torrent torrent) {
         this.pieces = new ConcurrentHashMap<>();
-        locks = new ConcurrentHashMap<>();
         this.torrent = torrent;
     }
 
     void addPiecePart(int index, int begin, byte[] piece) {
-        final var lock = this.getLock(index).writeLock();
-        try {
-            lock.lock();
-            this.getPieceSet(index).add(new PiecePart(begin, piece));
-        } finally {
-            lock.unlock();
-        }
+        this.getPieceSet(index).add(new PiecePart(begin, piece));
     }
 
     boolean isPieceComplete(int index) {
-        final var lock = this.getLock(index).readLock();
-        try {
-            lock.lock();
-            Set<PiecePart> parts = getPieceSet(index);
-            int offset = 0;
-            for (PiecePart part : parts) {
-                if (part.begin() != offset)
-                    return false;
-                offset += part.piece().length;
-            }
-            return offset == this.getPieceLength(index);
-        } finally {
-            lock.unlock();
+        Set<PiecePart> parts = getPieceSet(index);
+        int offset = 0;
+        for (PiecePart part : parts) {
+            if (part.begin() != offset)
+                return false;
+            offset += part.piece().length;
         }
+        return offset == this.getPieceLength(index);
     }
 
     int getNextBegin(int index) {
-        final var lock = this.getLock(index).readLock();
-        try {
-            lock.lock();
-            Set<PiecePart> parts = getPieceSet(index);
-            if (parts.isEmpty()) return 0;
-            int nextBegin = 0;
-            for (PiecePart part : parts) {
-                if (part.begin() > nextBegin)
-                    break;
+        Set<PiecePart> parts = getPieceSet(index);
+        if (parts.isEmpty()) return 0;
+        int nextBegin = 0;
+        for (PiecePart part : parts) {
+            if (part.begin() > nextBegin)
+                break;
 
-                nextBegin = part.begin() + part.piece().length;
-            }
-            return nextBegin;
-        } finally {
-            lock.unlock();
+            nextBegin = part.begin() + part.piece().length;
         }
+        return nextBegin;
     }
 
     Set<Integer> getPieces() {
@@ -99,9 +79,5 @@ class PieceRepositoryRecord {
 
     private boolean isPieceNotStarted(int index) {
         return this.getPieceSet(index).isEmpty();
-    }
-
-    private synchronized ReentrantReadWriteLock getLock(int index) {
-        return this.locks.computeIfAbsent(index, _ -> new ReentrantReadWriteLock());
     }
 }

@@ -49,7 +49,7 @@ public class HandshakeInputHandler implements CompletionHandler<Integer, Object>
         }
 
         log.info("Handshake established with peer {}", peer);
-        handlerService.handleMessageInput(torrent, peer, bufferIn, bytesRead - 68);
+//        handlerService.handleMessageInput(torrent, peer, bufferIn, bytesRead - 68);
         final var messageBuffer = ByteBuffer.allocate(REQUEST_LENGTH + 13);
         socket.read(messageBuffer, null, messageHandlerFactory.getMessageInputHandler(torrent, socket, peer, messageBuffer));
     }

@@ -12,4 +12,11 @@ public class MessageHave extends MessageProjection {
         super(HAVE, index);
         this.index = index;
     }
+
+    @Override
+    public String toString() {
+        return "MessageHave{" +
+               "index=" + index +
+               "} ";
+    }
 }

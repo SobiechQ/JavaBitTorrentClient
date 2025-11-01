@@ -12,7 +12,7 @@ public interface InformationService {
 
     @Async
     @EventListener
-    default void onApplicationEvent(@NonNull PieceCompletedEvent event){
+    default void onApplicationEvent(@NonNull ApplicationEvent event){
         this.logEvent(event);
     }
 }

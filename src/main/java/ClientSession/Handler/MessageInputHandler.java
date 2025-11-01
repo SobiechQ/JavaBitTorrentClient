@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.List;
+import java.util.function.Consumer;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Slf4j
@@ -38,9 +39,8 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
         }
         final var read = bufferIn.position();
         bufferIn.rewind();
-        final var outputMessages = handlerService.handleMessageInput(torrent, peer, bufferIn, read);
+        handlerService.handleMessageInput(torrent, peer, bufferIn, read, this::handleOutputMessages);
         bufferIn.clear();
-        this.handleOutputMessages(outputMessages);
         socket.read(bufferIn, null, this);
     }
 
@@ -51,14 +51,12 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
         peerService.notifyFailed(torrent, peer);
     }
 
-    private void handleOutputMessages(List<MessageProjection> messages) {
-        messages.forEach(m -> {
-            log.info("Sending to peer {} message {}", peer, m);
-            final var data = m.getData();
-            final var bufferOut = ByteBuffer.allocate(data.length);
-            bufferOut.put(data);
-            bufferOut.rewind();
-            socket.write(bufferOut);
-        });
+    private void handleOutputMessages(MessageProjection message) {
+        log.info("Sending to peer {} message {}", peer, message);
+        final var data = message.getData();
+        final var bufferOut = ByteBuffer.allocate(data.length);
+        bufferOut.put(data);
+        bufferOut.rewind();
+        socket.write(bufferOut);
     }
 }

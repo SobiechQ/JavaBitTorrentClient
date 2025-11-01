@@ -6,8 +6,9 @@ import Peer.Model.Peer;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface HandlerService {
-    List<MessageProjection> handleMessageInput(Torrent torrent, Peer peer, ByteBuffer buffer, int length);
+    void handleMessageInput(Torrent torrent, Peer peer, ByteBuffer buffer, int length, Consumer<MessageProjection> responseSender);
     boolean isMessageComplete(ByteBuffer buffer, int length);
 }

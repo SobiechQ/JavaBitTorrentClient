@@ -12,7 +12,7 @@ public interface FileService {
 
     @EventListener
     @Async
-    default void onApplicationEvent(@NotNull PieceCompletedEvent event) {
+    default void handlePieceCompletedEvent(@NotNull PieceCompletedEvent event) {
         this.handleCompletedPiece(event.getTorrent(), event.getProjection());
     }
 }
