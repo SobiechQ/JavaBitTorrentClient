@@ -48,13 +48,22 @@ public class PieceServiceImpl implements PieceService {
 
         pieceRepository.handlePiece(torrent, index, begin, payload);
         if (pieceRepository.isPieceComplete(torrent, index)) {
-            publisher.publishEvent(new PieceCompletedEvent(this, torrent, new PieceProjection(index, begin, payload)));
+            this.getCompletedPiece(torrent, index)
+                            .ifPresent(piece -> publisher.publishEvent(new PieceCompletedEvent(this, torrent, piece)));
             return Optional
                     .of(this.getRequest(torrent, peer))
                     .flatMap(r -> r);
         }
 
         return Optional.of(this.toRequest(torrent, index));
+    }
+
+    @Override
+    public Optional<PieceProjection> getCompletedPiece(@NonNull Torrent torrent, int index) {
+        if (!pieceRepository.isPieceComplete(torrent, index)){
+            return Optional.empty();
+        }
+        return Optional.of(pieceRepository.getPiece(torrent, index));
     }
 
     private int getNextLength(@NonNull Torrent torrent, int index) {

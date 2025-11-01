@@ -53,7 +53,7 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
 
     private void handleOutputMessages(List<MessageProjection> messages) {
         messages.forEach(m -> {
-//            log.info("Sending to peer {} message {}", peer, m);
+            log.info("Sending to peer {} message {}", peer, m);
             final var data = m.getData();
             final var bufferOut = ByteBuffer.allocate(data.length);
             bufferOut.put(data);

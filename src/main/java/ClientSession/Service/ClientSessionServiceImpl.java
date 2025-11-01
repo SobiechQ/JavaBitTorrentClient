@@ -28,7 +28,7 @@ public class ClientSessionServiceImpl implements ClientSessionService {
         log.info("Establishing sessions");
         Seq.ofType(socketPeer, Tuple2.class)
                 .map(sp -> (Tuple2<AsynchronousSocketChannel, Peer>) sp)
-//                .peek(sp -> log.info("Adding session for peer {}", sp.v1))
+                .peek(sp -> log.info("Adding session for peer {}", sp.v1))
                 .map(sp -> clientSessionRepository.addSession(torrent, sp.v1,sp.v2))
                 .limitWhile(b -> b)
                 .forEach(_ -> {});

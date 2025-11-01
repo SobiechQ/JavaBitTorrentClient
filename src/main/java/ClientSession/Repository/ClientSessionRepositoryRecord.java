@@ -25,7 +25,6 @@ class ClientSessionRepositoryRecord {
 
     boolean tryAddSession(@NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) {
         if (!this.semaphore.tryAcquire()) {
-            log.debug("Connection limit reached, skipping {}", peer);
             return false;
         }
         final var session = new Session(socket, peer);

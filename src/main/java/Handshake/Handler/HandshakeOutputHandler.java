@@ -27,7 +27,7 @@ public class HandshakeOutputHandler implements CompletionHandler<Void, Object> {
 
     @Override
     public void completed(Void result, Object object) {
-//        log.info("Socket connected to peer {}", peer);
+        log.info("Socket connected to peer {}", peer);
         final var handshake = handshakeService.getHandshake(torrent);
         final var bufferOut = ByteBuffer.allocate(handshake.handshake().length);
         bufferOut.put(handshake.handshake());
@@ -39,7 +39,7 @@ public class HandshakeOutputHandler implements CompletionHandler<Void, Object> {
 
     @Override
     public void failed(Throwable exc, Object peerMessage) {
-//        log.warn("Unable to connect to peer {}, exception: {}", this.peer,  exc.getMessage());
+        log.warn("Unable to connect to peer {}, exception: {}", this.peer,  exc.getMessage());
         clientSessionService.removeSession(torrent, peer);
         peerService.notifyFailed(torrent, peer);
     }

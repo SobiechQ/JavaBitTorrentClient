@@ -16,7 +16,7 @@ class PieceRepositoryRecord {
     private final Torrent torrent;
 
     PieceRepositoryRecord(@NonNull Torrent torrent) {
-        this.pieces = new HashMap<>();
+        this.pieces = new ConcurrentHashMap<>();
         locks = new ConcurrentHashMap<>();
         this.torrent = torrent;
     }

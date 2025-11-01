@@ -1,0 +1,101 @@
+Configuration:
+  status: warn
+  name: YAMLConfig
+  Properties:
+    Property:
+      - name: pattern
+        value: ${spring:properties.pattern}
+      - name: fileName
+        value: ${spring:properties.fileName}
+      - name: package.decoder.level
+        value: ${spring:package.decoder.level}
+      - name: package.clientSession.level
+        value: ${spring:package.clientSession.level}
+      - name: package.Handshake.level
+        value: ${spring:package.Handshake.level}
+      - name: package.Tracker.level
+        value: ${spring:package.Tracker.level}
+      - name: package.File.level
+        value: ${spring:package.File.level}
+
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${pattern}
+
+    RollingFile:
+      name: ErrorFile
+      fileName: ${fileName}
+      filePattern: logs/errors-%d{yyyy-MM-dd}.log.gz
+      PatternLayout:
+        pattern: "[%d{yyyy-MM-dd HH:mm:ss}] [-5p] %c{1} - %m%n"
+      Policies:
+        TimeBasedTriggeringPolicy: { }
+        SizeBasedTriggeringPolicy:
+          size: 10MB
+      Filters:
+        ThresholdFilter:
+          level: ERROR
+          onMatch: ACCEPT
+          onMismatch: DENY
+
+  Loggers:
+    Logger:
+      - name: Decoder.Service
+        additivity: false
+        AppenderRef:
+          - ref: Console
+          - ref: ErrorFile
+        Filters:
+          ThresholdFilter:
+            level: ${package.decoder.level}
+            onMatch: ACCEPT
+            onMismatch: DENY
+      - name: ClientSession
+        additivity: false
+        AppenderRef:
+          - ref: Console
+          - ref: ErrorFile
+        Filters:
+          ThresholdFilter:
+            level: ${package.clientSession.level}
+            onMatch: ACCEPT
+            onMismatch: DENY
+      - name: Handshake
+        additivity: false
+        AppenderRef:
+          - ref: Console
+          - ref: ErrorFile
+        Filters:
+          ThresholdFilter:
+            level: ${package.Handshake.level}
+            onMatch: ACCEPT
+            onMismatch: DENY
+      - name: Tracker
+        additivity: false
+        AppenderRef:
+          - ref: Console
+          - ref: ErrorFile
+        Filters:
+          ThresholdFilter:
+            level: ${package.Tracker.level}
+            onMatch: ACCEPT
+            onMismatch: DENY
+      - name: File
+        additivity: false
+        AppenderRef:
+          - ref: Console
+          - ref: ErrorFile
+        Filters:
+          ThresholdFilter:
+            level: ${package.File.level}
+            onMatch: ACCEPT
+            onMismatch: DENY
+
+    Root:
+      level: info
+      AppenderRef:
+        - ref: Console
+        - ref: ErrorFile

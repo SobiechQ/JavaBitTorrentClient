@@ -48,12 +48,12 @@ public class ClientSessionControllerImpl implements ClientSessionController {
 
     private Optional<Tuple2<AsynchronousSocketChannel, Peer>> toSocketPeer(@NonNull Torrent torrent, @NonNull Peer peer) {
         try {
-//            log.info("Opening socket to peer {}", peer);
+            log.info("Opening socket to peer {}", peer);
             final var socket = AsynchronousSocketChannel.open();
             socket.connect(peer.getInetSocketAddress(), null, handshakeHandlerFactory.getHandshakeOutputHandler(torrent, socket, peer));
             return Optional.of(Tuple.tuple(socket, peer));
         } catch (IOException e) {
-//            log.warn("Unable to establish connection to peer {}", peer);
+            log.warn("Unable to establish connection to peer {}", peer);
             return Optional.empty();
         }
     }

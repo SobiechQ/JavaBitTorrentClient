@@ -1,18 +1,21 @@
 package Tracker.Model;
 
+
 import Model.Bencode.Bencode;
 import Model.DecodedBencode.Torrent;
 import Tracker.Model.Messages.TrackerRequestProjection;
 import Tracker.Model.Messages.TrackerResponse;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import lombok.NonNull;
 
 import java.io.IOException;
 import java.net.URI;
 
 public class HttpTracker extends Tracker {
+
+    private final OkHttpClient client = new OkHttpClient();
 
     public HttpTracker(@NonNull URI uri, @NonNull Torrent torrent) {
         super(uri, torrent);
@@ -34,9 +37,7 @@ public class HttpTracker extends Tracker {
                         .build())
                 .build();
 
-        final var response = new OkHttpClient().
-                newCall(request)
-                .execute();
+        final var response = client.newCall(request).execute();
 
         try(final var body = response.body()){
             return new TrackerResponse(this, new Bencode(body.byteStream().readAllBytes()));

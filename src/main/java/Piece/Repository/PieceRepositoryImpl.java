@@ -28,7 +28,7 @@ public class PieceRepositoryImpl implements PieceRepository {
     @Override
     public boolean isPieceComplete(@NonNull Torrent torrent, int index) {
         if (this.getPieceRepositoryRecord(torrent).isPieceComplete(index)){
-            final var piece = this.getPiece(torrent, index).piece();
+            final var piece = this.getPiece(torrent, index).getPiece();
             return verifyHash(torrent, index, piece);
         }
         return false;
@@ -64,7 +64,7 @@ public class PieceRepositoryImpl implements PieceRepository {
                 .flatMap(ByteUtils::bytesToStream)
                 .toList();
 
-        return begin.map(i -> new PieceProjection(index, i, ByteUtils.unbox(bytes))).orElseThrow(() -> new IllegalStateException("Piece is not complete"));
+        return begin.map(i -> new PieceProjection(torrent, index, ByteUtils.unbox(bytes))).orElseThrow(() -> new IllegalStateException("Piece is not complete"));
     }
 
     @Override
