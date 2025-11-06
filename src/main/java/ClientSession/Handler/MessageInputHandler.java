@@ -8,6 +8,7 @@ import Peer.Model.Peer;
 import Peer.Service.PeerService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
@@ -26,6 +27,7 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
     private final HandlerService handlerService;
     private final ClientSessionService clientSessionService;
     private final PeerService peerService;
+    private final MessageHandlerFactory messageHandlerFactory;
 
     @Override
     public void completed(Integer bytesRead, Object attachment) {
@@ -51,12 +53,13 @@ public class MessageInputHandler implements CompletionHandler<Integer, Object> {
         peerService.notifyFailed(torrent, peer);
     }
 
-    private void handleOutputMessages(MessageProjection message) {
+    private void handleOutputMessages(@NonNull MessageProjection message) {
         log.info("Sending to peer {} message {}", peer, message);
         final var data = message.getData();
         final var bufferOut = ByteBuffer.allocate(data.length);
         bufferOut.put(data);
         bufferOut.rewind();
-        socket.write(bufferOut);
+        final var outputHandler = messageHandlerFactory.getMessageOutputHandler(torrent, socket, peer);
+        socket.write(bufferOut, null, outputHandler);
     }
 }

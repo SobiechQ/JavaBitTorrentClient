@@ -27,6 +27,17 @@ public class MessageHandlerFactory {
                 buffer,
                 handlerService,
                 clientSessionService,
+                peerService,
+                this
+        );
+    }
+
+    public MessageOutputHandler getMessageOutputHandler(@NonNull Torrent torrent, @NonNull AsynchronousSocketChannel socket, @NonNull Peer peer) {
+        return new MessageOutputHandler(
+                torrent,
+                socket,
+                peer,
+                clientSessionService,
                 peerService
         );
     }
