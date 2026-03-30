@@ -19,7 +19,7 @@ public class AsyncClientTest {
 
     static {
         try {
-            MOCK_TORRENT = Torrent.fromFile(new File("C:\\Users\\Sobiech\\Desktop\\Fedora-COSMIC-Atomic-ostree-aarch64-43.torrent"));
+            MOCK_TORRENT = Torrent.fromFile(new File("docker/transmission/downloads/file.txt.torrent"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

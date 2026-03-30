@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  tracker:
+    image: lednerb/opentracker-docker
+    container_name: opentracker
+    ports:
+      - "6969:6969"
+      - "6969:6969/udp"
+    restart: unless-stopped
+  seeder:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: seeder
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Warsaw
+      - TRANSMISSION_RPC_ENABLED=false
+    ports:
+      - "9091:9091"
+      - "7979:7979"
+      - "7979:7979/udp"
+    volumes:
+      - ./transmission/config:/config
+      - ./transmission/downloads:/downloads
+      - ./transmission/watch:/watch
+    depends_on:
+      - tracker
+    restart: unless-stopped

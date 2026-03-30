@@ -1,0 +1,1 @@
+docker container exec -it f2f643cf466f sh

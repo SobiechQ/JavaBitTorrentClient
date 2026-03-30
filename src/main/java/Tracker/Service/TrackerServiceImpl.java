@@ -7,6 +7,7 @@ import Tracker.Model.Messages.TrackerResponse;
 import Tracker.Model.Tracker;
 import Tracker.Repository.TrackerRepository;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,8 @@ import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class TrackerServiceImpl implements TrackerService {
-    private static final Logger log = LoggerFactory.getLogger(TrackerServiceImpl.class);
     private final TrackerRepository trackerRepository;
     private final PeerRepository peerRepository;
     private final TrackerStatusRetrieverService trackerStatusRetrieverService;

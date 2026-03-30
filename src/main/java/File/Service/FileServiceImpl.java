@@ -44,26 +44,21 @@ public class FileServiceImpl implements FileService {
     }
 
     private void writeData(@NonNull Torrent torrent, @NonNull PieceProjection pieceProjection) throws IOException {
-
-        if (torrent.isMultifile()) {
-            final var files = torrent.getFiles().collect(Collectors.toUnmodifiableSet());
-            var fileBegin = pieceProjection.getAbsoluteBegin();
-            var length = pieceProjection.getPiece().length;
-            for (FileDataProjection file : files) {
-                if (length <= 0)
-                    break;
-                if (fileBegin - file.length() >= 0) {
-                    fileBegin -= (int) file.length();
-                    continue;
-                }
-                final var pieceBegin = pieceProjection.getPiece().length - length;
-                this.writeFile(torrent, fileBegin, pieceBegin, file, pieceProjection);
-                length -= (int) (file.length() - fileBegin);
-                fileBegin = Math.clamp(fileBegin - (int) file.length(), 0, Integer.MAX_VALUE);
+        final var files = torrent.getFiles().collect(Collectors.toUnmodifiableSet());
+        var fileBegin = pieceProjection.getAbsoluteBegin();
+        var length = pieceProjection.getPiece().length;
+        for (FileDataProjection file : files) {
+            if (length <= 0)
+                break;
+            if (fileBegin - file.length() >= 0) {
+                fileBegin -= (int) file.length();
+                continue;
             }
-            return;
+            final var pieceBegin = pieceProjection.getPiece().length - length;
+            this.writeFile(torrent, fileBegin, pieceBegin, file, pieceProjection);
+            length -= (int) (file.length() - fileBegin);
+            fileBegin = Math.clamp(fileBegin - (int) file.length(), 0, Integer.MAX_VALUE);
         }
-        //todo not multifile
     }
 
     private void writeFile(@NonNull Torrent torrent, long fileBegin, int pieceBegin, @NonNull FileDataProjection file, @NonNull PieceProjection piece) throws IOException {

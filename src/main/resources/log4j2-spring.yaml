@@ -10,7 +10,7 @@ Configuration:
       - name: package.decoder.level
         value: ${spring:package.decoder.level}
       - name: package.clientSession.level
-        value: ${spring:package.clientSession.level}
+        value: ${spring:package.ClientSession.level}
       - name: package.Handshake.level
         value: ${spring:package.Handshake.level}
       - name: package.Tracker.level
@@ -19,11 +19,17 @@ Configuration:
         value: ${spring:package.File.level}
 
   Appenders:
-    Console:
-      name: Console
-      target: SYSTEM_OUT
+    SwingAppender:
+      name: Swing
       PatternLayout:
         pattern: ${pattern}
+
+#  Appenders:
+#    Console:
+#      name: Console
+#      target: SYSTEM_OUT
+#      PatternLayout:
+#        pattern: ${pattern}
 
     RollingFile:
       name: ErrorFile
@@ -48,6 +54,7 @@ Configuration:
         AppenderRef:
           - ref: Console
           - ref: ErrorFile
+          - ref: Swing
         Filters:
           ThresholdFilter:
             level: ${package.decoder.level}
@@ -58,6 +65,7 @@ Configuration:
         AppenderRef:
           - ref: Console
           - ref: ErrorFile
+          - ref: Swing
         Filters:
           ThresholdFilter:
             level: ${package.clientSession.level}
@@ -68,6 +76,7 @@ Configuration:
         AppenderRef:
           - ref: Console
           - ref: ErrorFile
+          - ref: Swing
         Filters:
           ThresholdFilter:
             level: ${package.Handshake.level}
@@ -78,6 +87,7 @@ Configuration:
         AppenderRef:
           - ref: Console
           - ref: ErrorFile
+          - ref: Swing
         Filters:
           ThresholdFilter:
             level: ${package.Tracker.level}
@@ -88,6 +98,7 @@ Configuration:
         AppenderRef:
           - ref: Console
           - ref: ErrorFile
+          - ref: Swing
         Filters:
           ThresholdFilter:
             level: ${package.File.level}
@@ -99,3 +110,4 @@ Configuration:
       AppenderRef:
         - ref: Console
         - ref: ErrorFile
+        - ref: Swing
