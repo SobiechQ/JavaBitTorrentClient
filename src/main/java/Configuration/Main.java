@@ -1,5 +1,6 @@
 package Configuration;
 
+import CLI.Service.CliService;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -13,11 +14,11 @@ import java.io.IOException;
 
 @EnableAsync
 @SpringBootApplication(scanBasePackages = {"Configuration", "Tracker", "ClientSession", "AsyncServer", "Handshake", "Model", "Peer", "Piece", "AsyncClient", "CLI", "Decoder", "File"})
+
 public class Main {
     public static void main(String[] args) throws IOException {
         SwingUtilities.invokeLater(LogWindow::new);
         SpringApplication.run(Main.class, args);
-
     }
 
 }

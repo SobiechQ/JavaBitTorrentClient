@@ -1,5 +1,7 @@
 package CLI.Service;
 
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -9,26 +11,25 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class CliServiceImpl implements CliService {
+@Slf4j
+class CliServiceImpl implements CliService {
+
+    @PostConstruct
     public void run() {
         try {
-            // Create a terminal
             Terminal terminal = TerminalBuilder.builder().system(true).build();
 
-            // Create a line reader
             LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
 
-            // Read lines from the user
             while (true) {
                 String line = reader.readLine("JBTC> ");
 
-                // Exit if requested
                 if ("exit".equalsIgnoreCase(line)) {
                     break;
                 }
 
-                // Echo the line back to the user
                 terminal.writer().println("You entered: " + line);
+
                 terminal.flush();
             }
 
