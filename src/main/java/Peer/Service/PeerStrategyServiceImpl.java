@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-public class PeerStrategyServiceImpl implements PeerStrategyService {
+class PeerStrategyServiceImpl implements PeerStrategyService {
     private final PeerRepository peerRepository;
 
     public PeerStrategyServiceImpl(@NonNull PeerRepository peerRepository) {

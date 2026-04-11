@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 @Repository
-public class ClientSessionRepositoryImpl implements ClientSessionRepository {
+class ClientSessionRepositoryImpl implements ClientSessionRepository {
     private final Map<Torrent, ClientSessionRepositoryRecord> sessionRepository;
     private final Map<Torrent, ReentrantReadWriteLock> locks;
 

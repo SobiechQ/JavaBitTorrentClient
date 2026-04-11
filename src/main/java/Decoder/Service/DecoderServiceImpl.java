@@ -14,13 +14,13 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static Handshake.Service.HandshakeServiceImpl.PROTOCOL_NAME_BYTES;
+import static Handshake.Service.HandshakeService.PROTOCOL_NAME_BYTES;
 import static Model.Message.DefaultMessage.*;
 
 @Service
 @NoArgsConstructor
 @Slf4j
-public class DecoderServiceImpl implements DecoderService {
+class DecoderServiceImpl implements DecoderService {
 
     @Override
     public Optional<HandshakeInputProjection> decodeHandshake(@NonNull ByteBuffer buffer) {

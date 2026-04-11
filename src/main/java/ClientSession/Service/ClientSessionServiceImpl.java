@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class ClientSessionServiceImpl implements ClientSessionService {
+class ClientSessionServiceImpl implements ClientSessionService {
     private final ClientSessionRepository clientSessionRepository;
 
     @SuppressWarnings("unchecked")

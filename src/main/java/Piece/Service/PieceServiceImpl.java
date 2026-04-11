@@ -23,7 +23,7 @@ import static Model.Message.MessageRequest.REQUEST_LENGTH;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class PieceServiceImpl implements PieceService {
+class PieceServiceImpl implements PieceService {
     private final PieceRepository pieceRepository;
     private final PeerStrategyService peerStrategyService;
     private final PeerService peerService;

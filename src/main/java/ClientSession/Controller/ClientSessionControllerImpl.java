@@ -22,7 +22,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @AllArgsConstructor
 @Controller
 @Slf4j
-public class ClientSessionControllerImpl implements ClientSessionController {
+class ClientSessionControllerImpl implements ClientSessionController {
     private final ClientSessionService clientSessionService;
     private final PeerController peerController;
     private final HandshakeHandlerFactory handshakeHandlerFactory;

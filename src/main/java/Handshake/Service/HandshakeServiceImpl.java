@@ -12,10 +12,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Service
-public class HandshakeServiceImpl implements HandshakeService {
-    private final static String PROTOCOL_NAME = "BitTorrent protocol";
-    public final static byte[] PROTOCOL_NAME_BYTES = PROTOCOL_NAME.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    private final static byte[] PEER_ID = "00112233445566778899".getBytes();
+class HandshakeServiceImpl implements HandshakeService {
+
 
     @Override
     public HandshakeOutputProjection getHandshake(@NonNull Torrent torrent) {

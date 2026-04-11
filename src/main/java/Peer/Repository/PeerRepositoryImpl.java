@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Repository
-public class PeerRepositoryImpl implements PeerRepository {
+class PeerRepositoryImpl implements PeerRepository {
     private final Map<Torrent, PeerRepositoryRecord> peerRepository;
 
     public PeerRepositoryImpl() {

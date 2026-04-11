@@ -16,7 +16,7 @@ import java.util.BitSet;
 
 @Service
 @AllArgsConstructor
-public class PeerServiceImpl implements PeerService {
+class PeerServiceImpl implements PeerService {
     private final PeerRepository peerRepository;
 
     @Override

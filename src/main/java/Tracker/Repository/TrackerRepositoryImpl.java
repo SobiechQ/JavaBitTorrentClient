@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Repository
-public class TrackerRepositoryImpl implements TrackerRepository {
+class TrackerRepositoryImpl implements TrackerRepository {
     private final Map<Torrent, TorrentProgressStatus> progressStatusMap;
     private final Map<Torrent, ReentrantLock> locks;
 

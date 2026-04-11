@@ -1,7 +1,6 @@
 package Decoder.Service;
 
 import Handshake.Service.HandshakeService;
-import Handshake.Service.HandshakeServiceImpl;
 import Model.Bencode.DecodingError;
 import Model.DecodedBencode.Torrent;
 import Model.Message.*;
@@ -23,7 +22,7 @@ import java.util.stream.Stream;
 import static Model.Message.MessageType.*;
 
 @SpringBootTest(classes = Configuration.Main.class)
-@ContextConfiguration(classes = {HandshakeServiceImpl.class})
+@ContextConfiguration(classes = {HandshakeService.class})
 class DecoderServiceImplTest {
     @Autowired
     private DecoderService decoderService;

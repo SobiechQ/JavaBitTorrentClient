@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Service
 @Slf4j
-public class TrackerServiceImpl implements TrackerService {
+class TrackerServiceImpl implements TrackerService {
     private final TrackerRepository trackerRepository;
     private final PeerRepository peerRepository;
     private final TrackerStatusRetrieverService trackerStatusRetrieverService;

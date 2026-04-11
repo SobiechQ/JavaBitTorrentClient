@@ -1,5 +1,6 @@
 GUI z wykresem pokazującym statystykę na podstawie projection ropbionego przez scheduled executor
 
+public final static do interfejsu a nie impl
 
 is piece complete niech sprawdza hashe?
 

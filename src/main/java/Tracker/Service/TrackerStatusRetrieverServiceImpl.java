@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class TrackerStatusRetrieverServiceImpl implements TrackerStatusRetrieverService {
+class TrackerStatusRetrieverServiceImpl implements TrackerStatusRetrieverService {
     private final PieceRepository pieceRepository;
 
     @Override

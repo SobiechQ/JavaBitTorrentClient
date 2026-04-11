@@ -2,7 +2,6 @@ package Peer.Handshake.Service;
 
 import Handshake.Model.HandshakeInputProjection;
 import Handshake.Service.HandshakeService;
-import Handshake.Service.HandshakeServiceImpl;
 import Utils.ByteUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.stream.Stream;
 
 @SpringBootTest(classes = Configuration.Main.class)
-@ContextConfiguration(classes = HandshakeServiceImpl.class)
+@ContextConfiguration(classes = HandshakeService.class)
 class HandshakeServiceTest {
     private final static byte[] MOCK_INFOHASH;
     private final static byte[] MOCK_PEERID;

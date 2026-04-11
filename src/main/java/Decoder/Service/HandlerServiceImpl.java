@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class HandlerServiceImpl implements HandlerService {
+class HandlerServiceImpl implements HandlerService {
     private final DecoderService decoderService;
     private final PeerService peerService;
     private final PieceService pieceService;

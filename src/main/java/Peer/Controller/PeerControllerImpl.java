@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 @Controller
 @AllArgsConstructor
-public class PeerControllerImpl implements PeerController {
+class PeerControllerImpl implements PeerController {
     private final PeerService peerService;
     private final PeerStrategyService peerStrategyService;
 

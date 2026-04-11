@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @Controller
 @AllArgsConstructor
 @Slf4j
-public class TrackerControllerImpl implements TrackerController {
+class TrackerControllerImpl implements TrackerController {
     private final TrackerService trackerService;
     private final ExecutorService virtualExecutor;
     private final ScheduledExecutorService scheduledExecutor;

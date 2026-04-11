@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl implements FileService {
+class FileServiceImpl implements FileService {
     private final FileChannelHandlerFactory fileChannelHandlerFactory;
     private final Map<Path, AsynchronousFileChannel> channels = new ConcurrentHashMap<>();
 

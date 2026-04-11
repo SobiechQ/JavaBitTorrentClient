@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 @Repository
-public class PieceRepositoryImpl implements PieceRepository {
+class PieceRepositoryImpl implements PieceRepository {
     private final Map<Torrent, PieceRepositoryRecord> pieceRepository;
 
     public PieceRepositoryImpl() {

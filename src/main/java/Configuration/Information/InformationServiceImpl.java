@@ -1,4 +1,4 @@
-package Configuration;
+package Configuration.Information;
 
 import ClientSession.Repository.ClientSessionRepository;
 import Decoder.Event.MessageEvent;
@@ -37,19 +37,22 @@ public class InformationServiceImpl implements InformationService {
 
     @PostConstruct
     void start() {
-        if (!scheduledEnabled)
-            return;
-        executor.scheduleAtFixedRate(() -> {
-            final var sessions = clientSessionRepository.getSessions(MOCK_TORRENT);
-            log.info("Active sessions: [{}]", sessions.size());
+        MOCK_TORRENT.ifPresent(mockTorrent -> {
+            if (!scheduledEnabled)
+                return;
+            executor.scheduleAtFixedRate(() -> {
+                final var sessions = clientSessionRepository.getSessions(mockTorrent);
+                log.info("Active sessions: [{}]", sessions.size());
 
-        }, 0, 1, TimeUnit.SECONDS);
-        executor.scheduleAtFixedRate(() -> {
-            pieceRepository.getPieceStatusProjection(MOCK_TORRENT)
-                    .filter(p -> p.downloaded() != 0)
-                    .forEach(pieceStatusProjection -> log.info(pieceStatusProjection.toString()));
+            }, 0, 1, TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(() -> {
+                pieceRepository.getPieceStatusProjection(mockTorrent)
+                        .filter(p -> p.downloaded() != 0)
+                        .forEach(pieceStatusProjection -> log.info(pieceStatusProjection.toString()));
 
-        }, 0, 10, TimeUnit.SECONDS);
+            }, 0, 10, TimeUnit.SECONDS);
+        });
+
     }
 
     @Override
